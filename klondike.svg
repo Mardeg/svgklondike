@@ -1,0 +1,1416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" height="100%" width="100%" viewBox="-.2 -236 2178.99 1216.19"
+    onload="init();"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    onmousemove="mouseMove(evt)" onmouseup="mouseUp(evt)"
+    >
+<script>
+/* <![CDATA[ */
+// @license magnet:?xt=urn:btih:90dc5c0be029de84e523b9b3922520e79e0e6f08&dn=cc0.txt
+var SVGNS = "http://www.w3.org/2000/svg";
+var DRAGNS = "http://www.codedread.com/dragsvg";
+var DRAGSTART = "dragstart";
+var DRAGMOVE = "dragmove";
+var DRAGDROP = "dragdrop";
+
+function DragEvent(_mouseevt, _clientx, _clienty, _userx, _usery, 
+                    _dragEnt, _mouseoffsetx, _mouseoffsety)
+{
+    this.mouseEvt = _mouseevt;
+    this.clientx = _clientx;
+    this.clienty = _clienty;
+    this.userx = _userx;
+    this.usery = _usery;
+    this.dragEnt = _dragEnt;
+    this.mouseoffsetx = _mouseoffsetx;
+    this.mouseoffsety = _mouseoffsety;
+}
+
+function inspect(obj) 
+{
+    var str = new Array();
+    var element = null;
+    for(element in obj) { str[str.length] = element; }
+    str.sort();
+    alert(obj + ":" + str.join(' '));
+}
+
+var draggingElement = null;
+var nMouseOffsetX = 0;
+var nMouseOffsetY = 0;
+var screenCTMInv = null;
+
+var dragStartCallbacks = new Array();
+var dragMoveCallbacks = new Array();
+var dragDropCallbacks = new Array();
+
+function addDragEventListener(dragEventStr, callbackFunc)
+{
+    if(callbackFunc == null) { return; }
+    
+    var arr = null;
+    if(dragEventStr == DRAGSTART) { arr = dragStartCallbacks; }
+    else if(dragEventStr == DRAGMOVE) { arr = dragMoveCallbacks; }
+    else if(dragEventStr == DRAGDROP) { arr = dragDropCallbacks; }
+    else { return; }
+
+    for(var func = 0; func < arr.length; ++func) {
+        if(arr[func] == callbackFunc) { 
+            return;
+        }
+    }
+    arr[arr.length] = callbackFunc;
+    
+}
+function removeDragEventListener(dragEventStr, callbackFunc)
+{
+    if(callbackFunc == null) { return; }
+    
+    var arr = null;
+    if(dragEventStr == DRAGSTART) { arr = dragStartCallbacks; }
+    else if(dragEventStr == DRAGMOVE) { arr = dragMoveCallbacks; }
+    else if(dragEventStr == DRAGDROP) { arr = dragDropCallbacks; }
+    else { return; }
+
+    for(var func = 0; func < arr.length; ++func) {
+        if(arr[func] == callbackFunc) { 
+            delete arr[func];
+            return;
+        }
+    }
+}
+
+function mouseDown(evt) 
+{ 
+    var target = evt.currentTarget;
+    draggingElement = target;
+
+    if(target) {
+        var p = document.documentElement.createSVGPoint();
+        // p now contains the mouse position in browser client area in pixels
+        p.x = evt.clientX;
+        p.y = evt.clientY;
+
+        screenCTMInv = getScreenCTM().inverse();
+        // p now contains the mouse position in SVG user coords
+        p = p.matrixTransform(screenCTMInv);
+
+        // nMouseOffsetX keeps track of how far the mouse dragged 
+        // since the last movement
+        nMouseOffsetX = p.x - parseFloat(target.getAttributeNS(DRAGNS, "x"));
+        nMouseOffsetY = p.y - parseFloat(target.getAttributeNS(DRAGNS, "y"));
+
+        if(dragStartCallbacks.length) {
+            var dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, 
+                            draggingElement, nMouseOffsetX, nMouseOffsetY);
+            for(var func = 0; func < dragStartCallbacks.length; ++func) {
+                if(dragStartCallbacks[func]) { 
+                    dragStartCallbacks[func](dragEvt);
+                    break;
+                }
+            }
+        }
+        
+    }
+
+    evt.stopPropagation();
+}
+function mouseUp(evt) 
+{ 
+    if(draggingElement) {
+        if(dragDropCallbacks.length) {
+            var p = document.documentElement.createSVGPoint();
+            p.x = evt.clientX;
+            p.y = evt.clientY;
+
+            screenCTMInv = getScreenCTM().inverse();
+
+            p = p.matrixTransform(screenCTMInv);
+    //        p.x -= nMouseOffsetX;
+    //        p.y -= nMouseOffsetY;
+
+            var dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, 
+                                        draggingElement, nMouseOffsetX, nMouseOffsetY);
+            for(var func = 0; func < dragDropCallbacks.length; ++func) {
+                if(dragDropCallbacks[func]) { 
+                    dragDropCallbacks[func](dragEvt);
+                    break;
+                }
+            }
+        }
+
+        draggingElement = null;
+        nMouseOffsetX = 0;
+        nMouseOffsetY = 0;
+    }
+}
+function mouseMove(evt) 
+{ 
+    if(draggingElement) {
+        var p = document.documentElement.createSVGPoint();
+        p.x = evt.clientX;
+        p.y = evt.clientY;
+
+        p = p.matrixTransform(screenCTMInv);
+        p.x -= nMouseOffsetX;
+        p.y -= nMouseOffsetY;
+
+        // at this point, we need to check if the drag is constrained 
+        // (look for drag:constrainLeft, constrainTop, etc on the draggingElement)
+        var left = draggingElement.getAttributeNS(DRAGNS, "constraintLeft");
+        var top = draggingElement.getAttributeNS(DRAGNS, "constraintTop");
+        var right = draggingElement.getAttributeNS(DRAGNS, "constraintRight");
+        var bottom = draggingElement.getAttributeNS(DRAGNS, "constraintBottom");
+        if(left && p.x < left) { p.x = left; }
+        else if(right && p.x > right) { p.x = right; }
+        
+        if(top && p.y < top) { p.y = top; }
+        else if(bottom && p.y > bottom) { p.y = bottom; }
+        
+        draggingElement.setAttributeNS(DRAGNS, "x", p.x);
+        draggingElement.setAttributeNS(DRAGNS, "y", p.y);
+        draggingElement.setAttributeNS(null, "transform", "translate(" + p.x + "," + p.y + ")");
+
+        if(dragMoveCallbacks.length) {
+            var dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, 
+                                        draggingElement, nMouseOffsetX, nMouseOffsetY);
+            for(var func = 0; func < dragMoveCallbacks.length; ++func) {
+                if(dragMoveCallbacks[func]) { 
+                    dragMoveCallbacks[func](dragEvt);
+                    break;
+                }
+            }
+        }
+        
+    }
+}
+
+var bEnableSVGListeners = true;
+
+function enableDrag(ele) 
+{
+    if(ele) {
+        if(bEnableSVGListeners) {
+            // add event listeners to the <svg> node for mouse up and mouse move
+            document.documentElement.addEventListener("mouseup", mouseUp, false);
+            document.documentElement.addEventListener("mousemove", mouseMove, false);
+            bEnableSVGListeners = false;
+        }
+        
+        ele.setAttributeNS(DRAGNS, "enable", true);
+        
+        // add event listener
+        ele.addEventListener("mousedown", mouseDown, false);
+
+        // find transform attribute, extract drag:x/drag:y
+        // The SVG 1.1 DOM provides facilities to get a transform list for
+        // any transformable entity, unfortunately, ASV does not support this
+        // interface, so we're stuck with parsing the "transform" attribute.
+        // 
+        // Incidentally, this was absolutely the biggest pain...the transform 
+        // attribute could be in any of the following forms:
+        // transform="translate(100)" (ty is zero here)
+        // transform="translate(   100   )" (ty is zero here)
+        // transform="translate(100,200)"
+        // transform="translate(100 200)"
+        // transform="translate(   100,200)"
+        // transform="translate(100,200   )"
+        // transform="translate(100  ,  200)"
+        // transform="translate( 100 , 200 ) "
+        // etc...
+
+        var tx = 0;
+        var ty = 0;
+        
+        // First, I split the transform string by the parentheses, 
+        // the second word is the stuff between the parantheses, which is
+        // my x (and possibly y) coordinate
+        var xformstr = ele.getAttributeNS(null, "transform");
+        if(xformstr && xformstr.length > 0) {
+            xformstr = xformstr.split(/[\(\)]/)[1];
+
+            // parsing this string for a float will always give me the x coordinate
+            tx = parseFloat(xformstr);
+            if(isNaN(tx)) { tx = 0; } // but we play it safe anyway
+
+            // convert tx into a string on-the-fly to get its length, find the occurrence
+            // of the tx string in the original xformstr, get the substring following
+            // that and parse it into a float for the y-coord
+            ty = parseFloat(xformstr.substr(xformstr.indexOf(tx)+(""+tx).length+1));
+            if(isNaN(ty)) { ty = 0; } // if it's NaN, then it defaults to zero
+        }
+        else {
+            ele.setAttributeNS(null, "transform", "translate(0,0)");
+        }
+
+        // now set the DOM dragx/dragy attributes
+        ele.setAttributeNS(DRAGNS, "x", tx);
+        ele.setAttributeNS(DRAGNS, "y", ty);
+        
+        // copy old cursor value (if present)
+        ele.setAttributeNS(DRAGNS, "oldcursor", ele.getAttributeNS(null, "cursor"));
+        ele.setAttributeNS(null, "cursor", "move");
+        
+    }
+}
+
+
+function disableDrag(ele) 
+{
+    if(ele) {
+        ele.setAttributeNS(DRAGNS, "enable", false);
+        ele.removeEventListener("mousedown", mouseDown, false);
+        // restore old cursor
+        ele.setAttributeNS(null, "cursor", ele.getAttributeNS(DRAGNS, "oldcursor"));
+    }
+}
+
+// This method scans through all SVG entities, looks for the class attribute and
+// determines if the SVG entity is included in the "draggable" class.  If so, it
+// adds a mousedown event listener and then extracts the initial translation to 
+// establish the drag:x/drag:y attributes which we'll use as shortcuts upon dragging.
+function initializeDraggableElements() 
+{
+    var allChildren = document.documentElement.getElementsByTagNameNS(SVGNS, "*");
+    for(var child = 0; child < allChildren.length; ++child) {
+        // Adobe doesn't allow array access
+        var ele = allChildren.item(child);
+
+        // if ele has drag:enable="true", then set it up
+        var bFoundDraggable = (ele.getAttributeNS(DRAGNS, "enable") == "true");
+
+        if(bFoundDraggable) {
+            enableDrag(ele);
+        } // if draggable
+    } // for(var child...
+
+} // end initializeDraggableElements()
+
+function getScreenCTM(){
+    // now we find the screen CTM of the document SVG element
+    var root = document.documentElement;
+    var sCTM = root.createSVGMatrix();
+
+    var tr = root.createSVGMatrix();
+    var par = root.getAttributeNS(null, "preserveAspectRatio");
+    if (!par) { par="xMidYMid meet"; } //setting to default value
+    parX = par.substring(0,4); //xMin;xMid;xMax
+    parY = par.substring(4,8); //YMin;YMid;YMax;
+    ma = par.split(' ');
+    mos = ma[1]; //meet;slice
+
+    //get dimensions of the viewport
+    sCTM.a = 1;
+    sCTM.d = 1;
+    sCTM.e = 0;
+    sCTM.f = 0;
+
+    w = root.getAttribute('width') || '100%'; // w = innerWidth;
+    h = root.getAttribute('height')|| '100%'; // h = innerHeight;
+    if( w.indexOf('%')+1 ) w = (parseFloat(w) / 100.0) * innerWidth;
+    if( h.indexOf('%')+1 ) h = (parseFloat(h) / 100.0) * innerHeight;
+  
+
+    // get the ViewBox
+    var vb = (root.getAttribute('viewBox') || '0 0 '+w+' '+h).split(' ');
+
+    //--------------------------------------------------------------------------
+    //create a matrix with current user transformation
+    tr.a = root.currentScale;
+    tr.d = root.currentScale;
+    tr.e = root.currentTranslate.x;
+    tr.f = root.currentTranslate.y;
+
+    // scale factors
+    sx = w/vb[2];
+    sy = h/vb[3];
+
+    // meetOrSlice
+    if(mos=="slice") { s = (sx>sy ? sx : sy); }
+    else { s = (sx<sy ? sx : sy); }
+
+    //preserveAspectRatio="none"
+    if (par=="none") {
+        sCTM.a = sx;  //scaleX
+        sCTM.d = sy;  //scaleY
+        sCTM.e = -vb[0]*sx; //translateX
+        sCTM.f = -vb[0]*sy; //translateY
+        sCTM = tr.multiply(sCTM);//taking user transformations into account
+    }
+    else {
+        sCTM.a = s; //scaleX
+        sCTM.d = s; //scaleY
+        //-------------------------------------------------------
+        switch(parX){
+        case 'xMid':
+            sCTM.e = ((w-vb[2]*s)/2) - vb[0]*s; //translateX
+            break;
+        case 'xMin':
+            sCTM.e = - vb[0]*s; //translateX
+            break;
+        case 'xMax':
+            sCTM.e = (w-vb[2]*s)- vb[0]*s; //translateX
+            break;
+        }
+        //------------------------------------------------------------
+        switch(parY){
+        case 'YMid':
+            sCTM.f = (h-vb[3]*s)/2 - vb[1]*s; //translateY
+            break;
+        case 'YMin':
+            sCTM.f = - vb[1]*s; //translateY
+            break;
+        case 'YMax':
+            sCTM.f = (h-vb[3]*s) - vb[1]*s; //translateY
+            break;
+        }
+
+        sCTM = tr.multiply(sCTM); //taking user transformations into acount
+    } // else
+
+    return sCTM;
+}
+var SVGNS = "http://www.w3.org/2000/svg";
+var XLINKNS = "http://www.w3.org/1999/xlink";
+var DRAGNS = "http://www.codedread.com/dragsvg";
+
+var eNOSUIT = 0;
+var eHEART = 1;
+var eDIAMOND = 2;
+var eCLUB = 3;
+var eSPADE = 4;
+var eSUITMIN = 1;
+var eSUITMAX = 4;
+var gSuitNames = [ "UNKNOWN SUIT", "heart", "diamond", "club", "spade" ];
+var gCardNames = [ "UNKNOWN CARD", "1", "2", "3", "4", "5", "6", "7",
+                    "8", "9", "10", "jack", "queen", "king", "joker" ];
+var gBackName = "#card_back";
+var eJOKER = 0;
+var eJACK = 11;
+var eQUEEN = 12;
+var eKING = 13;
+var eCARDS_PER_SUIT = 13;
+
+function Card(inCardNum)
+{
+    inCardNum = parseInt(inCardNum);
+    if(inCardNum < 0 || inCardNum > 53) {
+        alert("Card Number is invalid (0-53, actual value = " + inCardNum + ")");
+        return;
+    }
+
+    this.cardNum = inCardNum;
+    this.bFaceUp = false;
+    
+    // get SVG element name
+    var val = this.getValue();
+    if(val == eJOKER) { 
+        this.elemName = "#" + ( this.isRed() ? "red" : "black" );
+        this.elemName += "_joker";
+    }
+    else { 
+        // TO DO: Once new artwork is in, restore this
+//        this.elemName = "#" + val; 
+//        var suit = this.getSuit();
+//        if(suit != "eNOSUIT") {
+//            this.elemName += ("_" + gSuitNames[suit]);
+//        }
+//        else {
+//            alert("Invalid card, card num = " + this.cardNum);
+//        }
+        this.elemName = "#my_"; 
+        var suit = this.getSuit();
+        if(suit != "eNOSUIT") {
+            this.elemName += (gSuitNames[suit] + "_" + gCardNames[val]);
+        }
+        else {
+            alert("Invalid card, card num = " + this.cardNum);
+        }
+    }
+}
+
+Card.prototype.isJoker = function() { return ((this.cardNum < 1) || (this.cardNum > 52)); }
+
+Card.prototype.getValue = function() { if(this.isJoker()) return eJOKER; 
+                                        return ((this.cardNum-1)%eCARDS_PER_SUIT)+1;}
+
+Card.prototype.getSuit = function() { var suit = Math.floor( (this.cardNum-1) / eCARDS_PER_SUIT)+1;
+                                        if(suit < eSUITMIN || suit > eSUITMAX) suit = eNOSUIT;
+                                        return suit; }
+
+Card.prototype.isRed = function() { var suit = this.getSuit(); 
+                                    if(suit == eNOSUIT) { return (this.cardNum == 0); }
+                                    return (suit == eHEART || suit == eDIAMOND); }
+
+Card.prototype.isFace = function() { var val = this.getValue();
+                                     return ( (val >= eJACK && val <= eKING) || this.isJoker() ); }
+
+Card.prototype.isFaceUp = function() { return this.bFaceUp; }
+
+Card.prototype.toString = function() { return gCardNames[this.getValue()] + " of " +
+                                            gSuitNames[this.getSuit()] + "s"; }
+
+Card.prototype.flip = function() { this.bFaceUp = !this.bFaceUp; }
+
+// Model the solitaire game aspects here
+// BEGIN SOLITAIRE MODEL
+
+var CARD_VERT_OFFSET = 50;
+
+// A wrapper class for a tableau pile of cards that has the ability to display 
+// as SVG and can display them as fanned vertically.  
+function TableauPile(g) { 
+    if(g == null) { alert("TableauPile was initialized with a null <g> element"); }
+    this.rootElem = g;
+    this.elem = g;
+
+    this.cards = new Array();
+}
+
+TableauPile.prototype.pop = function() { 
+    if(this.cards.length < 1) { return; }
+    
+    var card = this.cards.pop();
+
+    // update DOM
+    var removeMe = this.elem;
+    this.elem = this.elem.parentNode;
+    this.elem.removeChild(removeMe);
+
+    // If the top card exposed is face down, allow it to be 
+    // clicked to flip it
+    var newTop = this.top();
+    if(newTop && !newTop.isFaceUp()) {
+        this.elem.addEventListener("click", flipTopTableauCard, false);
+    }
+    
+    return card;
+}
+
+function flipTopTableauCard(evt) {
+    var target = evt.currentTarget;
+    var id = target.getAttributeNS(null, "id");
+    var tableau = parseInt(id.substr(id.indexOf("_")-1, 1)) - 1;
+    var card = gTableau[tableau].pop();
+    card.flip();
+    gTableau[tableau].push(card);
+    gTableau[tableau].elem.removeEventListener("click", flipTopTableauCard, false);
+}
+
+TableauPile.prototype.push = function(card) { 
+    var oldSize = this.cards.length;
+
+    // if the currently top card is face down, disable flipping
+    var oldtop = this.top();
+    if(oldtop && !oldtop.isFaceUp()) {
+        this.elem.removeEventListener("click", flipTopTableauCard, false);
+    }
+    this.cards.push(card); 
+    
+    // update DOM
+    var newg = document.createElementNS(SVGNS, "g");
+    var gid = this.rootElem.getAttributeNS(null, "id") + "_" + oldSize;
+    newg.setAttributeNS(null, "id", gid);
+
+    newg.setAttributeNS(null, "transform", "translate(0,"+CARD_VERT_OFFSET+")");
+
+    var use = document.createElementNS(SVGNS, "use");
+    
+    if(card.isFaceUp()) {
+        use.setAttributeNS(XLINKNS, "href", card.elemName);
+    }
+    else {
+        use.setAttributeNS(XLINKNS, "href", gBackName);
+    }
+    newg.appendChild(use);
+
+    this.elem.appendChild(newg);
+    this.elem = newg;
+
+    if(card.isFaceUp()) {
+        enableDrag(document.getElementById(gid));
+    }
+}
+
+TableauPile.prototype.top = function() { // could have used at(length-1) here
+    return (this.cards.length > 0) ? this.cards[this.cards.length-1] : null; 
+}
+
+TableauPile.prototype.bottom = function() { // could have used at(0) here
+    return (this.cards.length > 0) ? this.cards[0] : null; 
+}
+
+TableauPile.prototype.size = function() { 
+    return this.cards.length; 
+}
+
+TableauPile.prototype.clear = function() { 
+    if(this.cards.length < 1) { return; }
+
+    // pop all the cards directly (i.e. not using TableauPile.pop())
+    while(this.cards.length > 0) {
+        this.cards.pop();
+    }
+
+    while(this.elem.hasChildNodes()) {
+        this.elem.removeChild(this.elem.firstChild);
+    }
+}
+
+TableauPile.prototype.at = function(ind) { 
+    var index = parseInt(ind); 
+    return (index >= 0 && index < this.cards.length) ? this.cards[index] : null; 
+}
+
+function CardStack(g,_name) {
+    if(g == null) { alert("CardStack was initialized with a null <g> element"); }
+    this.elem = g;
+    this.name = _name;
+
+    this.cards = new Array();
+}
+
+CardStack.prototype.pop = function() { 
+    if(this.cards.length < 1) { return; }
+    
+    var card = this.cards.pop();
+    
+    // if we are face up or the stack wasn't empty but now is
+    if(card.isFaceUp() || this.cards.length < 1) {
+        // update DOM
+        // clear stack DOM element
+        this.elem.removeChild(this.elem.lastChild);
+        
+        if(this.elem.hasChildNodes()) {
+//            alert("Enabling drag on " + this.top().toString() + " in CardStack.pop()");
+            enableDrag(this.elem.lastChild);
+        }
+    }
+    return card;
+}
+
+CardStack.prototype.push = function(card,allowDrag) { 
+    var oldLength = this.cards.length;
+    
+    // if we had a face-up card, disable drag on it and make it the second card
+    if(this.cards.length > 0 && this.top().isFaceUp()) {
+        disableDrag(this.elem.lastChild);
+    }
+    
+    this.cards.push(card); 
+
+    // update DOM
+    // if we are face up or the stack was empty but now is not
+    if(card.isFaceUp() || oldLength < 1) {
+
+        var use = document.createElementNS(SVGNS, "use");
+
+        if(card.isFaceUp()) {
+            use.setAttributeNS(XLINKNS, "href", card.elemName);
+            if(allowDrag) {
+                use.setAttributeNS(null, "id", "waste_" + oldLength);
+            }
+        }
+        else {
+            use.setAttributeNS(XLINKNS, "href", gBackName);
+        }
+        this.elem.appendChild(use);
+        
+        if(card.isFaceUp() && allowDrag) {
+//            alert("enabled drag on " + card.toString() + " in CardStack.push()");
+            enableDrag(this.elem.lastChild);
+        }
+    }
+    
+}
+
+CardStack.prototype.top = function() { // could have used at(length-1) here
+    return (this.cards.length > 0) ? this.cards[this.cards.length-1] : null; 
+}
+
+CardStack.prototype.bottom = function() { // could have used at(0) here
+    return (this.cards.length > 0) ? this.cards[0] : null; 
+}
+
+CardStack.prototype.size = function() { 
+    return this.cards.length; 
+}
+
+CardStack.prototype.clear = function() { 
+    if(this.cards.length < 1) { return; }
+    
+    while(this.cards.length > 0) { this.cards.pop(); }
+    var length = this.cards.length;
+
+    // pop all the cards directly
+    for(var loop = 0; loop < length; ++loop) {
+        this.cards.pop();
+    }
+
+    // update DOM
+    while(this.elem.hasChildNodes()) {
+        this.elem.removeChild(this.elem.firstChild);
+    }
+}
+
+CardStack.prototype.at = function(ind) { 
+    var index = parseInt(ind); 
+    return (index >= 0 && index < this.cards.length) ? this.cards[index] : null; 
+}
+
+CardStack.prototype.shuffle = function() {
+    if(this.cards.length < 1) { return; }
+    
+    status("Shuffling Cards...");
+    
+    // shuffle 10 times arbitrarily
+    for(var iter = 0; iter < 10; ++iter) {
+        for(var cardNum = 0; cardNum < this.cards.length; ++cardNum) {
+            var swapper = Math.floor(Math.random()*this.cards.length);
+            var tempCard = this.cards[cardNum];
+            this.cards[cardNum] = this.cards[swapper];
+            this.cards[swapper] = tempCard;
+        }
+    }
+    
+    if(this.top().isFaceUp()) {
+        // TO DO: update DOM 
+        alert("Fatal Error!  Tried to shuffle a face up deck");
+    }
+
+    status("Ready...");
+}
+
+function status(str) {
+    // TO DO:  Implement in SVG and here
+}
+
+
+// Solitaire Game Logic begins here
+
+// this holds the unique 52 cards
+gAllCards = new Array(52);
+for(var loop = 0; loop < gAllCards.length; ++loop) {
+    gAllCards[loop] = new Card(loop+1);
+}
+gTableau = new Array();
+gFoundation = new Array();
+gDeck = null;
+gWaste = null;
+gDragPile = null;
+
+function startSolitaire() {
+    var loop = 0;
+    
+    // reset all decks
+    gWaste = new CardStack(document.getElementById("waste"), "waste");
+    // set the deck to contain all the cards and shuffle them
+    gDeck = new CardStack(document.getElementById("deck"), "deck");
+    for(loop = 0; loop < gAllCards.length; ++loop) {
+        gDeck.push(gAllCards[loop], false);
+    }
+    gDeck.shuffle();
+    
+    for(loop = 0; loop < 7; ++loop) {
+        gTableau[loop] = new TableauPile(document.getElementById("tableau" + (loop+1)));
+    }
+    for(loop = eSUITMIN; loop <= eSUITMAX; ++loop) {
+        gFoundation[loop] = new CardStack(document.getElementById("foundation_"+gSuitNames[loop]));
+    }
+    
+    // now deal the deck to the tableau
+    for(loop = 0; loop < 7; ++loop) {
+        // top card is always face up
+        var card = gDeck.pop();
+        card.flip();
+        gTableau[loop].push(card);
+
+        for(var tableauNum = loop+1; tableauNum < 7; ++tableauNum) {
+            var card = gDeck.pop();
+            gTableau[tableauNum].push(card);
+        }
+    }
+    
+    // enable draw action on the deck
+    gDeck.elem.addEventListener("click", drawCard, false);
+
+}
+
+function drawCard() {
+    var card = null;
+    if(gDeck.size() > 0) {
+        card = gDeck.pop();
+        card.flip();
+        gWaste.push(card,true);
+        
+        // if deck is empty, turn off drawCard capability
+        if(gDeck.size() <= 0) {
+            gDeck.elem.removeEventListener("click", drawCard, false);
+            document.getElementById("deckoutline").addEventListener("click", flipDeck, false);
+        }
+    }
+    return card;
+}
+
+function flipDeck() {
+    var numCards = gWaste.size();
+    for(var loop = 0; loop < numCards; ++loop) {
+        var card = gWaste.pop();
+        card.flip();
+        gDeck.push(card,false);
+    }
+    document.getElementById("deckoutline").removeEventListener("click", flipDeck, false);
+    gDeck.elem.addEventListener("click", drawCard, false);
+}
+
+// This method returns false if the move failed (in which case it is the caller's
+// responsibility to re-own the card objects) or true if the cards were 
+// successfully moved to the tableau pile (in which case the caller should 
+// relinquish all responsibility of the card objects)
+// cardPile is a JavaScript array of Card objects here
+function moveCardsToTableau(pile, tableauNum) {
+    var tabNum = parseInt(tableauNum);
+    if(tabNum < 0 || tabNum >= 7) { return false; }
+    var tableau = gTableau[tabNum];
+    
+    if(pile.length < 1) { return false; }
+    
+    var bResult = false;
+    // if tableau is empty and bottom card in pile is a king OR
+    // if tableau top card is face up, is one higher in value and is the opposite color
+    // of the bottom card in pile
+    if( (tableau.size() == 0 && pile[0].getValue() == eKING) ||
+        (tableau.size() > 0 && tableau.top().isFaceUp() &&
+            tableau.top().getValue() == pile[0].getValue()+1 &&
+            tableau.top().isRed() != pile[0].isRed()) ) 
+    {
+        for(var loop = 0; loop < pile.length; ++loop) {
+            tableau.push(pile[loop]);
+        }
+        bResult = true;
+    }
+    
+    return bResult;
+}
+
+// This method returns false if the move failed (in which case it is the caller's
+// responsibility to re-own the card object) or true if the card was successfully
+// moved to the foundation pile (in which case the caller should relinquish all
+// responsibility of the card object)
+function moveCardToFoundation(card, foundationNum) {
+    var foundNum = parseInt(foundationNum);
+    if(foundNum < 1 || foundNum > 4) { return false; }
+    if(card == null || !card.isFaceUp()) { return false; }
+    
+    var bResult = false;
+    
+    // card must be of the proper suit
+    if(card.getSuit() == foundNum) {
+        // if foundation is empty and the card is an ace OR
+        // if foundation top card is one lower in value
+        if( (gFoundation[foundNum].size() == 0 && card.getValue() == 1) ||
+            (gFoundation[foundNum].size() > 0 && 
+             gFoundation[foundNum].top().getValue() == (card.getValue()-1) ) )
+        {
+            gFoundation[foundNum].push(card,false);
+            bResult = true;
+        }
+    }
+
+    return bResult;
+}
+
+function dumpPile(pile) {
+    var str = "";
+    for(var loop = 0; loop < 13; ++loop) {
+        if(pile.at(loop*4)) 
+            str += pile.at(loop*4).toString() + ", ";
+        if(pile.at(loop*4+1)) 
+            str += pile.at(loop*4+1).toString() + ", ";
+        if(pile.at(loop*4+2)) 
+            str += pile.at(loop*4+2).toString() + ", ";
+        if(pile.at(loop*4+3)) 
+            str += pile.at(loop*4+3).toString() + ",\n";
+    }
+    alert(str);
+}
+
+// This makes sure the appropriate pile of cards is moved to the 
+// bottom of "CardContainer" to ensure the drag is over top of 
+// all other cards
+function dragStart(evt) {
+    var container = document.getElementById("CardContainer");
+    
+    if(!evt.dragEnt) {
+        alert("dragStart(null)");
+    }
+    var id = evt.dragEnt.getAttributeNS(null, "id");
+    var letter = id.indexOf("_");
+    if(letter != -1 && container) {
+        if(eleToTop = document.getElementById(id.substr(0,letter))) {
+            container.appendChild( eleToTop.parentNode.removeChild(eleToTop) );
+        }
+    }
+
+    // NOTE that the dragged element is still a child of the parent at this point.
+    // Only the parent's z-index has changed, really.
+}
+
+// now determine where the dragged element has been dropped
+
+function dragStop(evt) {
+    // determine what logical elements (i.e. Cards) were being dragged and
+    // determine the drop point from a physical to a logical perspective 
+    var cardPile = new Array();
+    if(!evt.dragEnt) {
+        alert("dragStop(null)");
+    }
+    var id = evt.dragEnt.getAttributeNS(null, "id");
+    var pile = (id.substr(0,id.indexOf("_")));
+    var dropx = 0;
+    var dropy = 0;
+    var fromPile = null;
+    var fromTableauNum = -1;
+    var bMoveItBack = true;
+    if(pile == "waste") {
+        fromPile = gWaste;
+        cardPile[0] = gWaste.top();
+        dropx = 1850;
+        dropy = 120;
+    }
+    else {
+        var tabNum = parseInt(pile.charAt(pile.length-1)) - 1;
+        var cardNum = parseInt(id.substr(id.indexOf("_")+1));
+        fromPile = gTableau[tabNum];
+        fromTableauNum = tabNum;
+
+        for(var loop = cardNum; loop < fromPile.size(); ++loop) {
+            cardPile[cardPile.length] = fromPile.at(loop);
+        }
+
+        dropx = 120 + tabNum*200;
+        dropy = 120 + (fromPile.size()-1)*CARD_VERT_OFFSET;
+        // every card has a transform of translate(0,CARD_VERT_OFFSET)
+        dropy -= CARD_VERT_OFFSET;
+    }
+    dropx += parseFloat(evt.dragEnt.getAttributeNS(DRAGNS, "x"));
+    dropy += parseFloat(evt.dragEnt.getAttributeNS(DRAGNS, "y"));
+
+    // map the physical dropx/dropy to a logical element
+    var dropTarget = -1;
+    var tabx = (dropx - 120)/200;
+    for(var tab = 0; tab < 7; ++tab) {
+        if( (tabx+0.3) >= tab && (tabx-0.3) <= tab && tab != fromTableauNum) {
+            dropTarget = tab;
+            break;
+        }
+    } // for each tableau
+    // determine if the move is allowed
+    if(dropTarget != -1) {
+        if(moveCardsToTableau(cardPile, dropTarget)) {
+            for(var loop = 0; loop < cardPile.length; ++loop) {
+                fromPile.pop();
+                bMoveItBack = false;
+            }
+        }
+    }
+    // if it wasn't a tableau, check the foundations (must only be 1 card)
+    else if(cardPile.length == 1) {
+        // - Diamond = (1650,595)
+        // - Heart = (1850,595)
+        // - Club = (1650,870)
+        // - Spade = (1850,870)
+        // only check if it wasn't any of the tableaus
+        var XTOL = 65;
+        var YTOL = 65;
+        
+        if( checkPointTol(dropx, dropy, 1650, 595, XTOL, YTOL) ) { dropTarget = eDIAMOND; }
+        else if( checkPointTol(dropx, dropy, 1850, 595, XTOL, YTOL) ) { dropTarget = eHEART; }
+        else if( checkPointTol(dropx, dropy, 1650, 870, XTOL, YTOL) ) { dropTarget = eCLUB; }
+        else if( checkPointTol(dropx, dropy, 1850, 870, XTOL, YTOL) ) { dropTarget = eSPADE; }
+        
+        // determine if the move is allowed
+        if(dropTarget != -1) {
+            if(moveCardToFoundation(cardPile[0], dropTarget) && fromPile != null) {
+                fromPile.pop();
+                bMoveItBack = false;
+            }
+        }
+    }
+    
+    if(bMoveItBack) {
+        for(var loop = 0; loop < cardPile.length; ++loop) {
+            fromPile.pop();
+        }
+        for(var loop = 0; loop < cardPile.length; ++loop) {
+            if(fromPile == gWaste) {
+                fromPile.push(cardPile[loop],true);
+            }
+            else {
+                fromPile.push(cardPile[loop]);
+            }
+        }
+    }
+}
+
+function checkPointTol(actualx, actualy, targetx, targety, tolx, toly) {
+    return ( (actualx+tolx) >= targetx && (actualx-tolx) <= targetx &&
+             (actualy+toly) >= targety && (actualy-toly) <= targety );
+}
+
+function initGame() {
+    addDragEventListener("dragstart", dragStart);
+    addDragEventListener("dragdrop", dragStop);
+    startSolitaire();
+}
+
+// END SOLITAIRE MODEL
+
+function init() {
+    setTimeout("initGame()", 50);    
+}
+/* ]]> */
+// @license-end
+</script>
+<defs>
+    <g id="n_10"><text transform="scale(0.32258 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">10</text></g>
+    <g id="n_1"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">1</text></g>
+    <g id="n_2"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">2</text></g>
+    <g id="n_3"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">3</text></g>
+    <g id="n_4"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">4</text></g>
+    <g id="n_5"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">5</text></g>
+    <g id="n_6"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">6</text></g>
+    <g id="n_7"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">7</text></g>
+    <g id="n_8"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">8</text></g>
+    <g id="n_9"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">9</text></g>
+    <g id="ace"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">A</text></g>
+    <g id="king"><text transform="scale(0.56453 1.05741)" font-family="Bitstream Vera Serif" font-weight="bold" font-size="43">K</text></g>
+    <g id="queen"><text transform="scale(0.56453 1)"   font-family="Bitstream Vera Serif" font-weight="bold"   font-size="41">Q</text></g>
+    <g id="jack"><text transform="scale(0.56453 1)"    font-family="Bitstream Vera Serif" font-weight="bold"   font-size="40">J</text></g>
+
+    <g id="outline"><path style="fill:none;stroke:#000000;stroke-width:2.5" d="M 0,0C0,3.78 3.09,6.87 6.87,6.87L159.715,6.87C163.485,6.87 166.575,3.78 166.575,0L166.575,-228.4C166.575,-232.18 163.485,-235.27 159.715,-235.27L6.87,-235.27C3.09,-235.27 0,-232.18 0,-228.4L0,0 z"/></g>
+
+    <g id="base"><path style="fill:#FFFFFF;stroke:#000000;stroke-width:2.5" d="M 0,0C0,3.78 3.09,6.87 6.87,6.87L159.715,6.87C163.485,6.87 166.575,3.78 166.575,0L166.575,-228.4C166.575,-232.18 163.485,-235.27 159.715,-235.27L6.87,-235.27C3.09,-235.27 0,-232.18 0,-228.4L0,0 z"/></g>
+
+    <g id="club" >
+        <path d="M3.35,4.66c0-1.81-1.51-3.28-3.38-3.28s-3.38,1.47-3.38,3.28c0,1.81,1.51,3.28,3.38,3.28S3.35,6.47,3.35,4.66z"/>
+        <path d="M7.71-1.55c0-1.81-1.51-3.28-3.38-3.28S0.95-3.36,0.95-1.55c0,1.81,1.51,3.28,3.38,3.28S7.71,0.26,7.71-1.55z"/>
+        <path d="M-0.95-1.57c0-0.66-0.2-1.28-0.55-1.8c-0.6-0.89-1.65-1.48-2.83-1.48c-1.87,0-3.38,1.47-3.38,3.28   c0,1.81,1.51,3.28,3.38,3.28S-0.95,0.24-0.95-1.57z"/>
+        <path d="M3.94-7.94c-1.67,0-2.55,1.36-3.01,2.72C0.47-3.86,0.43-2.5,0.43-2.5h-0.86c0,0-0.16-5.43-3.5-5.44H3.94z"/>
+        <path d="M-2.32,2.25c1.9-1.9,1.9-4.75,1.9-4.75l0.85-0.01c0,0,0,2.91,1.85,4.76"/>
+        <path d="M-1.94-3.85c1.9,1.9,4.75,1.9,4.75,1.9v0.85c0,0-2.91,0-4.76,1.85"/>
+        <path d="M1.87-3.86c-1.9,1.9-4.75,1.9-4.75,1.9v0.85c0,0,2.91,0,4.76,1.85"/>
+    </g>
+
+    <g id="diamond">
+        <path style="fill:#e6180a" d="M0,0C-2.56,0-5.12,0-7.68,0C -6.8053,0.039-6.061,0.605-5.358,1.0728C-3.779,2.264-2.3,3.63 -1.132,5.228C-0.587,6.032 -0.0144,6.936 0,7.94M-7.68,0C-6.57,-0.035 -5.622,-0.7413 -4.776,-1.393C-3.281,-2.648 -1.987,-4.141 -0.895,-5.757C-0.494,-6.426 -0.022,-7.135 0,-7.94C0,-5.293 0,-2.647 0,0M0,-7.94C0.038,-6.758 0.758,-5.734 1.438,-4.82C2.65,-3.310 4.086,-1.974 5.666,-0.857C6.28,-0.474 6.932,-0.0185 7.68,0C5.12,0 2.56,0 0,0M 7.68,0C6.57,0.035 5.622,0.741 4.776,1.392C 3.281,2.648 1.987,4.141 0.895,5.757C0.494,6.426 0.0225,7.135 0,7.94C0,5.293 0,2.647 0,0"/>
+    </g>
+
+    <g id="heart" >
+        <path style="fill:#E6180A;" d="M-7.67,3.93c0.01-4.71,5.91-8.14,7.64-11.87c1.75,3.72,7.66,7.12,7.7,11.83c0.01,2.22-1.71,4.03-3.82,4.03C1.73,7.92,0,6.13,0,3.91c0,2.23-1.71,4.03-3.82,4.03C-5.94,7.95-7.66,6.15-7.67,3.93z"/>
+    </g>
+
+    <g id="spade" >
+        <path d="M3.92-7.93c-1.67,0-2.55,1.78-3.01,3.56c-0.46,1.78-0.5,3.56-0.5,3.56L-0.44-0.8c0,0-0.16-7.13-3.5-7.13H3.92z"/>
+        <path d="M6.75-0.8C6.74,2.67,1.53,5.19,0,7.93C-1.53,5.18-6.74,2.66-6.75-0.8c0-1.64,1.51-2.97,3.38-2.97C-1.51-3.77,0-2.44,0-0.8c0-1.64,1.51-2.97,3.38-2.97S6.75-2.44,6.75-0.8z"/>
+    </g>
+
+    <g id="my_club_1">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#ace"/>
+    </g>
+    <g id="my_club_2">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_2" />
+    </g>
+    <g id="my_club_3">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_3" />
+    </g>
+    <g id="my_club_4">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_4"/>
+    </g>
+    <g id="my_club_5">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_5"/>
+    </g>
+    <g id="my_club_6">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_6"/>
+    </g>
+    <g id="my_club_7">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_7"/>
+    </g>
+    <g id="my_club_8">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_8"/>
+    </g>
+    <g id="my_club_9">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_9"/>
+    </g>
+    <g id="my_club_10">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_10"/>
+    </g>
+    <g id="my_club_jack">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#jack"/>
+    </g>
+    <g id="my_club_queen">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#queen"/>
+    </g>
+    <g id="my_club_king">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#king"/>
+    </g>
+    <g id="my_spade_1">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#ace"/>
+    </g>
+    <g id="my_spade_2">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_2"/>
+    </g>
+    <g id="my_spade_3">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_3"/>
+    </g>
+    <g id="my_spade_4">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_4"/>
+    </g>
+    <g id="my_spade_5">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_5"/>
+    </g>
+    <g id="my_spade_6">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_6"/>
+    </g>
+    <g id="my_spade_7">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_7"/>
+    </g>
+    <g id="my_spade_8">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_8"/>
+    </g>
+    <g id="my_spade_9">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_9"/>
+    </g>
+    <g id="my_spade_10">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_10"/>
+    </g>
+    <g id="my_spade_jack">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#jack"/>
+    </g>
+    <g id="my_spade_queen">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#queen"/>
+    </g>
+    <g id="my_spade_king">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#king"/>
+    </g>
+    <g id="my_heart_1">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#ace"/>
+    </g>
+    <g id="my_heart_2">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_2"/>
+    </g>
+    <g id="my_heart_3">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_3"/>
+    </g>
+    <g id="my_heart_4">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_4"/>
+    </g>
+    <g id="my_heart_5">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_5"/>
+    </g>
+    <g id="my_heart_6">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_6"/>
+    </g>
+    <g id="my_heart_7">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_7"/>
+    </g>
+    <g id="my_heart_8">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_8"/>
+    </g>
+    <g id="my_heart_9">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_9"/>
+    </g>
+    <g id="my_heart_10">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_10"/>
+    </g>
+    <g id="my_heart_jack">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#jack"/>
+    </g>
+    <g id="my_heart_queen">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#queen"/>
+    </g>
+    <g id="my_heart_king">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#king"/>
+    </g>
+    <g id="my_diamond_1">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#ace"/>
+    </g>
+    <g id="my_diamond_2">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_2"/>
+    </g>
+    <g id="my_diamond_3">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_3"/>
+    </g>
+    <g id="my_diamond_4">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_4"/>
+    </g>
+    <g id="my_diamond_5">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_5"/>
+    </g>
+    <g id="my_diamond_6">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_6"/>
+    </g>
+    <g id="my_diamond_7">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_7"/>
+    </g>
+    <g id="my_diamond_8">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_8"/>
+    </g>
+    <g id="my_diamond_9">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_9"/>
+    </g>
+    <g id="my_diamond_10">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#n_10"/>
+    </g>
+    <g id="my_diamond_jack">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#jack"/>
+    </g>
+    <g id="my_diamond_queen">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#queen"/>
+    </g>
+    <g id="my_diamond_king">
+        <use xlink:href="#base" x="0" y="0"/>
+        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" xlink:href="#king"/>
+    </g>
+
+    <g id="back">
+        <use xlink:href="#base" x="335.15" y="972.55"/>
+        <rect style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.71613282;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;" width="131.96480" height="177.42918" x="358.44342" y="761.04138" transform="matrix(1.157448,0,0,1.291938,-72.77354,-239.3770)" ry="2.7421434" rx="2.7421434" />
+        <rect width="131.9648" height="177.42918" rx="2.9805906" ry="2.8864667" x="358.44342" y="761.04138" transform="matrix(1.064852,0,0,1.227341,-33.46908,-184.4809)" style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.3131706;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
+        <rect width="131.9648" height="177.42918" rx="0" ry="0" x="358.44342" y="761.04138" transform="matrix(0.901291,0,0,1.107675,35.95190,-82.79633)" style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.2520694;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
+        <rect width="131.9648" height="177.42918" rx="0" ry="0" x="358.44342" y="761.04138" transform="matrix(0.829188,0,0,1.052291,66.55439,-35.73366)" style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.3392839;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
+
+        <rect width="28.4" height="6.6" x="369.5" y="856.1" style="fill:#0062ff;stroke:none"/>
+        <rect width="28.4" height="6.6" x="440.3" y="855.5" style="fill:#0062ff;stroke:none"/>
+    </g>
+
+    <use id="card_back" xlink:href="#back" transform="translate(-335.15, -972.55)"/>
+
+    </defs>
+
+<!-- Solitaire game goes here -->
+
+<!-- Background elements -->
+<rect id="tabletop" x="30" y="-206" rx="10" ry="10" width="2119" height="1156"
+    fill="green" stroke="brown" stroke-width="40"/>
+
+<text x="735" y="-150" font-size="36" opacity="0.2">Tableau</text>
+<rect x="90" y="-140" rx="20" ry="20" width="1430" height="1044" stroke="black" stroke-width="2.5" stroke-opacity="0.2" fill="none"/>
+
+<g transform="translate(120,120)"><use xlink:href="#outline"/></g>
+<g transform="translate(320,120)"><use xlink:href="#outline"/></g>
+<g transform="translate(520,120)"><use xlink:href="#outline"/></g>
+<g transform="translate(720,120)"><use xlink:href="#outline"/></g>
+<g transform="translate(920,120)"><use xlink:href="#outline"/></g>
+<g transform="translate(1120,120)"><use xlink:href="#outline"/></g>
+<g transform="translate(1320,120)"><use xlink:href="#outline"/></g>
+
+<text x="1690" y="-125" font-size="36" opacity="0.2">Deck</text>
+<text x="1880" y="-125" font-size="36" opacity="0.2">Waste</text>
+
+<g id="deckoutline" transform="translate(1650,120)" pointer-events="all"><use xlink:href="#outline"/></g>
+<g transform="translate(1850,120)"><use xlink:href="#outline"/></g>
+
+<text x="1745" y="320" font-size="36" opacity="0.2">Foundation</text>
+<rect x="1620" y="334" rx="20" ry="20" width="430" height="570" stroke="black" stroke-width="2.5" stroke-opacity="0.2" fill="none"/>
+
+<g transform="translate(1650,595)"><use xlink:href="#outline"/><use xlink:href="#diamond" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1850,595)"><use xlink:href="#outline" /><use xlink:href="#heart" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1650,870)"><use xlink:href="#outline" /><use xlink:href="#club" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1850,870)"><use xlink:href="#outline" /><use xlink:href="#spade" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+
+<!-- These elements are what I attach cards to in the game -->
+<!-- Within the script, I reorder these piles depending on which
+     one has been dragged, the dragged element always gets sent to the
+     the bottom of CardContainer to ensure it is over top of the others -->
+<g id="CardContainer">
+
+<!-- Seven tableau piles -->
+<!-- Subtract off 40 so that all cards are handled the same in-game -->
+<g id="tableau1" transform="translate(120,70)"/>
+<g id="tableau2" transform="translate(320,70)"/>
+<g id="tableau3" transform="translate(520,70)"/>
+<g id="tableau4" transform="translate(720,70)"/>
+<g id="tableau5" transform="translate(920,70)"/>
+<g id="tableau6" transform="translate(1120,70)"/>
+<g id="tableau7" transform="translate(1320,70)"/>
+
+<!-- Deck and Waste -->
+<g id="deck" transform="translate(1650,120)" />
+<g id="waste" transform="translate(1850,120)"/>
+
+<!-- Four foundation piles -->
+<g id="foundation_diamond" transform="translate(1650,595)"/>
+<g id="foundation_heart" transform="translate(1850,595)"/>
+<g id="foundation_club" transform="translate(1650,870)"/>
+<g id="foundation_spade" transform="translate(1850,870)"/>
+<!--
+            <g>
+            <use xlink:href="#my_club_1"/>
+            <g transform="translate(0,50)">
+                <use xlink:href="#my_club_2"/>
+                <g transform="translate(0,50)">
+                    <use xlink:href="#my_club_3"/>
+                </g>
+            </g>
+        </g>
+-->
+
+</g>
+</svg>

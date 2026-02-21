@@ -1400,17 +1400,6 @@ function init() {
 <g id="foundation_heart" transform="translate(1850,595)"/>
 <g id="foundation_club" transform="translate(1650,870)"/>
 <g id="foundation_spade" transform="translate(1850,870)"/>
-<!--
-            <g>
-            <use xlink:href="#my_club_1"/>
-            <g transform="translate(0,50)">
-                <use xlink:href="#my_club_2"/>
-                <g transform="translate(0,50)">
-                    <use xlink:href="#my_club_3"/>
-                </g>
-            </g>
-        </g>
--->
 
 </g>
 </svg>

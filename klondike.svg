@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" height="100%" width="100%" viewBox="-.2 -236 2178.99 1216.19"
+<svg version="2" height="100%" width="100%" viewBox="-.2 -236 2178.99 1216.19"
     onload="init();"
     xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
     onmousemove="mouseMove(evt)" onmouseup="mouseUp(evt)"
     >
 <metadata xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -34,7 +33,6 @@
 /* <![CDATA[ */
 // @license magnet:?xt=urn:btih:90dc5c0be029de84e523b9b3922520e79e0e6f08&dn=cc0.txt
 var SVGNS = "http://www.w3.org/2000/svg";
-var DRAGNS = "http://www.codedread.com/dragsvg";
 var DRAGSTART = "dragstart";
 var DRAGMOVE = "dragmove";
 var DRAGDROP = "dragdrop";
@@ -123,8 +121,8 @@ function mouseDown(evt)
 
         // nMouseOffsetX keeps track of how far the mouse dragged 
         // since the last movement
-        nMouseOffsetX = p.x - parseFloat(target.getAttributeNS(DRAGNS, "x"));
-        nMouseOffsetY = p.y - parseFloat(target.getAttributeNS(DRAGNS, "y"));
+        nMouseOffsetX = p.x - parseFloat(target.getAttribute("x"));
+        nMouseOffsetY = p.y - parseFloat(target.getAttribute("y"));
 
         if(dragStartCallbacks.length) {
             var dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, 
@@ -152,9 +150,25 @@ function mouseUp(evt)
             screenCTMInv = getScreenCTM().inverse();
 
             p = p.matrixTransform(screenCTMInv);
-    //        p.x -= nMouseOffsetX;
-    //        p.y -= nMouseOffsetY;
+            var transform = draggingElement.getAttribute("transform");
 
+            if(transform) {
+
+                var match = transform.match(/translate\(([^,]+),([^)]+)\)/);
+
+                if(match) {
+
+                    var x = parseFloat(match[1]);
+                    var y = parseFloat(match[2]);
+
+                    draggingElement.setAttribute("x", x);
+                    draggingElement.setAttribute("y", y);
+
+                }
+
+                draggingElement.removeAttribute("transform");
+
+            }
             var dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, 
                                         draggingElement, nMouseOffsetX, nMouseOffsetY);
             for(var func = 0; func < dragDropCallbacks.length; ++func) {
@@ -183,19 +197,19 @@ function mouseMove(evt)
 
         // at this point, we need to check if the drag is constrained 
         // (look for drag:constrainLeft, constrainTop, etc on the draggingElement)
-        var left = draggingElement.getAttributeNS(DRAGNS, "constraintLeft");
-        var top = draggingElement.getAttributeNS(DRAGNS, "constraintTop");
-        var right = draggingElement.getAttributeNS(DRAGNS, "constraintRight");
-        var bottom = draggingElement.getAttributeNS(DRAGNS, "constraintBottom");
+        var left = draggingElement.getAttribute("constraintLeft");
+        var top = draggingElement.getAttribute("constraintTop");
+        var right = draggingElement.getAttribute("constraintRight");
+        var bottom = draggingElement.getAttribute("constraintBottom");
         if(left && p.x < left) { p.x = left; }
         else if(right && p.x > right) { p.x = right; }
         
         if(top && p.y < top) { p.y = top; }
         else if(bottom && p.y > bottom) { p.y = bottom; }
-        
-        draggingElement.setAttributeNS(DRAGNS, "x", p.x);
-        draggingElement.setAttributeNS(DRAGNS, "y", p.y);
-        draggingElement.setAttributeNS(null, "transform", "translate(" + p.x + "," + p.y + ")");
+
+    //    draggingElement.setAttribute("x", p.x);
+    //    draggingElement.setAttribute("y", p.y);
+        draggingElement.setAttribute("transform", "translate(" + p.x + "," + p.y + ")");
 
         if(dragMoveCallbacks.length) {
             var dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, 
@@ -223,7 +237,7 @@ function enableDrag(ele)
             bEnableSVGListeners = false;
         }
         
-        ele.setAttributeNS(DRAGNS, "enable", true);
+        ele.setAttribute("enable", true);
         
         // add event listener
         ele.addEventListener("mousedown", mouseDown, false);
@@ -251,7 +265,7 @@ function enableDrag(ele)
         // First, I split the transform string by the parentheses, 
         // the second word is the stuff between the parantheses, which is
         // my x (and possibly y) coordinate
-        var xformstr = ele.getAttributeNS(null, "transform");
+        var xformstr = ele.getAttribute("transform");
         if(xformstr && xformstr.length > 0) {
             xformstr = xformstr.split(/[\(\)]/)[1];
 
@@ -266,16 +280,16 @@ function enableDrag(ele)
             if(isNaN(ty)) { ty = 0; } // if it's NaN, then it defaults to zero
         }
         else {
-            ele.setAttributeNS(null, "transform", "translate(0,0)");
+            ele.setAttribute("transform", "translate(0,0)");
         }
 
         // now set the DOM dragx/dragy attributes
-        ele.setAttributeNS(DRAGNS, "x", tx);
-        ele.setAttributeNS(DRAGNS, "y", ty);
+        ele.setAttribute("x", tx);
+        ele.setAttribute("y", ty);
         
         // copy old cursor value (if present)
-        ele.setAttributeNS(DRAGNS, "oldcursor", ele.getAttributeNS(null, "cursor"));
-        ele.setAttributeNS(null, "cursor", "move");
+        ele.setAttribute("oldcursor", ele.getAttribute("cursor"));
+        ele.setAttribute("cursor", "move");
         
     }
 }
@@ -284,10 +298,10 @@ function enableDrag(ele)
 function disableDrag(ele) 
 {
     if(ele) {
-        ele.setAttributeNS(DRAGNS, "enable", false);
+        ele.setAttribute("enable", false);
         ele.removeEventListener("mousedown", mouseDown, false);
         // restore old cursor
-        ele.setAttributeNS(null, "cursor", ele.getAttributeNS(DRAGNS, "oldcursor"));
+        ele.setAttribute("cursor", ele.getAttribute("oldcursor"));
     }
 }
 
@@ -303,7 +317,7 @@ function initializeDraggableElements()
         var ele = allChildren.item(child);
 
         // if ele has drag:enable="true", then set it up
-        var bFoundDraggable = (ele.getAttributeNS(DRAGNS, "enable") == "true");
+        var bFoundDraggable = (ele.getAttribute("enable") == "true");
 
         if(bFoundDraggable) {
             enableDrag(ele);
@@ -318,7 +332,7 @@ function getScreenCTM(){
     var sCTM = root.createSVGMatrix();
 
     var tr = root.createSVGMatrix();
-    var par = root.getAttributeNS(null, "preserveAspectRatio");
+    var par = root.getAttribute("preserveAspectRatio");
     if (!par) { par="xMidYMid meet"; } //setting to default value
     parX = par.substring(0,4); //xMin;xMid;xMax
     parY = par.substring(4,8); //YMin;YMid;YMax;
@@ -396,9 +410,6 @@ function getScreenCTM(){
 
     return sCTM;
 }
-var SVGNS = "http://www.w3.org/2000/svg";
-var XLINKNS = "http://www.w3.org/1999/xlink";
-var DRAGNS = "http://www.codedread.com/dragsvg";
 
 var eNOSUIT = 0;
 var eHEART = 1;
@@ -515,7 +526,7 @@ TableauPile.prototype.pop = function() {
 
 function flipTopTableauCard(evt) {
     var target = evt.currentTarget;
-    var id = target.getAttributeNS(null, "id");
+    var id = target.getAttribute("id");
     var tableau = parseInt(id.substr(id.indexOf("_")-1, 1)) - 1;
     var card = gTableau[tableau].pop();
     card.flip();
@@ -535,18 +546,18 @@ TableauPile.prototype.push = function(card) {
     
     // update DOM
     var newg = document.createElementNS(SVGNS, "g");
-    var gid = this.rootElem.getAttributeNS(null, "id") + "_" + oldSize;
-    newg.setAttributeNS(null, "id", gid);
+    var gid = this.rootElem.getAttribute("id") + "_" + oldSize;
+    newg.setAttribute("id", gid);
 
-    newg.setAttributeNS(null, "transform", "translate(0,"+CARD_VERT_OFFSET+")");
+    newg.setAttribute("transform", "translate(0,"+CARD_VERT_OFFSET+")");
 
     var use = document.createElementNS(SVGNS, "use");
     
     if(card.isFaceUp()) {
-        use.setAttributeNS(XLINKNS, "href", card.elemName);
+        use.setAttribute("href", card.elemName);
     }
     else {
-        use.setAttributeNS(XLINKNS, "href", gBackName);
+        use.setAttribute("href", gBackName);
     }
     newg.appendChild(use);
 
@@ -632,18 +643,18 @@ CardStack.prototype.push = function(card,allowDrag) {
         var use = document.createElementNS(SVGNS, "use");
 
         if(card.isFaceUp()) {
-            use.setAttributeNS(XLINKNS, "href", card.elemName);
+            use.setAttribute("href", card.elemName);
             if(allowDrag) {
-                use.setAttributeNS(null, "id", "waste_" + oldLength);
+                use.setAttribute("id", "waste_" + oldLength);
             }
         }
         else {
-            use.setAttributeNS(XLINKNS, "href", gBackName);
+            use.setAttribute("href", gBackName);
         }
         this.elem.appendChild(use);
         
         if(card.isFaceUp() && allowDrag) {
-//            alert("enabled drag on " + card.toString() + " in CardStack.push()");
+//          console.log("enabled drag on " + card.toString() + " in CardStack.push()");
             enableDrag(this.elem.lastChild);
         }
     }
@@ -870,7 +881,7 @@ function dragStart(evt) {
     if(!evt.dragEnt) {
         alert("dragStart(null)");
     }
-    var id = evt.dragEnt.getAttributeNS(null, "id");
+    var id = evt.dragEnt.getAttribute("id");
     var letter = id.indexOf("_");
     if(letter != -1 && container) {
         if(eleToTop = document.getElementById(id.substr(0,letter))) {
@@ -891,7 +902,7 @@ function dragStop(evt) {
     if(!evt.dragEnt) {
         alert("dragStop(null)");
     }
-    var id = evt.dragEnt.getAttributeNS(null, "id");
+    var id = evt.dragEnt.getAttribute("id");
     var pile = (id.substr(0,id.indexOf("_")));
     var dropx = 0;
     var dropy = 0;
@@ -919,8 +930,8 @@ function dragStop(evt) {
         // every card has a transform of translate(0,CARD_VERT_OFFSET)
         dropy -= CARD_VERT_OFFSET;
     }
-    dropx += parseFloat(evt.dragEnt.getAttributeNS(DRAGNS, "x"));
-    dropy += parseFloat(evt.dragEnt.getAttributeNS(DRAGNS, "y"));
+    dropx += parseFloat(evt.dragEnt.getAttribute("x"));
+    dropy += parseFloat(evt.dragEnt.getAttribute("y"));
 
     // map the physical dropx/dropy to a logical element
     var dropTarget = -1;
@@ -1048,320 +1059,320 @@ function init() {
     </g>
 
     <g id="my_club_1">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#ace"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#ace"/>
     </g>
     <g id="my_club_2">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_2" />
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_2" />
     </g>
     <g id="my_club_3">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_3" />
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_3" />
     </g>
     <g id="my_club_4">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_4"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_4"/>
     </g>
     <g id="my_club_5">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_5"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_5"/>
     </g>
     <g id="my_club_6">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_6"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_6"/>
     </g>
     <g id="my_club_7">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_7"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_7"/>
     </g>
     <g id="my_club_8">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_8"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_8"/>
     </g>
     <g id="my_club_9">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_9"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_9"/>
     </g>
     <g id="my_club_10">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_10"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_10"/>
     </g>
     <g id="my_club_jack">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#jack"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#jack"/>
     </g>
     <g id="my_club_queen">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#queen"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#queen"/>
     </g>
     <g id="my_club_king">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#king"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#king"/>
     </g>
     <g id="my_spade_1">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#ace"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#ace"/>
     </g>
     <g id="my_spade_2">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_2"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_2"/>
     </g>
     <g id="my_spade_3">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_3"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_3"/>
     </g>
     <g id="my_spade_4">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_4"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_4"/>
     </g>
     <g id="my_spade_5">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_5"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_5"/>
     </g>
     <g id="my_spade_6">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_6"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_6"/>
     </g>
     <g id="my_spade_7">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_7"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_7"/>
     </g>
     <g id="my_spade_8">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_8"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_8"/>
     </g>
     <g id="my_spade_9">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_9"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_9"/>
     </g>
     <g id="my_spade_10">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_10"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_10"/>
     </g>
     <g id="my_spade_jack">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#jack"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#jack"/>
     </g>
     <g id="my_spade_queen">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#queen"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#queen"/>
     </g>
     <g id="my_spade_king">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#king"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#king"/>
     </g>
     <g id="my_heart_1">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#ace"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#ace"/>
     </g>
     <g id="my_heart_2">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_2"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_2"/>
     </g>
     <g id="my_heart_3">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_3"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_3"/>
     </g>
     <g id="my_heart_4">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_4"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_4"/>
     </g>
     <g id="my_heart_5">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_5"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_5"/>
     </g>
     <g id="my_heart_6">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_6"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_6"/>
     </g>
     <g id="my_heart_7">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_7"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_7"/>
     </g>
     <g id="my_heart_8">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_8"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_8"/>
     </g>
     <g id="my_heart_9">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_9"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_9"/>
     </g>
     <g id="my_heart_10">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_10"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_10"/>
     </g>
     <g id="my_heart_jack">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#jack"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#jack"/>
     </g>
     <g id="my_heart_queen">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#queen"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#queen"/>
     </g>
     <g id="my_heart_king">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#king"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#king"/>
     </g>
     <g id="my_diamond_1">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#ace"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#ace"/>
     </g>
     <g id="my_diamond_2">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_2"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_2"/>
     </g>
     <g id="my_diamond_3">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_3"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_3"/>
     </g>
     <g id="my_diamond_4">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_4"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_4"/>
     </g>
     <g id="my_diamond_5">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_5"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_5"/>
     </g>
     <g id="my_diamond_6">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_6"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_6"/>
     </g>
     <g id="my_diamond_7">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_7"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_7"/>
     </g>
     <g id="my_diamond_8">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_8"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_8"/>
     </g>
     <g id="my_diamond_9">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_9"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_9"/>
     </g>
     <g id="my_diamond_10">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#n_10"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#n_10"/>
     </g>
     <g id="my_diamond_jack">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#jack"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#jack"/>
     </g>
     <g id="my_diamond_queen">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#queen"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#queen"/>
     </g>
     <g id="my_diamond_king">
-        <use xlink:href="#base" x="0" y="0"/>
-        <use xlink:href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
-        <use xlink:href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
-        <use x="8" y="-195" xlink:href="#king"/>
+        <use href="#base" x="0" y="0"/>
+        <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
+        <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
+        <use x="8" y="-195" href="#king"/>
     </g>
 
     <g id="back">
-        <use xlink:href="#base" x="335.15" y="972.55"/>
+        <use href="#base" x="335.15" y="972.55"/>
         <rect style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.71613282;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;" width="131.96480" height="177.42918" x="358.44342" y="761.04138" transform="matrix(1.157448,0,0,1.291938,-72.77354,-239.3770)" ry="2.7421434" rx="2.7421434" />
         <rect width="131.9648" height="177.42918" rx="2.9805906" ry="2.8864667" x="358.44342" y="761.04138" transform="matrix(1.064852,0,0,1.227341,-33.46908,-184.4809)" style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.3131706;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
         <rect width="131.9648" height="177.42918" rx="0" ry="0" x="358.44342" y="761.04138" transform="matrix(0.901291,0,0,1.107675,35.95190,-82.79633)" style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.2520694;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
@@ -1371,7 +1382,7 @@ function init() {
         <rect width="28.4" height="6.6" x="440.3" y="855.5" style="fill:#0062ff;stroke:none"/>
     </g>
 
-    <use id="card_back" xlink:href="#back" transform="translate(-335.15, -972.55)"/>
+    <use id="card_back" href="#back" transform="translate(-335.15, -972.55)"/>
 
     </defs>
 
@@ -1384,27 +1395,27 @@ function init() {
 <text x="735" y="-150" font-size="36" opacity="0.2">Tableau</text>
 <rect x="90" y="-140" rx="20" ry="20" width="1430" height="1044" stroke="black" stroke-width="2.5" stroke-opacity="0.2" fill="none"/>
 
-<g transform="translate(120,120)"><use xlink:href="#outline"/></g>
-<g transform="translate(320,120)"><use xlink:href="#outline"/></g>
-<g transform="translate(520,120)"><use xlink:href="#outline"/></g>
-<g transform="translate(720,120)"><use xlink:href="#outline"/></g>
-<g transform="translate(920,120)"><use xlink:href="#outline"/></g>
-<g transform="translate(1120,120)"><use xlink:href="#outline"/></g>
-<g transform="translate(1320,120)"><use xlink:href="#outline"/></g>
+<g transform="translate(120,120)"><use href="#outline"/></g>
+<g transform="translate(320,120)"><use href="#outline"/></g>
+<g transform="translate(520,120)"><use href="#outline"/></g>
+<g transform="translate(720,120)"><use href="#outline"/></g>
+<g transform="translate(920,120)"><use href="#outline"/></g>
+<g transform="translate(1120,120)"><use href="#outline"/></g>
+<g transform="translate(1320,120)"><use href="#outline"/></g>
 
 <text x="1690" y="-125" font-size="36" opacity="0.2">Deck</text>
 <text x="1880" y="-125" font-size="36" opacity="0.2">Waste</text>
 
-<g id="deckoutline" transform="translate(1650,120)" pointer-events="all"><use xlink:href="#outline"/></g>
-<g transform="translate(1850,120)"><use xlink:href="#outline"/></g>
+<g id="deckoutline" transform="translate(1650,120)" pointer-events="all"><use href="#outline"/></g>
+<g transform="translate(1850,120)"><use href="#outline"/></g>
 
 <text x="1745" y="320" font-size="36" opacity="0.2">Foundation</text>
 <rect x="1620" y="334" rx="20" ry="20" width="430" height="570" stroke="black" stroke-width="2.5" stroke-opacity="0.2" fill="none"/>
 
-<g transform="translate(1650,595)"><use xlink:href="#outline"/><use xlink:href="#diamond" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
-<g transform="translate(1850,595)"><use xlink:href="#outline" /><use xlink:href="#heart" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
-<g transform="translate(1650,870)"><use xlink:href="#outline" /><use xlink:href="#club" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
-<g transform="translate(1850,870)"><use xlink:href="#outline" /><use xlink:href="#spade" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1650,595)"><use href="#outline"/><use href="#diamond" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1850,595)"><use href="#outline" /><use href="#heart" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1650,870)"><use href="#outline" /><use href="#club" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1850,870)"><use href="#outline" /><use href="#spade" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
 
 <!-- These elements are what I attach cards to in the game -->
 <!-- Within the script, I reorder these piles depending on which

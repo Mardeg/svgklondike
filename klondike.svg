@@ -567,6 +567,7 @@ gFoundation = new Array();
 gDeck = null;
 gWaste = null;
 gDragPile = null;
+gCount = 1;
 
 function startSolitaire() {
     let loop;
@@ -802,9 +803,14 @@ function dragStop(evt) {
         // determine if the move is allowed
         if(dropTarget != -1) {
             if(moveCardToFoundation(cardPile[0], dropTarget) && fromPile != null) {
-                document.getElementById("dropcard").play();
                 fromPile.pop();
                 bMoveItBack = false;
+                console.log("Foundation: " + gCount);
+                if (gCount++ > 51) {
+                    document.getElementById("jizzmate").play();
+                } else {
+                    document.getElementById("dropcard").play();
+                }
             }
         }
     }

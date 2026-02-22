@@ -2,7 +2,7 @@
 <svg version="2" height="100%" width="100%" viewBox="-.2 -236 2178.99 1216.19"
     onload="init();"
     xmlns="http://www.w3.org/2000/svg"
-    onmousemove="mouseMove(evt)" onmouseup="mouseUp(evt)"
+    onpointermove="pointerMove(evt)" onpointerup="pointerUp(evt)"
 ><title>SVG Klondike solitaire</title>
 <metadata xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
           xmlns:dcterms="http://purl.org/dc/terms/"
@@ -37,8 +37,9 @@ const DRAGSTART = "dragstart";
 const DRAGMOVE = "dragmove";
 const DRAGDROP = "dragdrop";
 
-function DragEvent(_mouseevt, _clientx, _clienty, _userx, _usery, _dragEnt, _mouseoffsetx, _mouseoffsety) {
-    this.mouseEvt = _mouseevt;
+function DragEvent(_pointerevt, _pointertype, _clientx, _clienty, _userx, _usery, _dragEnt, _mouseoffsetx, _mouseoffsety) {
+    this.pointerEvt = _pointerevt;
+    this.pointerType = _pointertype;
     this.clientx = _clientx;
     this.clienty = _clienty;
     this.userx = _userx;
@@ -93,19 +94,40 @@ function removeDragEventListener(dragEventStr, callbackFunc) {
     }
 }
 
-function mouseDown(evt) {
+function pointerDown(evt) {
+    // Check for specific pointer types if needed, 
+    // though pointerDown covers mouse, touch, and pen by default.
     const target = evt.currentTarget;
     draggingElement = target;
+
     if (target) {
+        // Ensure the element can capture the pointer to prevent losing 
+        // focus if the movement is faster than the refresh rate.
+        target.setPointerCapture(evt.pointerId);
+
         let p = document.documentElement.createSVGPoint();
         p.x = evt.clientX;
         p.y = evt.clientY;
+
         screenCTMInv = getScreenCTM().inverse();
         p = p.matrixTransform(screenCTMInv);
+
         nMouseOffsetX = p.x - parseFloat(target.getAttribute("x"));
         nMouseOffsetY = p.y - parseFloat(target.getAttribute("y"));
-        if (dragStartCallbacks.length){
-            const dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, draggingElement, nMouseOffsetX, nMouseOffsetY);
+
+        if (dragStartCallbacks.length) {
+            const dragEvt = new DragEvent(
+                evt, 
+                evt.pointerType,
+                evt.clientX, 
+                evt.clientY, 
+                p.x, 
+                p.y, 
+                draggingElement, 
+                nMouseOffsetX, 
+                nMouseOffsetY
+            );
+
             for (let func = 0; func < dragStartCallbacks.length; ++func) {
                 if (dragStartCallbacks[func]) {
                     dragStartCallbacks[func](dragEvt);
@@ -117,7 +139,7 @@ function mouseDown(evt) {
     evt.stopPropagation();
 }
 
-function mouseMove(evt) {
+function pointerMove(evt) {
     if (!draggingElement) return;
     let p = document.documentElement.createSVGPoint();
     p.x = evt.clientX;
@@ -135,7 +157,17 @@ function mouseMove(evt) {
     else if (bottom && p.y > bottom) p.y = bottom;
     draggingElement.setAttribute("transform", `translate(${p.x},${p.y})`);
     if (dragMoveCallbacks.length){
-        const dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, draggingElement, nMouseOffsetX, nMouseOffsetY);
+        const dragEvt = new DragEvent(
+            evt, 
+            evt.pointerType,
+            evt.clientX, 
+            evt.clientY, 
+            p.x, 
+            p.y, 
+            draggingElement, 
+            nMouseOffsetX, 
+            nMouseOffsetY
+        );
         for (let func = 0; func < dragMoveCallbacks.length; ++func) {
             if (dragMoveCallbacks[func]) {
                 dragMoveCallbacks[func](dragEvt);
@@ -145,8 +177,9 @@ function mouseMove(evt) {
     }
 }
 
-function mouseUp(evt) {
+function pointerUp(evt) {
     if (!draggingElement) return;
+    draggingElement.releasePointerCapture(evt.pointerId);
     if (dragDropCallbacks.length) {
         let p = document.documentElement.createSVGPoint();
         p.x = evt.clientX;
@@ -164,7 +197,17 @@ function mouseUp(evt) {
             }
             draggingElement.removeAttribute("transform");
         }
-        const dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, draggingElement, nMouseOffsetX, nMouseOffsetY);
+        const dragEvt = new DragEvent(
+            evt, 
+            evt.pointerType,
+            evt.clientX, 
+            evt.clientY, 
+            p.x, 
+            p.y, 
+            draggingElement, 
+            nMouseOffsetX, 
+            nMouseOffsetY
+        );
         for (let func = 0; func < dragDropCallbacks.length; ++func) {
             if (dragDropCallbacks[func]) {
                 dragDropCallbacks[func](dragEvt);
@@ -182,12 +225,12 @@ let bEnableSVGListeners = true;
 function enableDrag(ele) {
     if (!ele) return;
     if (bEnableSVGListeners) {
-        document.documentElement.addEventListener("mouseup", mouseUp, false);
-        document.documentElement.addEventListener("mousemove", mouseMove, false);
+        document.documentElement.addEventListener("pointerup", pointerUp, false);
+        document.documentElement.addEventListener("pointermove", pointerMove, false);
         bEnableSVGListeners = false;
     }
     ele.setAttribute("enable", true);
-    ele.addEventListener("mousedown", mouseDown, false);
+    ele.addEventListener("pointerdown", pointerDown, false);
     let tx = 0;
     let ty = 0;
     let xformstr = ele.getAttribute("transform");
@@ -213,7 +256,7 @@ function enableDrag(ele) {
 function disableDrag(ele) {
     if (!ele) return;
     ele.setAttribute("enable", false);
-    ele.removeEventListener("mousedown", mouseDown, false);
+    ele.removeEventListener("pointerdown", pointerDown, false);
     ele.setAttribute("cursor", ele.getAttribute("oldcursor"));
 }
 

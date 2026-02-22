@@ -32,13 +32,12 @@
 <script>
 /* <![CDATA[ */
 // @license magnet:?xt=urn:btih:90dc5c0be029de84e523b9b3922520e79e0e6f08&dn=cc0.txt
-var SVGNS = "http://www.w3.org/2000/svg";
-var DRAGSTART = "dragstart";
-var DRAGMOVE = "dragmove";
-var DRAGDROP = "dragdrop";
+const SVGNS = "http://www.w3.org/2000/svg";
+const DRAGSTART = "dragstart";
+const DRAGMOVE = "dragmove";
+const DRAGDROP = "dragdrop";
 
-function DragEvent(_mouseevt, _clientx, _clienty, _userx, _usery, 
-                    _dragEnt, _mouseoffsetx, _mouseoffsety)
+function DragEvent(_mouseevt, _clientx, _clienty, _userx, _usery, _dragEnt, _mouseoffsetx, _mouseoffsety)
 {
     this.mouseEvt = _mouseevt;
     this.clientx = _clientx;
@@ -50,508 +49,736 @@ function DragEvent(_mouseevt, _clientx, _clienty, _userx, _usery,
     this.mouseoffsety = _mouseoffsety;
 }
 
-function inspect(obj) 
+function inspect(obj)
 {
-    var str = new Array();
-    var element = null;
-    for(element in obj) { str[str.length] = element; }
+    const str = [];
+    for (const element in obj) {
+        str.push(element);
+    }
     str.sort();
     alert(obj + ":" + str.join(' '));
 }
 
-var draggingElement = null;
-var nMouseOffsetX = 0;
-var nMouseOffsetY = 0;
-var screenCTMInv = null;
 
-var dragStartCallbacks = new Array();
-var dragMoveCallbacks = new Array();
-var dragDropCallbacks = new Array();
+let draggingElement = null;
+let nMouseOffsetX = 0;
+let nMouseOffsetY = 0;
+let screenCTMInv = null;
+
+const dragStartCallbacks = [];
+const dragMoveCallbacks = [];
+const dragDropCallbacks = [];
+
 
 function addDragEventListener(dragEventStr, callbackFunc)
 {
-    if(callbackFunc == null) { return; }
-    
-    var arr = null;
-    if(dragEventStr == DRAGSTART) { arr = dragStartCallbacks; }
-    else if(dragEventStr == DRAGMOVE) { arr = dragMoveCallbacks; }
-    else if(dragEventStr == DRAGDROP) { arr = dragDropCallbacks; }
-    else { return; }
+    if (!callbackFunc) return;
 
-    for(var func = 0; func < arr.length; ++func) {
-        if(arr[func] == callbackFunc) { 
-            return;
-        }
+    let arr = null;
+
+    if (dragEventStr === DRAGSTART) arr = dragStartCallbacks;
+    else if (dragEventStr === DRAGMOVE) arr = dragMoveCallbacks;
+    else if (dragEventStr === DRAGDROP) arr = dragDropCallbacks;
+    else return;
+
+    for (let func = 0; func < arr.length; ++func)
+    {
+        if (arr[func] === callbackFunc) return;
     }
-    arr[arr.length] = callbackFunc;
-    
+
+    arr.push(callbackFunc);
 }
+
+
 function removeDragEventListener(dragEventStr, callbackFunc)
 {
-    if(callbackFunc == null) { return; }
-    
-    var arr = null;
-    if(dragEventStr == DRAGSTART) { arr = dragStartCallbacks; }
-    else if(dragEventStr == DRAGMOVE) { arr = dragMoveCallbacks; }
-    else if(dragEventStr == DRAGDROP) { arr = dragDropCallbacks; }
-    else { return; }
+    if (!callbackFunc) return;
 
-    for(var func = 0; func < arr.length; ++func) {
-        if(arr[func] == callbackFunc) { 
+    let arr = null;
+
+    if (dragEventStr === DRAGSTART) arr = dragStartCallbacks;
+    else if (dragEventStr === DRAGMOVE) arr = dragMoveCallbacks;
+    else if (dragEventStr === DRAGDROP) arr = dragDropCallbacks;
+    else return;
+
+    for (let func = 0; func < arr.length; ++func)
+    {
+        if (arr[func] === callbackFunc)
+        {
             delete arr[func];
             return;
         }
     }
 }
 
-function mouseDown(evt) 
-{ 
-    var target = evt.currentTarget;
+
+function mouseDown(evt)
+{
+    const target = evt.currentTarget;
+
     draggingElement = target;
 
-    if(target) {
-        var p = document.documentElement.createSVGPoint();
-        // p now contains the mouse position in browser client area in pixels
+    if (target)
+    {
+        let p = document.documentElement.createSVGPoint();
+
         p.x = evt.clientX;
         p.y = evt.clientY;
 
         screenCTMInv = getScreenCTM().inverse();
-        // p now contains the mouse position in SVG user coords
+
         p = p.matrixTransform(screenCTMInv);
 
-        // nMouseOffsetX keeps track of how far the mouse dragged 
-        // since the last movement
         nMouseOffsetX = p.x - parseFloat(target.getAttribute("x"));
         nMouseOffsetY = p.y - parseFloat(target.getAttribute("y"));
 
-        if(dragStartCallbacks.length) {
-            var dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, 
-                            draggingElement, nMouseOffsetX, nMouseOffsetY);
-            for(var func = 0; func < dragStartCallbacks.length; ++func) {
-                if(dragStartCallbacks[func]) { 
+        if (dragStartCallbacks.length)
+        {
+            const dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, draggingElement, nMouseOffsetX, nMouseOffsetY);
+
+            for (let func = 0; func < dragStartCallbacks.length; ++func)
+            {
+                if (dragStartCallbacks[func])
+                {
                     dragStartCallbacks[func](dragEvt);
                     break;
                 }
             }
         }
-        
     }
 
     evt.stopPropagation();
 }
-function mouseUp(evt) 
-{ 
-    if(draggingElement) {
-        if(dragDropCallbacks.length) {
-            var p = document.documentElement.createSVGPoint();
-            p.x = evt.clientX;
-            p.y = evt.clientY;
 
-            screenCTMInv = getScreenCTM().inverse();
 
-            p = p.matrixTransform(screenCTMInv);
-            var transform = draggingElement.getAttribute("transform");
+function mouseMove(evt)
+{
+    if (!draggingElement) return;
 
-            if(transform) {
+    let p = document.documentElement.createSVGPoint();
 
-                var match = transform.match(/translate\(([^,]+),([^)]+)\)/);
+    p.x = evt.clientX;
+    p.y = evt.clientY;
 
-                if(match) {
+    p = p.matrixTransform(screenCTMInv);
 
-                    var x = parseFloat(match[1]);
-                    var y = parseFloat(match[2]);
+    p.x -= nMouseOffsetX;
+    p.y -= nMouseOffsetY;
 
-                    draggingElement.setAttribute("x", x);
-                    draggingElement.setAttribute("y", y);
+    const left = draggingElement.getAttribute("constraintLeft");
+    const top = draggingElement.getAttribute("constraintTop");
+    const right = draggingElement.getAttribute("constraintRight");
+    const bottom = draggingElement.getAttribute("constraintBottom");
 
-                }
+    if (left && p.x < left) p.x = left;
+    else if (right && p.x > right) p.x = right;
 
-                draggingElement.removeAttribute("transform");
+    if (top && p.y < top) p.y = top;
+    else if (bottom && p.y > bottom) p.y = bottom;
 
-            }
-            var dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, 
-                                        draggingElement, nMouseOffsetX, nMouseOffsetY);
-            for(var func = 0; func < dragDropCallbacks.length; ++func) {
-                if(dragDropCallbacks[func]) { 
-                    dragDropCallbacks[func](dragEvt);
-                    break;
-                }
+    draggingElement.setAttribute("transform", `translate(${p.x},${p.y})`);
+
+    if (dragMoveCallbacks.length)
+    {
+        const dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, draggingElement, nMouseOffsetX, nMouseOffsetY);
+
+        for (let func = 0; func < dragMoveCallbacks.length; ++func)
+        {
+            if (dragMoveCallbacks[func])
+            {
+                dragMoveCallbacks[func](dragEvt);
+                break;
             }
         }
-
-        draggingElement = null;
-        nMouseOffsetX = 0;
-        nMouseOffsetY = 0;
     }
 }
-function mouseMove(evt) 
-{ 
-    if(draggingElement) {
-        var p = document.documentElement.createSVGPoint();
+
+
+function mouseUp(evt)
+{
+    if (!draggingElement) return;
+
+    if (dragDropCallbacks.length)
+    {
+        let p = document.documentElement.createSVGPoint();
+
         p.x = evt.clientX;
         p.y = evt.clientY;
 
+        screenCTMInv = getScreenCTM().inverse();
+
         p = p.matrixTransform(screenCTMInv);
-        p.x -= nMouseOffsetX;
-        p.y -= nMouseOffsetY;
 
-        // at this point, we need to check if the drag is constrained 
-        // (look for drag:constrainLeft, constrainTop, etc on the draggingElement)
-        var left = draggingElement.getAttribute("constraintLeft");
-        var top = draggingElement.getAttribute("constraintTop");
-        var right = draggingElement.getAttribute("constraintRight");
-        var bottom = draggingElement.getAttribute("constraintBottom");
-        if(left && p.x < left) { p.x = left; }
-        else if(right && p.x > right) { p.x = right; }
-        
-        if(top && p.y < top) { p.y = top; }
-        else if(bottom && p.y > bottom) { p.y = bottom; }
+        const transform = draggingElement.getAttribute("transform");
 
-    //    draggingElement.setAttribute("x", p.x);
-    //    draggingElement.setAttribute("y", p.y);
-        draggingElement.setAttribute("transform", "translate(" + p.x + "," + p.y + ")");
+        if (transform)
+        {
+            const match = transform.match(/translate\(([^,]+),([^)]+)\)/);
 
-        if(dragMoveCallbacks.length) {
-            var dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, 
-                                        draggingElement, nMouseOffsetX, nMouseOffsetY);
-            for(var func = 0; func < dragMoveCallbacks.length; ++func) {
-                if(dragMoveCallbacks[func]) { 
-                    dragMoveCallbacks[func](dragEvt);
-                    break;
-                }
+            if (match)
+            {
+                const x = parseFloat(match[1]);
+                const y = parseFloat(match[2]);
+
+                draggingElement.setAttribute("x", x);
+                draggingElement.setAttribute("y", y);
+            }
+
+            draggingElement.removeAttribute("transform");
+        }
+
+        const dragEvt = new DragEvent(evt, evt.clientX, evt.clientY, p.x, p.y, draggingElement, nMouseOffsetX, nMouseOffsetY);
+
+        for (let func = 0; func < dragDropCallbacks.length; ++func)
+        {
+            if (dragDropCallbacks[func])
+            {
+                dragDropCallbacks[func](dragEvt);
+                break;
             }
         }
-        
     }
-}
 
-var bEnableSVGListeners = true;
-
-function enableDrag(ele) 
-{
-    if(ele) {
-        if(bEnableSVGListeners) {
-            // add event listeners to the <svg> node for mouse up and mouse move
-            document.documentElement.addEventListener("mouseup", mouseUp, false);
-            document.documentElement.addEventListener("mousemove", mouseMove, false);
-            bEnableSVGListeners = false;
-        }
-        
-        ele.setAttribute("enable", true);
-        
-        // add event listener
-        ele.addEventListener("mousedown", mouseDown, false);
-
-        // find transform attribute, extract drag:x/drag:y
-        // The SVG 1.1 DOM provides facilities to get a transform list for
-        // any transformable entity, unfortunately, ASV does not support this
-        // interface, so we're stuck with parsing the "transform" attribute.
-        // 
-        // Incidentally, this was absolutely the biggest pain...the transform 
-        // attribute could be in any of the following forms:
-        // transform="translate(100)" (ty is zero here)
-        // transform="translate(   100   )" (ty is zero here)
-        // transform="translate(100,200)"
-        // transform="translate(100 200)"
-        // transform="translate(   100,200)"
-        // transform="translate(100,200   )"
-        // transform="translate(100  ,  200)"
-        // transform="translate( 100 , 200 ) "
-        // etc...
-
-        var tx = 0;
-        var ty = 0;
-        
-        // First, I split the transform string by the parentheses, 
-        // the second word is the stuff between the parantheses, which is
-        // my x (and possibly y) coordinate
-        var xformstr = ele.getAttribute("transform");
-        if(xformstr && xformstr.length > 0) {
-            xformstr = xformstr.split(/[\(\)]/)[1];
-
-            // parsing this string for a float will always give me the x coordinate
-            tx = parseFloat(xformstr);
-            if(isNaN(tx)) { tx = 0; } // but we play it safe anyway
-
-            // convert tx into a string on-the-fly to get its length, find the occurrence
-            // of the tx string in the original xformstr, get the substring following
-            // that and parse it into a float for the y-coord
-            ty = parseFloat(xformstr.substr(xformstr.indexOf(tx)+(""+tx).length+1));
-            if(isNaN(ty)) { ty = 0; } // if it's NaN, then it defaults to zero
-        }
-        else {
-            ele.setAttribute("transform", "translate(0,0)");
-        }
-
-        // now set the DOM dragx/dragy attributes
-        ele.setAttribute("x", tx);
-        ele.setAttribute("y", ty);
-        
-        // copy old cursor value (if present)
-        ele.setAttribute("oldcursor", ele.getAttribute("cursor"));
-        ele.setAttribute("cursor", "move");
-        
-    }
+    draggingElement = null;
+    nMouseOffsetX = 0;
+    nMouseOffsetY = 0;
 }
 
 
-function disableDrag(ele) 
+let bEnableSVGListeners = true;
+
+function enableDrag(ele)
 {
-    if(ele) {
-        ele.setAttribute("enable", false);
-        ele.removeEventListener("mousedown", mouseDown, false);
-        // restore old cursor
-        ele.setAttribute("cursor", ele.getAttribute("oldcursor"));
+    if (!ele) return;
+
+    if (bEnableSVGListeners)
+    {
+        document.documentElement.addEventListener("mouseup", mouseUp, false);
+        document.documentElement.addEventListener("mousemove", mouseMove, false);
+
+        bEnableSVGListeners = false;
     }
+
+    ele.setAttribute("enable", true);
+
+    ele.addEventListener("mousedown", mouseDown, false);
+
+    let tx = 0;
+    let ty = 0;
+
+    let xformstr = ele.getAttribute("transform");
+
+    if (xformstr && xformstr.length > 0)
+    {
+        xformstr = xformstr.split(/[\(\)]/)[1];
+
+        tx = parseFloat(xformstr);
+
+        if (isNaN(tx)) tx = 0;
+
+        ty = parseFloat(
+            xformstr.substr(
+                xformstr.indexOf(tx) + ("" + tx).length + 1
+            )
+        );
+
+        if (isNaN(ty)) ty = 0;
+    }
+    else
+    {
+        ele.setAttribute("transform", "translate(0,0)");
+    }
+
+    ele.setAttribute("x", tx);
+    ele.setAttribute("y", ty);
+
+    ele.setAttribute("oldcursor", ele.getAttribute("cursor"));
+    ele.setAttribute("cursor", "move");
 }
 
-// This method scans through all SVG entities, looks for the class attribute and
-// determines if the SVG entity is included in the "draggable" class.  If so, it
-// adds a mousedown event listener and then extracts the initial translation to 
-// establish the drag:x/drag:y attributes which we'll use as shortcuts upon dragging.
-function initializeDraggableElements() 
+
+
+function disableDrag(ele)
 {
-    var allChildren = document.documentElement.getElementsByTagNameNS(SVGNS, "*");
-    for(var child = 0; child < allChildren.length; ++child) {
-        // Adobe doesn't allow array access
-        var ele = allChildren.item(child);
+    if (!ele) return;
 
-        // if ele has drag:enable="true", then set it up
-        var bFoundDraggable = (ele.getAttribute("enable") == "true");
+    ele.setAttribute("enable", false);
 
-        if(bFoundDraggable) {
+    ele.removeEventListener("mousedown", mouseDown, false);
+
+    ele.setAttribute("cursor", ele.getAttribute("oldcursor"));
+}
+
+
+
+function initializeDraggableElements()
+{
+    const allChildren =
+        document.documentElement.getElementsByTagNameNS(SVGNS, "*");
+
+    for (let child = 0; child < allChildren.length; ++child)
+    {
+        const ele = allChildren.item(child);
+
+        const bFoundDraggable =
+            ele.getAttribute("enable") === "true";
+
+        if (bFoundDraggable)
+        {
             enableDrag(ele);
-        } // if draggable
-    } // for(var child...
+        }
+    }
+}
 
-} // end initializeDraggableElements()
 
-function getScreenCTM(){
-    // now we find the screen CTM of the document SVG element
-    var root = document.documentElement;
-    var sCTM = root.createSVGMatrix();
 
-    var tr = root.createSVGMatrix();
-    var par = root.getAttribute("preserveAspectRatio");
-    if (!par) { par="xMidYMid meet"; } //setting to default value
-    parX = par.substring(0,4); //xMin;xMid;xMax
-    parY = par.substring(4,8); //YMin;YMid;YMax;
-    ma = par.split(' ');
-    mos = ma[1]; //meet;slice
+function getScreenCTM()
+{
+    const root = document.documentElement;
 
-    //get dimensions of the viewport
+    let sCTM = root.createSVGMatrix();
+    const tr = root.createSVGMatrix();
+
+    let par =
+        root.getAttribute("preserveAspectRatio");
+
+    if (!par)
+        par = "xMidYMid meet";
+
+
+    const parX = par.substring(0,4);
+    const parY = par.substring(4,8);
+
+    const ma = par.split(' ');
+
+    const mos = ma[1];
+
+
     sCTM.a = 1;
     sCTM.d = 1;
     sCTM.e = 0;
     sCTM.f = 0;
 
-    w = root.getAttribute('width') || '100%'; // w = innerWidth;
-    h = root.getAttribute('height')|| '100%'; // h = innerHeight;
-    if( w.indexOf('%')+1 ) w = (parseFloat(w) / 100.0) * innerWidth;
-    if( h.indexOf('%')+1 ) h = (parseFloat(h) / 100.0) * innerHeight;
-  
 
-    // get the ViewBox
-    var vb = (root.getAttribute('viewBox') || '0 0 '+w+' '+h).split(' ');
+    let w =
+        root.getAttribute('width') || '100%';
 
-    //--------------------------------------------------------------------------
-    //create a matrix with current user transformation
-    tr.a = root.currentScale;
-    tr.d = root.currentScale;
-    tr.e = root.currentTranslate.x;
-    tr.f = root.currentTranslate.y;
+    let h =
+        root.getAttribute('height') || '100%';
 
-    // scale factors
-    sx = w/vb[2];
-    sy = h/vb[3];
 
-    // meetOrSlice
-    if(mos=="slice") { s = (sx>sy ? sx : sy); }
-    else { s = (sx<sy ? sx : sy); }
+    if (w.indexOf('%') + 1)
+        w =
+        (parseFloat(w) / 100.0)
+        * innerWidth;
 
-    //preserveAspectRatio="none"
-    if (par=="none") {
-        sCTM.a = sx;  //scaleX
-        sCTM.d = sy;  //scaleY
-        sCTM.e = -vb[0]*sx; //translateX
-        sCTM.f = -vb[0]*sy; //translateY
-        sCTM = tr.multiply(sCTM);//taking user transformations into account
+    if (h.indexOf('%') + 1)
+        h =
+        (parseFloat(h) / 100.0)
+        * innerHeight;
+
+
+    const vb =
+        (
+            root.getAttribute('viewBox')
+            || '0 0 ' + w + ' ' + h
+        ).split(' ');
+
+
+    tr.a =
+        root.currentScale;
+
+    tr.d =
+        root.currentScale;
+
+    tr.e =
+        root.currentTranslate.x;
+
+    tr.f =
+        root.currentTranslate.y;
+
+
+    const sx = w / vb[2];
+    const sy = h / vb[3];
+
+
+    let s;
+
+    if (mos === "slice")
+        s =
+        (sx > sy ? sx : sy);
+    else
+        s =
+        (sx < sy ? sx : sy);
+
+
+    if (par === "none")
+    {
+        sCTM.a = sx;
+        sCTM.d = sy;
+
+        sCTM.e =
+        -vb[0] * sx;
+
+        sCTM.f =
+        -vb[1] * sy;
+
+        sCTM =
+        tr.multiply(sCTM);
     }
-    else {
-        sCTM.a = s; //scaleX
-        sCTM.d = s; //scaleY
-        //-------------------------------------------------------
-        switch(parX){
-        case 'xMid':
-            sCTM.e = ((w-vb[2]*s)/2) - vb[0]*s; //translateX
-            break;
-        case 'xMin':
-            sCTM.e = - vb[0]*s; //translateX
-            break;
-        case 'xMax':
-            sCTM.e = (w-vb[2]*s)- vb[0]*s; //translateX
-            break;
-        }
-        //------------------------------------------------------------
-        switch(parY){
-        case 'YMid':
-            sCTM.f = (h-vb[3]*s)/2 - vb[1]*s; //translateY
-            break;
-        case 'YMin':
-            sCTM.f = - vb[1]*s; //translateY
-            break;
-        case 'YMax':
-            sCTM.f = (h-vb[3]*s) - vb[1]*s; //translateY
-            break;
+    else
+    {
+        sCTM.a = s;
+        sCTM.d = s;
+
+
+        switch(parX)
+        {
+            case 'xMid':
+
+                sCTM.e =
+                ((w - vb[2] * s) / 2)
+                - vb[0] * s;
+
+                break;
+
+
+            case 'xMin':
+
+                sCTM.e =
+                -vb[0] * s;
+
+                break;
+
+
+            case 'xMax':
+
+                sCTM.e =
+                (w - vb[2] * s)
+                - vb[0] * s;
+
+                break;
         }
 
-        sCTM = tr.multiply(sCTM); //taking user transformations into acount
-    } // else
+
+        switch(parY)
+        {
+            case 'YMid':
+
+                sCTM.f =
+                (h - vb[3] * s) / 2
+                - vb[1] * s;
+
+                break;
+
+
+            case 'YMin':
+
+                sCTM.f =
+                -vb[1] * s;
+
+                break;
+
+
+            case 'YMax':
+
+                sCTM.f =
+                (h - vb[3] * s)
+                - vb[1] * s;
+
+                break;
+        }
+
+
+        sCTM =
+        tr.multiply(sCTM);
+    }
 
     return sCTM;
 }
+const eNOSUIT = 0;
+const eHEART = 1;
+const eDIAMOND = 2;
+const eCLUB = 3;
+const eSPADE = 4;
 
-var eNOSUIT = 0;
-var eHEART = 1;
-var eDIAMOND = 2;
-var eCLUB = 3;
-var eSPADE = 4;
-var eSUITMIN = 1;
-var eSUITMAX = 4;
-var gSuitNames = [ "UNKNOWN SUIT", "heart", "diamond", "club", "spade" ];
-var gCardNames = [ "UNKNOWN CARD", "1", "2", "3", "4", "5", "6", "7",
-                    "8", "9", "10", "jack", "queen", "king", "joker" ];
-var gBackName = "#card_back";
-var eJOKER = 0;
-var eJACK = 11;
-var eQUEEN = 12;
-var eKING = 13;
-var eCARDS_PER_SUIT = 13;
+const eSUITMIN = 1;
+const eSUITMAX = 4;
+
+const gSuitNames =
+[
+    "UNKNOWN SUIT",
+    "heart",
+    "diamond",
+    "club",
+    "spade"
+];
+
+const gCardNames =
+[
+    "UNKNOWN CARD",
+    "1","2","3","4","5","6","7",
+    "8","9","10",
+    "jack",
+    "queen",
+    "king",
+    "joker"
+];
+
+const gBackName = "#card_back";
+
+const eJOKER = 0;
+const eJACK = 11;
+const eQUEEN = 12;
+const eKING = 13;
+
+const eCARDS_PER_SUIT = 13;
+
+
 
 function Card(inCardNum)
 {
     inCardNum = parseInt(inCardNum);
-    if(inCardNum < 0 || inCardNum > 53) {
-        alert("Card Number is invalid (0-53, actual value = " + inCardNum + ")");
+
+    if (inCardNum < 0 || inCardNum > 53)
+    {
+        alert(
+            "Card Number is invalid (0-53, actual value = "
+            + inCardNum + ")"
+        );
         return;
     }
 
     this.cardNum = inCardNum;
+
     this.bFaceUp = false;
-    
-    // get SVG element name
-    var val = this.getValue();
-    if(val == eJOKER) { 
-        this.elemName = "#" + ( this.isRed() ? "red" : "black" );
-        this.elemName += "_joker";
+
+    const val = this.getValue();
+
+    if (val === eJOKER)
+    {
+        this.elemName =
+        "#"
+        + (this.isRed() ? "red" : "black")
+        + "_joker";
     }
-    else { 
-        // TO DO: Once new artwork is in, restore this
-//        this.elemName = "#" + val; 
-//        var suit = this.getSuit();
-//        if(suit != "eNOSUIT") {
-//            this.elemName += ("_" + gSuitNames[suit]);
-//        }
-//        else {
-//            alert("Invalid card, card num = " + this.cardNum);
-//        }
-        this.elemName = "#my_"; 
-        var suit = this.getSuit();
-        if(suit != "eNOSUIT") {
-            this.elemName += (gSuitNames[suit] + "_" + gCardNames[val]);
+    else
+    {
+        this.elemName = "#my_";
+
+        const suit = this.getSuit();
+
+        if (suit !== eNOSUIT)
+        {
+            this.elemName +=
+            gSuitNames[suit]
+            + "_"
+            + gCardNames[val];
         }
-        else {
-            alert("Invalid card, card num = " + this.cardNum);
+        else
+        {
+            alert(
+                "Invalid card, card num = "
+                + this.cardNum
+            );
         }
     }
 }
 
-Card.prototype.isJoker = function() { return ((this.cardNum < 1) || (this.cardNum > 52)); }
 
-Card.prototype.getValue = function() { if(this.isJoker()) return eJOKER; 
-                                        return ((this.cardNum-1)%eCARDS_PER_SUIT)+1;}
 
-Card.prototype.getSuit = function() { var suit = Math.floor( (this.cardNum-1) / eCARDS_PER_SUIT)+1;
-                                        if(suit < eSUITMIN || suit > eSUITMAX) suit = eNOSUIT;
-                                        return suit; }
+Card.prototype.isJoker =
+function()
+{
+    return (
+        this.cardNum < 1
+        || this.cardNum > 52
+    );
+};
 
-Card.prototype.isRed = function() { var suit = this.getSuit(); 
-                                    if(suit == eNOSUIT) { return (this.cardNum == 0); }
-                                    return (suit == eHEART || suit == eDIAMOND); }
 
-Card.prototype.isFace = function() { var val = this.getValue();
-                                     return ( (val >= eJACK && val <= eKING) || this.isJoker() ); }
 
-Card.prototype.isFaceUp = function() { return this.bFaceUp; }
+Card.prototype.getValue =
+function()
+{
+    if (this.isJoker())
+        return eJOKER;
 
-Card.prototype.toString = function() { return gCardNames[this.getValue()] + " of " +
-                                            gSuitNames[this.getSuit()] + "s"; }
+    return (
+        ((this.cardNum - 1)
+        % eCARDS_PER_SUIT)
+        + 1
+    );
+};
 
-Card.prototype.flip = function() { this.bFaceUp = !this.bFaceUp; }
 
-// Model the solitaire game aspects here
-// BEGIN SOLITAIRE MODEL
 
-var CARD_VERT_OFFSET = 50;
+Card.prototype.getSuit =
+function()
+{
+    let suit =
+    Math.floor(
+        (this.cardNum - 1)
+        / eCARDS_PER_SUIT
+    ) + 1;
 
-// A wrapper class for a tableau pile of cards that has the ability to display 
-// as SVG and can display them as fanned vertically.  
-function TableauPile(g) { 
-    if(g == null) { alert("TableauPile was initialized with a null <g> element"); }
+    if (
+        suit < eSUITMIN
+        || suit > eSUITMAX
+    )
+        suit = eNOSUIT;
+
+    return suit;
+};
+
+
+
+Card.prototype.isRed =
+function()
+{
+    const suit = this.getSuit();
+
+    if (suit === eNOSUIT)
+        return this.cardNum === 0;
+
+    return (
+        suit === eHEART
+        || suit === eDIAMOND
+    );
+};
+
+
+
+Card.prototype.isFace =
+function()
+{
+    const val = this.getValue();
+
+    return (
+        (
+            val >= eJACK
+            && val <= eKING
+        )
+        || this.isJoker()
+    );
+};
+
+
+
+Card.prototype.isFaceUp =
+function()
+{
+    return this.bFaceUp;
+};
+
+
+
+Card.prototype.toString =
+function()
+{
+    return (
+        gCardNames[this.getValue()]
+        + " of "
+        + gSuitNames[this.getSuit()]
+        + "s"
+    );
+};
+
+
+
+Card.prototype.flip =
+function()
+{
+    this.bFaceUp =
+    !this.bFaceUp;
+};
+
+
+
+const CARD_VERT_OFFSET = 50;
+
+
+
+function TableauPile(g)
+{
+    if (!g)
+        alert(
+            "TableauPile was initialized with a null <g> element"
+        );
+
     this.rootElem = g;
+
     this.elem = g;
 
-    this.cards = new Array();
+    this.cards = [];
 }
 
-TableauPile.prototype.pop = function() { 
-    if(this.cards.length < 1) { return; }
-    
-    var card = this.cards.pop();
 
-    // update DOM
-    var removeMe = this.elem;
-    this.elem = this.elem.parentNode;
+
+TableauPile.prototype.pop =
+function()
+{
+    if (this.cards.length < 1)
+        return;
+
+    const card =
+        this.cards.pop();
+
+    const removeMe =
+        this.elem;
+
+    this.elem =
+        this.elem.parentNode;
+
     this.elem.removeChild(removeMe);
 
-    // If the top card exposed is face down, allow it to be 
-    // clicked to flip it
-    var newTop = this.top();
-    if(newTop && !newTop.isFaceUp()) {
-        this.elem.addEventListener("click", flipTopTableauCard, false);
+
+    const newTop =
+        this.top();
+
+    if (
+        newTop
+        && !newTop.isFaceUp()
+    )
+    {
+        this.elem.addEventListener(
+            "click",
+            flipTopTableauCard,
+            false
+        );
     }
-    
+
     return card;
-}
+};
 
 function flipTopTableauCard(evt) {
-    var target = evt.currentTarget;
-    var id = target.getAttribute("id");
-    var tableau = parseInt(id.substr(id.indexOf("_")-1, 1)) - 1;
-    var card = gTableau[tableau].pop();
+    const target = evt.currentTarget;
+    const id = target.getAttribute("id");
+    const tableau = parseInt(id.substr(id.indexOf("_")-1, 1)) - 1;
+    const card = gTableau[tableau].pop();
     card.flip();
     gTableau[tableau].push(card);
     gTableau[tableau].elem.removeEventListener("click", flipTopTableauCard, false);
 }
 
 TableauPile.prototype.push = function(card) { 
-    var oldSize = this.cards.length;
+    const oldSize = this.cards.length;
 
     // if the currently top card is face down, disable flipping
-    var oldtop = this.top();
+    const oldtop = this.top();
     if(oldtop && !oldtop.isFaceUp()) {
         this.elem.removeEventListener("click", flipTopTableauCard, false);
     }
     this.cards.push(card); 
     
     // update DOM
-    var newg = document.createElementNS(SVGNS, "g");
-    var gid = this.rootElem.getAttribute("id") + "_" + oldSize;
+    let newg = document.createElementNS(SVGNS, "g");
+    const gid = this.rootElem.getAttribute("id") + "_" + oldSize;
     newg.setAttribute("id", gid);
 
     newg.setAttribute("transform", "translate(0,"+CARD_VERT_OFFSET+")");
 
-    var use = document.createElementNS(SVGNS, "use");
+    let use = document.createElementNS(SVGNS, "use");
     
     if(card.isFaceUp()) {
         use.setAttribute("href", card.elemName);
@@ -595,7 +822,7 @@ TableauPile.prototype.clear = function() {
 }
 
 TableauPile.prototype.at = function(ind) { 
-    var index = parseInt(ind); 
+    const index = parseInt(ind); 
     return (index >= 0 && index < this.cards.length) ? this.cards[index] : null; 
 }
 
@@ -610,7 +837,7 @@ function CardStack(g,_name) {
 CardStack.prototype.pop = function() { 
     if(this.cards.length < 1) { return; }
     
-    var card = this.cards.pop();
+    let card = this.cards.pop();
     
     // if we are face up or the stack wasn't empty but now is
     if(card.isFaceUp() || this.cards.length < 1) {
@@ -627,7 +854,7 @@ CardStack.prototype.pop = function() {
 }
 
 CardStack.prototype.push = function(card,allowDrag) { 
-    var oldLength = this.cards.length;
+    const oldLength = this.cards.length;
     
     // if we had a face-up card, disable drag on it and make it the second card
     if(this.cards.length > 0 && this.top().isFaceUp()) {
@@ -640,7 +867,7 @@ CardStack.prototype.push = function(card,allowDrag) {
     // if we are face up or the stack was empty but now is not
     if(card.isFaceUp() || oldLength < 1) {
 
-        var use = document.createElementNS(SVGNS, "use");
+        let use = document.createElementNS(SVGNS, "use");
 
         if(card.isFaceUp()) {
             use.setAttribute("href", card.elemName);
@@ -677,10 +904,10 @@ CardStack.prototype.clear = function() {
     if(this.cards.length < 1) { return; }
     
     while(this.cards.length > 0) { this.cards.pop(); }
-    var length = this.cards.length;
+    const length = this.cards.length;
 
     // pop all the cards directly
-    for(var loop = 0; loop < length; ++loop) {
+    for(let loop = 0; loop < length; ++loop) {
         this.cards.pop();
     }
 
@@ -691,7 +918,7 @@ CardStack.prototype.clear = function() {
 }
 
 CardStack.prototype.at = function(ind) { 
-    var index = parseInt(ind); 
+    const index = parseInt(ind); 
     return (index >= 0 && index < this.cards.length) ? this.cards[index] : null; 
 }
 
@@ -701,10 +928,10 @@ CardStack.prototype.shuffle = function() {
     status("Shuffling Cards...");
     
     // shuffle 10 times arbitrarily
-    for(var iter = 0; iter < 10; ++iter) {
-        for(var cardNum = 0; cardNum < this.cards.length; ++cardNum) {
-            var swapper = Math.floor(Math.random()*this.cards.length);
-            var tempCard = this.cards[cardNum];
+    for(let iter = 0; iter < 10; ++iter) {
+        for(let cardNum = 0; cardNum < this.cards.length; ++cardNum) {
+            const swapper = Math.floor(Math.random()*this.cards.length);
+            const tempCard = this.cards[cardNum];
             this.cards[cardNum] = this.cards[swapper];
             this.cards[swapper] = tempCard;
         }
@@ -727,7 +954,7 @@ function status(str) {
 
 // this holds the unique 52 cards
 gAllCards = new Array(52);
-for(var loop = 0; loop < gAllCards.length; ++loop) {
+for(let loop = 0; loop < gAllCards.length; ++loop) {
     gAllCards[loop] = new Card(loop+1);
 }
 gTableau = new Array();
@@ -737,7 +964,7 @@ gWaste = null;
 gDragPile = null;
 
 function startSolitaire() {
-    var loop = 0;
+    let loop;
     
     // reset all decks
     gWaste = new CardStack(document.getElementById("waste"), "waste");
@@ -758,12 +985,12 @@ function startSolitaire() {
     // now deal the deck to the tableau
     for(loop = 0; loop < 7; ++loop) {
         // top card is always face up
-        var card = gDeck.pop();
+        const card = gDeck.pop();
         card.flip();
         gTableau[loop].push(card);
 
-        for(var tableauNum = loop+1; tableauNum < 7; ++tableauNum) {
-            var card = gDeck.pop();
+        for(let tableauNum = loop+1; tableauNum < 7; ++tableauNum) {
+            const card = gDeck.pop();
             gTableau[tableauNum].push(card);
         }
     }
@@ -774,7 +1001,7 @@ function startSolitaire() {
 }
 
 function drawCard() {
-    var card = null;
+    let card = null;
     if(gDeck.size() > 0) {
         card = gDeck.pop();
         card.flip();
@@ -790,9 +1017,9 @@ function drawCard() {
 }
 
 function flipDeck() {
-    var numCards = gWaste.size();
-    for(var loop = 0; loop < numCards; ++loop) {
-        var card = gWaste.pop();
+    const numCards = gWaste.size();
+    for(let loop = 0; loop < numCards; ++loop) {
+        const card = gWaste.pop();
         card.flip();
         gDeck.push(card,false);
     }
@@ -806,13 +1033,13 @@ function flipDeck() {
 // relinquish all responsibility of the card objects)
 // cardPile is a JavaScript array of Card objects here
 function moveCardsToTableau(pile, tableauNum) {
-    var tabNum = parseInt(tableauNum);
+    const tabNum = parseInt(tableauNum);
     if(tabNum < 0 || tabNum >= 7) { return false; }
-    var tableau = gTableau[tabNum];
+    let tableau = gTableau[tabNum];
     
     if(pile.length < 1) { return false; }
     
-    var bResult = false;
+    let bResult = false;
     // if tableau is empty and bottom card in pile is a king OR
     // if tableau top card is face up, is one higher in value and is the opposite color
     // of the bottom card in pile
@@ -821,7 +1048,7 @@ function moveCardsToTableau(pile, tableauNum) {
             tableau.top().getValue() == pile[0].getValue()+1 &&
             tableau.top().isRed() != pile[0].isRed()) ) 
     {
-        for(var loop = 0; loop < pile.length; ++loop) {
+        for(let loop = 0; loop < pile.length; ++loop) {
             tableau.push(pile[loop]);
         }
         bResult = true;
@@ -835,11 +1062,11 @@ function moveCardsToTableau(pile, tableauNum) {
 // moved to the foundation pile (in which case the caller should relinquish all
 // responsibility of the card object)
 function moveCardToFoundation(card, foundationNum) {
-    var foundNum = parseInt(foundationNum);
+    const foundNum = parseInt(foundationNum);
     if(foundNum < 1 || foundNum > 4) { return false; }
     if(card == null || !card.isFaceUp()) { return false; }
     
-    var bResult = false;
+    let bResult = false;
     
     // card must be of the proper suit
     if(card.getSuit() == foundNum) {
@@ -858,8 +1085,8 @@ function moveCardToFoundation(card, foundationNum) {
 }
 
 function dumpPile(pile) {
-    var str = "";
-    for(var loop = 0; loop < 13; ++loop) {
+    let str = "";
+    for(let loop = 0; loop < 13; ++loop) {
         if(pile.at(loop*4)) 
             str += pile.at(loop*4).toString() + ", ";
         if(pile.at(loop*4+1)) 
@@ -876,13 +1103,13 @@ function dumpPile(pile) {
 // bottom of "CardContainer" to ensure the drag is over top of 
 // all other cards
 function dragStart(evt) {
-    var container = document.getElementById("CardContainer");
+    let container = document.getElementById("CardContainer");
     
     if(!evt.dragEnt) {
         alert("dragStart(null)");
     }
-    var id = evt.dragEnt.getAttribute("id");
-    var letter = id.indexOf("_");
+    const id = evt.dragEnt.getAttribute("id");
+    const letter = id.indexOf("_");
     if(letter != -1 && container) {
         if(eleToTop = document.getElementById(id.substr(0,letter))) {
             container.appendChild( eleToTop.parentNode.removeChild(eleToTop) );
@@ -898,17 +1125,17 @@ function dragStart(evt) {
 function dragStop(evt) {
     // determine what logical elements (i.e. Cards) were being dragged and
     // determine the drop point from a physical to a logical perspective 
-    var cardPile = new Array();
+    let cardPile = new Array();
     if(!evt.dragEnt) {
         alert("dragStop(null)");
     }
-    var id = evt.dragEnt.getAttribute("id");
-    var pile = (id.substr(0,id.indexOf("_")));
-    var dropx = 0;
-    var dropy = 0;
-    var fromPile = null;
-    var fromTableauNum = -1;
-    var bMoveItBack = true;
+    const id = evt.dragEnt.getAttribute("id");
+    const pile = (id.substr(0,id.indexOf("_")));
+    let dropx = 0;
+    let dropy = 0;
+    let fromPile = null;
+    let fromTableauNum = -1;
+    let bMoveItBack = true;
     if(pile == "waste") {
         fromPile = gWaste;
         cardPile[0] = gWaste.top();
@@ -916,12 +1143,12 @@ function dragStop(evt) {
         dropy = 120;
     }
     else {
-        var tabNum = parseInt(pile.charAt(pile.length-1)) - 1;
-        var cardNum = parseInt(id.substr(id.indexOf("_")+1));
+        const tabNum = parseInt(pile.charAt(pile.length-1)) - 1;
+        const cardNum = parseInt(id.substr(id.indexOf("_")+1));
         fromPile = gTableau[tabNum];
         fromTableauNum = tabNum;
 
-        for(var loop = cardNum; loop < fromPile.size(); ++loop) {
+        for(let loop = cardNum; loop < fromPile.size(); ++loop) {
             cardPile[cardPile.length] = fromPile.at(loop);
         }
 
@@ -934,9 +1161,9 @@ function dragStop(evt) {
     dropy += parseFloat(evt.dragEnt.getAttribute("y"));
 
     // map the physical dropx/dropy to a logical element
-    var dropTarget = -1;
-    var tabx = (dropx - 120)/200;
-    for(var tab = 0; tab < 7; ++tab) {
+    let dropTarget = -1;
+    const tabx = (dropx - 120)/200;
+    for(let tab = 0; tab < 7; ++tab) {
         if( (tabx+0.3) >= tab && (tabx-0.3) <= tab && tab != fromTableauNum) {
             dropTarget = tab;
             break;
@@ -946,7 +1173,7 @@ function dragStop(evt) {
     if(dropTarget != -1) {
         if(moveCardsToTableau(cardPile, dropTarget)) {
             document.getElementById("dropcard").play();
-            for(var loop = 0; loop < cardPile.length; ++loop) {
+            for(let loop = 0; loop < cardPile.length; ++loop) {
                 fromPile.pop();
                 bMoveItBack = false;
             }
@@ -959,8 +1186,8 @@ function dragStop(evt) {
         // - Club = (1650,870)
         // - Spade = (1850,870)
         // only check if it wasn't any of the tableaus
-        var XTOL = 65;
-        var YTOL = 65;
+        const XTOL = 65;
+        const YTOL = 65;
         
         if( checkPointTol(dropx, dropy, 1650, 595, XTOL, YTOL) ) { dropTarget = eDIAMOND; }
         else if( checkPointTol(dropx, dropy, 1850, 595, XTOL, YTOL) ) { dropTarget = eHEART; }
@@ -978,10 +1205,10 @@ function dragStop(evt) {
     }
     
     if(bMoveItBack) {
-        for(var loop = 0; loop < cardPile.length; ++loop) {
+        for(let loop = 0; loop < cardPile.length; ++loop) {
             fromPile.pop();
         }
-        for(var loop = 0; loop < cardPile.length; ++loop) {
+        for(let loop = 0; loop < cardPile.length; ++loop) {
             if(fromPile == gWaste) {
                 fromPile.push(cardPile[loop],true);
             }

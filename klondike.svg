@@ -805,7 +805,6 @@ function dragStop(evt) {
             if(moveCardToFoundation(cardPile[0], dropTarget) && fromPile != null) {
                 fromPile.pop();
                 bMoveItBack = false;
-                console.log("Foundation: " + gCount);
                 if (gCount++ > 51) {
                     document.getElementById("jizzmate").play();
                 } else {

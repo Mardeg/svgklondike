@@ -2,6 +2,7 @@
 <svg version="2" height="100%" width="100%" viewBox="-.2 -236 2178.99 1216.19"
     onload="init();"
     xmlns="http://www.w3.org/2000/svg"
+    style="color-scheme: light dark;"
     onpointermove="pointerMove(evt)" onpointerup="pointerUp(evt)"
 ><title>SVG Klondike solitaire</title>
 <metadata xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -31,8 +32,8 @@
 </metadata>
 <style>
 /* <![CDATA[ */
-*{touch-action: none;user-select:none}
-    
+*{touch-action: none;}
+svg {background-color: light-dark(#FFF,#000)}
 /* ]]> */
 </style>
 <script>

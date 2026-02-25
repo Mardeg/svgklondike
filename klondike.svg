@@ -184,6 +184,7 @@ function pointerMove(evt) {
 }
 
 function pointerUp(evt) {
+    if (window.getSelection) window.getSelection().removeAllRanges();
     if (!draggingElement) return;
     draggingElement.releasePointerCapture(evt.pointerId);
     if (dragDropCallbacks.length) {

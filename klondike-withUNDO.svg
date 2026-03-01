@@ -774,7 +774,7 @@ function rebuildDOM() {
     gTableau.forEach((tableau, tabIdx) => {
         const tableauContainer = document.getElementById("tableau" + (tabIdx + 1));
         tableauContainer.innerHTML = '';
-        tableau.elem = tableauContainer;  // Keep reference to original container
+        tableau.elem = tableauContainer;  // Reference the root container
         
         tableau.cards.forEach((card, cardIdx) => {
             const newg = document.createElementNS(SVGNS, "g");
@@ -784,13 +784,16 @@ function rebuildDOM() {
             const use = document.createElementNS(SVGNS, "use");
             use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
             newg.appendChild(use);
-            tableauContainer.appendChild(newg);  // Append to container, not tableau.elem
+            
+            // Append to the current element and update tableau.elem for next card
+            tableau.elem.appendChild(newg);
+            tableau.elem = newg;  // Set elem to this group for nesting
+            
             if (card.bFaceUp) {
                 enableDrag(newg);
             }
         });
-    });
-    
+    });   
     // Rebuild foundations
     gFoundation.forEach((foundation, foundIdx) => {
         const elemId = "foundation_" + gSuitNames[foundIdx + 1];

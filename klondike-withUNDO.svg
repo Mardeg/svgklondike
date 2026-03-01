@@ -1036,16 +1036,38 @@ function dragStop(evt) {
         
         // determine if the move is allowed
         if(dropTarget != -1) {
-            if(moveCardToFoundation(cardPile[0], dropTarget) && fromPile != null) {
+            if(moveCardsToTableau(cardPile, dropTarget)) {
                 saveState();  // SAVE STATE BEFORE MOVE
-                fromPile.pop();
-                bMoveItBack = false;
-                if (gCount++ > 51) {
-                    document.getElementById("jizzmate").play();
-                } else {
-                    document.getElementById("dropcard").play();
+                document.getElementById("dropcard").play();
+                for(let loop = 0; loop < cardPile.length; ++loop) {
+                    fromPile.pop();
+                    bMoveItBack = false;
                 }
-                console.log(gCount);
+                // After the move, rebuild the target tableau to ensure proper nesting
+                const targetTableau = gTableau[dropTarget];
+                const tableauContainer = document.getElementById("tableau" + (dropTarget + 1));
+                
+                // Clear and rebuild just the target tableau to fix nesting
+                tableauContainer.innerHTML = '';
+                targetTableau.elem = tableauContainer;
+                let currentParent = tableauContainer;
+                
+                targetTableau.cards.forEach((card, cardIdx) => {
+                    const newg = document.createElementNS(SVGNS, "g");
+                    const gid = targetTableau.rootElem.getAttribute("id") + "_" + cardIdx;
+                    newg.setAttribute("id", gid);
+                    newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
+                    const use = document.createElementNS(SVGNS, "use");
+                    use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
+                    newg.appendChild(use);
+                    
+                    currentParent.appendChild(newg);
+                    currentParent = newg;
+                    
+                    if (card.bFaceUp) {
+                        enableDrag(newg);
+                    }
+                });
             }
         }
     }

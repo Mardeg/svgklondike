@@ -687,7 +687,7 @@ function restoreState(state) {
     
     // Restore tableau
     gTableau.forEach((pile, index) => {
-        pile.clear();
+        pile.cards = [];  // Clear the cards array directly, don't call pile.clear()
         state.tableau[index].forEach(cardData => {
             const card = new Card(cardData.cardNum);
             card.bFaceUp = cardData.bFaceUp;
@@ -697,7 +697,7 @@ function restoreState(state) {
     
     // Restore foundation
     gFoundation.forEach((pile, index) => {
-        pile.clear();
+        pile.cards = [];  // Clear the cards array directly, don't call pile.clear()
         if (state.foundation[index]) {
             state.foundation[index].forEach(cardData => {
                 const card = new Card(cardData.cardNum);

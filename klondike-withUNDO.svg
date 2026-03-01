@@ -432,11 +432,52 @@ TableauPile.prototype.pop = function() {
 function flipTopTableauCard(evt) {
     const target = evt.currentTarget;
     const id = target.getAttribute("id");
-    const tableau = parseInt(id.substr(id.indexOf("_")-1, 1)) - 1;
-    const card = gTableau[tableau].pop();
-    card.flip();
-    gTableau[tableau].push(card);
-    gTableau[tableau].elem.removeEventListener("click", flipTopTableauCard, false);
+    
+    // Extract tableau number from id like "tableau1", "tableau2", etc.
+    const tableauMatch = id.match(/tableau(\d)/);
+    if (!tableauMatch) {
+        console.error("Could not extract tableau number from id:", id);
+        return;
+    }
+    const tableau = parseInt(tableauMatch[1]) - 1;
+    
+    if (tableau < 0 || tableau >= gTableau.length) {
+        console.error("Invalid tableau number:", tableau);
+        return;
+    }
+    
+    const card = gTableau[tableau].top();
+    if (card && !card.isFaceUp()) {
+        saveState();  // SAVE STATE BEFORE FLIPPING
+        card.flip();
+        
+        // Rebuild the tableau to show the flipped card
+        const tableauContainer = document.getElementById("tableau" + (tableau + 1));
+        tableauContainer.innerHTML = '';
+        const tableauPile = gTableau[tableau];
+        tableauPile.elem = tableauContainer;
+        let currentParent = tableauContainer;
+        
+        tableauPile.cards.forEach((c, cardIdx) => {
+            const newg = document.createElementNS(SVGNS, "g");
+            const gid = tableauPile.rootElem.getAttribute("id") + "_" + cardIdx;
+            newg.setAttribute("id", gid);
+            newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
+            const use = document.createElementNS(SVGNS, "use");
+            use.setAttribute("href", c.bFaceUp ? c.elemName : gBackName);
+            newg.appendChild(use);
+            
+            currentParent.appendChild(newg);
+            currentParent = newg;
+            
+            if (c.bFaceUp) {
+                enableDrag(newg);
+            }
+        });
+        
+        // Remove the click listener since the top card is now face-up
+        tableauContainer.removeEventListener("click", flipTopTableauCard, false);
+    }
 }
 
 TableauPile.prototype.push = function(card) { 

@@ -669,51 +669,107 @@ function saveState() {
 }
 
 function restoreState(state) {
-    // Restore deck
-    gDeck.clear();
+    // Restore deck - use push with proper DOM updates
+    gDeck.elem = document.getElementById("deck");
+    gDeck.elem.innerHTML = '';
+    gDeck.cards = [];
     state.deck.forEach(cardData => {
         const card = new Card(cardData.cardNum);
         card.bFaceUp = cardData.bFaceUp;
         gDeck.cards.push(card);
+        
+        if (cardData.bFaceUp || gDeck.cards.length === state.deck.length) {
+            const use = document.createElementNS(SVGNS, "use");
+            use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
+            gDeck.elem.appendChild(use);
+        }
     });
     
-    // Restore waste
-    gWaste.clear();
-    state.waste.forEach(cardData => {
+    // Restore waste - use push with proper DOM updates
+    gWaste.elem = document.getElementById("waste");
+    gWaste.elem.innerHTML = '';
+    gWaste.cards = [];
+    state.waste.forEach((cardData, idx) => {
         const card = new Card(cardData.cardNum);
         card.bFaceUp = cardData.bFaceUp;
         gWaste.cards.push(card);
+        
+        const use = document.createElementNS(SVGNS, "use");
+        use.setAttribute("href", card.elemName);
+        use.setAttribute("id", "waste_" + idx);
+        gWaste.elem.appendChild(use);
+        
+        if (idx === state.waste.length - 1) {
+            enableDrag(use);
+        }
     });
     
     // Restore tableau
     gTableau.forEach((pile, index) => {
-        pile.cards = [];  // Clear the cards array directly, don't call pile.clear()
-        state.tableau[index].forEach(cardData => {
+        const tableauContainer = document.getElementById("tableau" + (index + 1));
+        tableauContainer.innerHTML = '';
+        pile.cards = [];
+        pile.elem = tableauContainer;
+        
+        let currentParent = tableauContainer;
+        
+        state.tableau[index].forEach((cardData, cardIdx) => {
             const card = new Card(cardData.cardNum);
             card.bFaceUp = cardData.bFaceUp;
             pile.cards.push(card);
+            
+            const newg = document.createElementNS(SVGNS, "g");
+            const gid = pile.rootElem.getAttribute("id") + "_" + cardIdx;
+            newg.setAttribute("id", gid);
+            newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
+            const use = document.createElementNS(SVGNS, "use");
+            use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
+            newg.appendChild(use);
+            
+            currentParent.appendChild(newg);
+            currentParent = newg;
+            
+            if (card.bFaceUp) {
+                enableDrag(newg);
+            }
         });
+        
+        // Re-enable flip listener for face-down top card
+        if (pile.cards.length > 0 && !pile.top().isFaceUp()) {
+            tableauContainer.addEventListener("click", flipTopTableauCard, false);
+        }
     });
     
     // Restore foundation
-    gFoundation.forEach((pile, index) => {
-        pile.cards = [];  // Clear the cards array directly, don't call pile.clear()
-        if (state.foundation[index]) {
-            state.foundation[index].forEach(cardData => {
-                const card = new Card(cardData.cardNum);
-                card.bFaceUp = cardData.bFaceUp;
-                pile.cards.push(card);
-            });
+    gFoundation.forEach((pile, foundIdx) => {
+        const elemId = "foundation_" + gSuitNames[foundIdx + 1];
+        pile.elem = document.getElementById(elemId);
+        pile.cards = [];
+        
+        if (pile.elem) {
+            pile.elem.innerHTML = '';
+            if (state.foundation[foundIdx]) {
+                state.foundation[foundIdx].forEach((cardData, idx) => {
+                    const card = new Card(cardData.cardNum);
+                    card.bFaceUp = cardData.bFaceUp;
+                    pile.cards.push(card);
+                    
+                    const use = document.createElementNS(SVGNS, "use");
+                    use.setAttribute("href", card.elemName);
+                    pile.elem.appendChild(use);
+                    
+                    if (idx === state.foundation[foundIdx].length - 1) {
+                        enableDrag(use);
+                    }
+                });
+            }
         }
     });
     
     gCount = state.count;
     console.log(gCount);
-    // Refresh DOM
-    rebuildDOM();
     updateUndoButtonState();
 }
-
 function undo() {
     if (gStateHistory.length > 0) {
         const previousState = gStateHistory.pop();
@@ -743,78 +799,6 @@ function updateUndoButtonState() {
 function undoButtonClick(event) {
     event.stopPropagation();
     undo();
-}
-
-function rebuildDOM() {
-    // Rebuild deck display
-    gDeck.elem = document.getElementById("deck");
-    gDeck.elem.innerHTML = '';
-    gDeck.cards.forEach((card, idx) => {
-        if (idx === gDeck.cards.length - 1 || card.bFaceUp) {
-            const use = document.createElementNS(SVGNS, "use");
-            use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
-            gDeck.elem.appendChild(use);
-        }
-    });
-    
-    // Rebuild waste display
-    gWaste.elem = document.getElementById("waste");
-    gWaste.elem.innerHTML = '';
-    gWaste.cards.forEach((card, idx) => {
-        const use = document.createElementNS(SVGNS, "use");
-        use.setAttribute("href", card.elemName);
-        use.setAttribute("id", "waste_" + idx);
-        gWaste.elem.appendChild(use);
-        if (idx === gWaste.cards.length - 1) {
-            enableDrag(use);
-        }
-    });
-    
-    // Rebuild tableaus
-    gTableau.forEach((tableau, tabIdx) => {
-        const tableauContainer = document.getElementById("tableau" + (tabIdx + 1));
-        tableauContainer.innerHTML = '';
-        tableau.elem = tableauContainer;  // Keep reference to the root container
-        
-        let currentParent = tableauContainer;  // Track the parent for nesting
-        
-        tableau.cards.forEach((card, cardIdx) => {
-            const newg = document.createElementNS(SVGNS, "g");
-            const gid = tableau.rootElem.getAttribute("id") + "_" + cardIdx;
-            newg.setAttribute("id", gid);
-            newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
-            const use = document.createElementNS(SVGNS, "use");
-            use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
-            newg.appendChild(use);
-            
-            // Append to the current parent and update for next iteration
-            currentParent.appendChild(newg);
-            currentParent = newg;  // Next card goes inside this one
-            
-            if (card.bFaceUp) {
-                enableDrag(newg);
-            }
-        });
-    });
-
-    // Rebuild foundations
-    gFoundation.forEach((foundation, foundIdx) => {
-        const elemId = "foundation_" + gSuitNames[foundIdx + 1];
-        foundation.elem = document.getElementById(elemId);
-        if (foundation.elem) {  // Add null check for safety
-            foundation.elem.innerHTML = '';
-            foundation.cards.forEach((card, idx) => {
-                const use = document.createElementNS(SVGNS, "use");
-                use.setAttribute("href", card.elemName);
-                foundation.elem.appendChild(use);
-                if (idx < foundation.cards.length - 1) {
-                    disableDrag(use);
-                } else if (foundation.cards.length > 0) {
-                    enableDrag(use);
-                }
-            });
-        }
-    });
 }
 
 function startSolitaire() {

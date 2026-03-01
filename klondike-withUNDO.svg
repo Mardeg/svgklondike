@@ -960,7 +960,6 @@ function dragStart(evt) {
 }
 
 // now determine where the dragged element has been dropped
-
 function dragStop(evt) {
     // determine what logical elements (i.e. Cards) were being dragged and
     // determine the drop point from a physical to a logical perspective 
@@ -1008,15 +1007,73 @@ function dragStop(evt) {
             break;
         }
     } // for each tableau
+    
     // determine if the move is allowed
     if(dropTarget != -1) {
         if(moveCardsToTableau(cardPile, dropTarget)) {
             saveState();  // SAVE STATE BEFORE MOVE
             document.getElementById("dropcard").play();
+            
+            // Remove cards from source
             for(let loop = 0; loop < cardPile.length; ++loop) {
                 fromPile.pop();
                 bMoveItBack = false;
             }
+            
+            // Rebuild source tableau if it was a tableau move
+            if(fromTableauNum != -1) {
+                const sourceTableau = gTableau[fromTableauNum];
+                const sourceContainer = document.getElementById("tableau" + (fromTableauNum + 1));
+                sourceContainer.innerHTML = '';
+                sourceTableau.elem = sourceContainer;
+                let currentParent = sourceContainer;
+                
+                sourceTableau.cards.forEach((card, cardIdx) => {
+                    const newg = document.createElementNS(SVGNS, "g");
+                    const gid = sourceTableau.rootElem.getAttribute("id") + "_" + cardIdx;
+                    newg.setAttribute("id", gid);
+                    newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
+                    const use = document.createElementNS(SVGNS, "use");
+                    use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
+                    newg.appendChild(use);
+                    
+                    currentParent.appendChild(newg);
+                    currentParent = newg;
+                    
+                    if (card.bFaceUp) {
+                        enableDrag(newg);
+                    }
+                });
+                
+                // Re-enable flip listener for face-down top card
+                if (sourceTableau.cards.length > 0 && !sourceTableau.top().isFaceUp()) {
+                    sourceContainer.addEventListener("click", flipTopTableauCard, false);
+                }
+            }
+            
+            // Rebuild target tableau
+            const targetTableau = gTableau[dropTarget];
+            const targetContainer = document.getElementById("tableau" + (dropTarget + 1));
+            targetContainer.innerHTML = '';
+            targetTableau.elem = targetContainer;
+            let currentParent = targetContainer;
+            
+            targetTableau.cards.forEach((card, cardIdx) => {
+                const newg = document.createElementNS(SVGNS, "g");
+                const gid = targetTableau.rootElem.getAttribute("id") + "_" + cardIdx;
+                newg.setAttribute("id", gid);
+                newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
+                const use = document.createElementNS(SVGNS, "use");
+                use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
+                newg.appendChild(use);
+                
+                currentParent.appendChild(newg);
+                currentParent = newg;
+                
+                if (card.bFaceUp) {
+                    enableDrag(newg);
+                }
+            });
         }
     }
     // if it wasn't a tableau, check the foundations (must only be 1 card)
@@ -1036,38 +1093,48 @@ function dragStop(evt) {
         
         // determine if the move is allowed
         if(dropTarget != -1) {
-            if(moveCardsToTableau(cardPile, dropTarget)) {
+            if(moveCardToFoundation(cardPile[0], dropTarget) && fromPile != null) {
                 saveState();  // SAVE STATE BEFORE MOVE
-                document.getElementById("dropcard").play();
-                for(let loop = 0; loop < cardPile.length; ++loop) {
-                    fromPile.pop();
-                    bMoveItBack = false;
-                }
-                // After the move, rebuild the target tableau to ensure proper nesting
-                const targetTableau = gTableau[dropTarget];
-                const tableauContainer = document.getElementById("tableau" + (dropTarget + 1));
+                fromPile.pop();
+                bMoveItBack = false;
                 
-                // Clear and rebuild just the target tableau to fix nesting
-                tableauContainer.innerHTML = '';
-                targetTableau.elem = tableauContainer;
-                let currentParent = tableauContainer;
-                
-                targetTableau.cards.forEach((card, cardIdx) => {
-                    const newg = document.createElementNS(SVGNS, "g");
-                    const gid = targetTableau.rootElem.getAttribute("id") + "_" + cardIdx;
-                    newg.setAttribute("id", gid);
-                    newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
-                    const use = document.createElementNS(SVGNS, "use");
-                    use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
-                    newg.appendChild(use);
+                // Rebuild source tableau if it was from tableau
+                if(fromTableauNum != -1) {
+                    const sourceTableau = gTableau[fromTableauNum];
+                    const sourceContainer = document.getElementById("tableau" + (fromTableauNum + 1));
+                    sourceContainer.innerHTML = '';
+                    sourceTableau.elem = sourceContainer;
+                    let currentParent = sourceContainer;
                     
-                    currentParent.appendChild(newg);
-                    currentParent = newg;
+                    sourceTableau.cards.forEach((card, cardIdx) => {
+                        const newg = document.createElementNS(SVGNS, "g");
+                        const gid = sourceTableau.rootElem.getAttribute("id") + "_" + cardIdx;
+                        newg.setAttribute("id", gid);
+                        newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
+                        const use = document.createElementNS(SVGNS, "use");
+                        use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
+                        newg.appendChild(use);
+                        
+                        currentParent.appendChild(newg);
+                        currentParent = newg;
+                        
+                        if (card.bFaceUp) {
+                            enableDrag(newg);
+                        }
+                    });
                     
-                    if (card.bFaceUp) {
-                        enableDrag(newg);
+                    // Re-enable flip listener for face-down top card
+                    if (sourceTableau.cards.length > 0 && !sourceTableau.top().isFaceUp()) {
+                        sourceContainer.addEventListener("click", flipTopTableauCard, false);
                     }
-                });
+                }
+                
+                if (gCount++ > 51) {
+                    document.getElementById("jizzmate").play();
+                } else {
+                    document.getElementById("dropcard").play();
+                }
+                console.log(gCount);
             }
         }
     }

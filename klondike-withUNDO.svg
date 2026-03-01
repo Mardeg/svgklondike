@@ -1065,84 +1065,8 @@ function dragStop(evt) {
             if(fromTableauNum != -1) {
                 const sourceTableau = gTableau[fromTableauNum];
                 const sourceContainer = document.getElementById("tableau" + (fromTableauNum + 1));
-                sourceContainer.innerHTML = '';
-                sourceTableau.elem = sourceContainer;
-                let currentParent = sourceContainer;
                 
-                sourceTableau.cards.forEach((card, cardIdx) => {
-                    const newg = document.createElementNS(SVGNS, "g");
-                    const gid = sourceTableau.rootElem.getAttribute("id") + "_" + cardIdx;
-                    newg.setAttribute("id", gid);
-                    newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
-                    const use = document.createElementNS(SVGNS, "use");
-                    use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
-                    newg.appendChild(use);
-                    
-                    currentParent.appendChild(newg);
-                    currentParent = newg;
-                    
-                    if (card.bFaceUp) {
-                        enableDrag(newg);
-                    }
-                });
-                
-                // Re-enable flip listener for face-down top card
-                if (sourceTableau.cards.length > 0 && !sourceTableau.top().isFaceUp()) {
-                    sourceContainer.addEventListener("click", flipTopTableauCard, false);
-                }
-            }
-            
-            // Rebuild target tableau
-            const targetTableau = gTableau[dropTarget];
-            const targetContainer = document.getElementById("tableau" + (dropTarget + 1));
-            targetContainer.innerHTML = '';
-            targetTableau.elem = targetContainer;
-            let currentParent = targetContainer;
-            
-            targetTableau.cards.forEach((card, cardIdx) => {
-                const newg = document.createElementNS(SVGNS, "g");
-                const gid = targetTableau.rootElem.getAttribute("id") + "_" + cardIdx;
-                newg.setAttribute("id", gid);
-                newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
-                const use = document.createElementNS(SVGNS, "use");
-                use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
-                newg.appendChild(use);
-                
-                currentParent.appendChild(newg);
-                currentParent = newg;
-                
-                if (card.bFaceUp) {
-                    enableDrag(newg);
-                }
-            });
-        }
-    }
-    // if it wasn't a tableau, check the foundations (must only be 1 card)
-    else if(cardPile.length == 1) {
-        // - Diamond = (1650,595)
-        // - Heart = (1850,595)
-        // - Club = (1650,870)
-        // - Spade = (1850,870)
-        // only check if it wasn't any of the tableaus
-        const XTOL = 65;
-        const YTOL = 65;
-        
-        if( checkPointTol(dropx, dropy, 1650, 595, XTOL, YTOL) ) { dropTarget = eDIAMOND; }
-        else if( checkPointTol(dropx, dropy, 1850, 595, XTOL, YTOL) ) { dropTarget = eHEART; }
-        else if( checkPointTol(dropx, dropy, 1650, 870, XTOL, YTOL) ) { dropTarget = eCLUB; }
-        else if( checkPointTol(dropx, dropy, 1850, 870, XTOL, YTOL) ) { dropTarget = eSPADE; }
-        
-        // determine if the move is allowed
-        if(dropTarget != -1) {
-            if(moveCardToFoundation(cardPile[0], dropTarget) && fromPile != null) {
-                saveState();  // SAVE STATE BEFORE MOVE
-                fromPile.pop();
-                bMoveItBack = false;
-                
-                // Rebuild source tableau if it was from tableau
-                if(fromTableauNum != -1) {
-                    const sourceTableau = gTableau[fromTableauNum];
-                    const sourceContainer = document.getElementById("tableau" + (fromTableauNum + 1));
+                if (sourceContainer) {
                     sourceContainer.innerHTML = '';
                     sourceTableau.elem = sourceContainer;
                     let currentParent = sourceContainer;
@@ -1166,7 +1090,99 @@ function dragStop(evt) {
                     
                     // Re-enable flip listener for face-down top card
                     if (sourceTableau.cards.length > 0 && !sourceTableau.top().isFaceUp()) {
+                        sourceContainer.removeEventListener("click", flipTopTableauCard, false);
                         sourceContainer.addEventListener("click", flipTopTableauCard, false);
+                    } else {
+                        // Remove click listener if tableau is empty or top card is face-up
+                        sourceContainer.removeEventListener("click", flipTopTableauCard, false);
+                    }
+                }
+            }
+            
+            // Rebuild target tableau
+            const targetTableau = gTableau[dropTarget];
+            const targetContainer = document.getElementById("tableau" + (dropTarget + 1));
+            
+            if (targetContainer) {
+                targetContainer.innerHTML = '';
+                targetTableau.elem = targetContainer;
+                let currentParent = targetContainer;
+                
+                targetTableau.cards.forEach((card, cardIdx) => {
+                    const newg = document.createElementNS(SVGNS, "g");
+                    const gid = targetTableau.rootElem.getAttribute("id") + "_" + cardIdx;
+                    newg.setAttribute("id", gid);
+                    newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
+                    const use = document.createElementNS(SVGNS, "use");
+                    use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
+                    newg.appendChild(use);
+                    
+                    currentParent.appendChild(newg);
+                    currentParent = newg;
+                    
+                    if (card.bFaceUp) {
+                        enableDrag(newg);
+                    }
+                });
+            }
+        }
+    }
+    // if it wasn't a tableau, check the foundations (must only be 1 card)
+    else if(cardPile.length == 1) {
+        // - Diamond = (1650,595)
+        // - Heart = (1850,595)
+        // - Club = (1650,870)
+        // - Spade = (1850,870)
+        // only check if it wasn't any of the tableaus
+        const XTOL = 65;
+        const YTOL = 65;
+        
+        if( checkPointTol(dropx, dropy, 1650, 595, XTOL, YTOL) ) { dropTarget = eDIAMOND; }
+        else if( checkPointTol(dropx, dropy, 1850, 595, XTOL, YTOL) ) { dropTarget = eHEART; }
+        else if( checkPointTol(dropx, dropy, 1650, 870, XTOL, YTOL) ) { dropTarget = eCLUB; }
+        else if( checkPointTol(dropx, dropy, 1850, 870, XTOL, YTOL) ) { dropTarget = eSPADE; }
+
+        // determine if the move is allowed
+        if(dropTarget != -1) {
+            if(moveCardToFoundation(cardPile[0], dropTarget) && fromPile != null) {
+                saveState();  // SAVE STATE BEFORE MOVE
+                fromPile.pop();
+                bMoveItBack = false;
+                
+                // Rebuild source tableau if it was from tableau
+                if(fromTableauNum != -1) {
+                    const sourceTableau = gTableau[fromTableauNum];
+                    const sourceContainer = document.getElementById("tableau" + (fromTableauNum + 1));
+                    
+                    if (sourceContainer) {
+                        sourceContainer.innerHTML = '';
+                        sourceTableau.elem = sourceContainer;
+                        let currentParent = sourceContainer;
+                        
+                        sourceTableau.cards.forEach((card, cardIdx) => {
+                            const newg = document.createElementNS(SVGNS, "g");
+                            const gid = sourceTableau.rootElem.getAttribute("id") + "_" + cardIdx;
+                            newg.setAttribute("id", gid);
+                            newg.setAttribute("transform", "translate(0," + CARD_VERT_OFFSET + ")");
+                            const use = document.createElementNS(SVGNS, "use");
+                            use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
+                            newg.appendChild(use);
+                            
+                            currentParent.appendChild(newg);
+                            currentParent = newg;
+                            
+                            if (card.bFaceUp) {
+                                enableDrag(newg);
+                            }
+                        });
+                        
+                        // Re-enable flip listener for face-down top card
+                        if (sourceTableau.cards.length > 0 && !sourceTableau.top().isFaceUp()) {
+                            sourceContainer.removeEventListener("click", flipTopTableauCard, false);
+                            sourceContainer.addEventListener("click", flipTopTableauCard, false);
+                        } else {
+                            sourceContainer.removeEventListener("click", flipTopTableauCard, false);
+                        }
                     }
                 }
                 

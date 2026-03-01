@@ -1075,13 +1075,13 @@ function dragStop(evt) {
             saveState();  // SAVE STATE BEFORE MOVE
             document.getElementById("dropcard").play();
             
-            // Remove cards from source
+            // Remove cards from source FIRST
             for(let loop = 0; loop < cardPile.length; ++loop) {
                 fromPile.pop();
                 bMoveItBack = false;
             }
             
-            // Rebuild source tableau if it was a tableau move
+            // Now rebuild source tableau with the remaining cards
             if(fromTableauNum != -1) {
                 const sourceTableau = gTableau[fromTableauNum];
                 const sourceContainer = document.getElementById("tableau" + (fromTableauNum + 1));
@@ -1091,6 +1091,7 @@ function dragStop(evt) {
                     sourceTableau.elem = sourceContainer;
                     let currentParent = sourceContainer;
                     
+                    // Rebuild with only the cards that remain
                     sourceTableau.cards.forEach((card, cardIdx) => {
                         const newg = document.createElementNS(SVGNS, "g");
                         const gid = sourceTableau.rootElem.getAttribute("id") + "_" + cardIdx;
@@ -1119,7 +1120,7 @@ function dragStop(evt) {
                 }
             }
             
-            // Rebuild target tableau
+            // Rebuild target tableau with all cards including the newly moved ones
             const targetTableau = gTableau[dropTarget];
             const targetContainer = document.getElementById("tableau" + (dropTarget + 1));
             

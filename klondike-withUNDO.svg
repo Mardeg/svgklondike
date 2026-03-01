@@ -772,8 +772,10 @@ function rebuildDOM() {
     
     // Rebuild tableaus
     gTableau.forEach((tableau, tabIdx) => {
-        tableau.elem = document.getElementById("tableau" + (tabIdx + 1));
-        tableau.elem.innerHTML = '';
+        const tableauContainer = document.getElementById("tableau" + (tabIdx + 1));
+        tableauContainer.innerHTML = '';
+        tableau.elem = tableauContainer;  // Keep reference to original container
+        
         tableau.cards.forEach((card, cardIdx) => {
             const newg = document.createElementNS(SVGNS, "g");
             const gid = tableau.rootElem.getAttribute("id") + "_" + cardIdx;
@@ -782,8 +784,7 @@ function rebuildDOM() {
             const use = document.createElementNS(SVGNS, "use");
             use.setAttribute("href", card.bFaceUp ? card.elemName : gBackName);
             newg.appendChild(use);
-            tableau.elem.appendChild(newg);
-            tableau.elem = newg;
+            tableauContainer.appendChild(newg);  // Append to container, not tableau.elem
             if (card.bFaceUp) {
                 enableDrag(newg);
             }
@@ -794,17 +795,19 @@ function rebuildDOM() {
     gFoundation.forEach((foundation, foundIdx) => {
         const elemId = "foundation_" + gSuitNames[foundIdx + 1];
         foundation.elem = document.getElementById(elemId);
-        foundation.elem.innerHTML = '';
-        foundation.cards.forEach((card, idx) => {
-            const use = document.createElementNS(SVGNS, "use");
-            use.setAttribute("href", card.elemName);
-            foundation.elem.appendChild(use);
-            if (idx < foundation.cards.length - 1) {
-                disableDrag(use);
-            } else if (foundation.cards.length > 0) {
-                enableDrag(use);
-            }
-        });
+        if (foundation.elem) {  // Add null check for safety
+            foundation.elem.innerHTML = '';
+            foundation.cards.forEach((card, idx) => {
+                const use = document.createElementNS(SVGNS, "use");
+                use.setAttribute("href", card.elemName);
+                foundation.elem.appendChild(use);
+                if (idx < foundation.cards.length - 1) {
+                    disableDrag(use);
+                } else if (foundation.cards.length > 0) {
+                    enableDrag(use);
+                }
+            });
+        }
     });
 }
 

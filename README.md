@@ -28,4 +28,4 @@ __TODO__:
 
 ☐Add: hint feature
 
-☐Add: a dropdown (at the top left?) selection for reverse/face design options
+☐Add: country flags at the bottom right for translation and different card symbols

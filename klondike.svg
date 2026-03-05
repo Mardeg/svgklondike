@@ -94,13 +94,13 @@ function inspect(obj) {
 
 let draggingElement = null;
 let nMouseOffsetX = 0;
-function addDragEventListener(dragEventStr, callbackFunc) {
 let nMouseOffsetY = 0;
 let screenCTMInv = null;
 const dragStartCallbacks = [];
 const dragMoveCallbacks = [];
 const dragDropCallbacks = [];
 
+function addDragEventListener(dragEventStr, callbackFunc) {
     if (!callbackFunc) return;
     let arr = null;
     if (dragEventStr === DRAGSTART) arr = dragStartCallbacks;

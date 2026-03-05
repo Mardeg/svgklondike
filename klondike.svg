@@ -33,7 +33,7 @@
 /* <![CDATA[ */
 *{touch-action: none;user-select:none}
 svg {color-scheme: light dark; background-color: light-dark(#BBB,#333); height:100dvh; width:100dvw}
-#gh {fill: light-dark(#BBB,#333)}
+#gh,#undoButton text {fill: light-dark(#BBB,#333)}
 #undoButton.disabled rect {fill: #CCCCCC;stroke: #999999;}
 #undoButton.disabled text {fill: #999999;}
 #undoButton.enabled:hover rect {fill: #45a049;}
@@ -1455,7 +1455,7 @@ function init() {
 </g>
 <g id="undoButton" class="enabled" style="cursor: pointer;">
     <rect x="2008" y="-184" width="120" height="50" fill="#4CAF50" stroke="#2E7D32" stroke-width="2" rx="5"/>
-    <text x="2070" y="-146" font-size="36" font-weight="bold" fill="white" text-anchor="middle">UNDO</text>
+    <text x="2070" y="-146" font-size="36" font-weight="bold" text-anchor="middle">UNDO</text>
 </g>
 <a href="https://github.com/Mardeg/svgklondike" transform="translate(2126,926) scale(0.4)"><title>GitHub project</title>
 <circle cx="50" cy="50" r="50" fill="rgba(0,0,0,0)" stroke="none" />

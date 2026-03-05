@@ -28,4 +28,4 @@ __TODO__:
 
 ☐Add: hint feature
 
-☐Add: country flags at the bottom right for translation and different card symbols
+☐Add: country flags in the centre of the bottom border for translation and different card symbols

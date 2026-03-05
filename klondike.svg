@@ -33,6 +33,9 @@
 /* <![CDATA[ */
 *{touch-action: none;}
 svg {color-scheme: light dark; background-color: light-dark(#FFF,#000)}
+#undoButton.disabled rect {fill: #CCCCCC;stroke: #999999;}
+#undoButton.disabled text {fill: #999999;}
+#undoButton.enabled:hover rect {fill: #45a049;}
 /* ]]> */
 </style>
 <script>
@@ -432,6 +435,7 @@ function flipTopTableauCard(evt) {
     const tableau = parseInt(id.substr(id.indexOf("_")-1, 1)) - 1;
     const card = gTableau[tableau].pop();
     card.flip();
+    setUndo(false);
     gTableau[tableau].push(card);
     gTableau[tableau].elem.removeEventListener("click", flipTopTableauCard, false);
 }
@@ -582,7 +586,6 @@ CardStack.prototype.at = function(ind) {
 
 CardStack.prototype.shuffle = function() {
     if(this.cards.length < 1) { return; }
-    status("Shuffling Cards...");
     
     // shuffle 10 times arbitrarily
     for(let iter = 0; iter < 10; ++iter) {
@@ -598,11 +601,6 @@ CardStack.prototype.shuffle = function() {
         alert("Fatal Error!  Tried to shuffle a face up deck");
     }
 
-    status("Ready...");
-}
-
-function status(str) {
-    // TO DO:  Implement in SVG and here
 }
 
 // Solitaire Game Logic begins here
@@ -617,6 +615,10 @@ gFoundation = new Array();
 gDeck = null;
 gWaste = null;
 gDragPile = null;
+gEnableUndo = false;
+gUndoFrom = null;
+gUndoTo = null;
+gPrevCards = null;
 gCount = 1;
 
 function startSolitaire() {
@@ -656,13 +658,56 @@ function startSolitaire() {
 
 }
 
+function setUndo(TorF) {
+    const undoButton = document.getElementById("undoButton");
+    if (!undoButton) return;
+    if (!TorF) {
+        undoButton.setAttribute("class", "disabled");
+        undoButton.removeEventListener("click", undoButtonClick);
+        undoButton.style.opacity = "0.4";
+        undoButton.style.cursor = "not-allowed";
+    } else {
+        undoButton.setAttribute("class", "enabled");
+        undoButton.addEventListener("click", undoButtonClick, false);
+        undoButton.style.opacity = "1";
+        undoButton.style.cursor = "pointer";
+    }
+    gEnableUndo = TorF;
+}
+
+function undoButtonClick(event) {
+    event.stopPropagation();
+    if(gEnableUndo)undo();
+}
+
+function undo() {
+    if(gUndoTo == -1) {
+        gWaste.push(gPrevCards[0],true);
+    }else{
+        for(let loop = 0; loop < gPrevCards.length; ++loop) {
+            gTableau[gUndoTo].push(gPrevCards[loop],true);
+        }
+    }
+    if(gUndoFrom.charAt() == "F") {
+        let wf = gFoundation[parseInt(gUndoFrom.slice(1), 10)];
+        wf.pop();
+        disableDrag(wf.elem.lastChild);
+        gCount--;
+    }else{
+        for(let loop = 0; loop < gPrevCards.length; ++loop) {
+            gTableau[parseInt(gUndoFrom.slice(1), 10)].pop();
+        }
+    }
+    setUndo(false);
+}
+
 function drawCard() {
     let card = null;
     if(gDeck.size() > 0) {
         card = gDeck.pop();
         card.flip();
         gWaste.push(card,true);
-        
+        setUndo(false);
         // if deck is empty, turn off drawCard capability
         if(gDeck.size() <= 0) {
             gDeck.elem.removeEventListener("click", drawCard, false);
@@ -674,6 +719,7 @@ function drawCard() {
 
 function flipDeck() {
     const numCards = gWaste.size();
+    setUndo(false);
     for(let loop = 0; loop < numCards; ++loop) {
         const card = gWaste.pop();
         card.flip();
@@ -829,6 +875,10 @@ function dragStop(evt) {
     if(dropTarget != -1) {
         if(moveCardsToTableau(cardPile, dropTarget)) {
             document.getElementById("dropcard").play();
+            gUndoFrom = "T" + dropTarget;
+            gUndoTo = fromTableauNum;
+            gPrevCards = cardPile;
+            setUndo(true);
             for(let loop = 0; loop < cardPile.length; ++loop) {
                 fromPile.pop();
                 bMoveItBack = false;
@@ -853,6 +903,10 @@ function dragStop(evt) {
         // determine if the move is allowed
         if(dropTarget != -1) {
             if(moveCardToFoundation(cardPile[0], dropTarget) && fromPile != null) {
+                gUndoFrom = "F" + dropTarget;
+                gUndoTo = (pile == "waste")?-1:fromTableauNum;
+                gPrevCards = cardPile;
+                setUndo(true);
                 fromPile.pop();
                 bMoveItBack = false;
                 if (gCount++ > 51) {
@@ -887,6 +941,10 @@ function checkPointTol(actualx, actualy, targetx, targety, tolx, toly) {
 function initGame() {
     addDragEventListener("dragstart", dragStart);
     addDragEventListener("dragdrop", dragStop);
+    document.getElementById("undoButton").addEventListener("click", undoButtonClick, false);
+    setTimeout(() => {
+        setUndo(false);
+    }, 100);
     startSolitaire();
 }
 
@@ -1330,5 +1388,9 @@ function init() {
 <g id="foundation_club" transform="translate(1650,870)"/>
 <g id="foundation_spade" transform="translate(1850,870)"/>
 
+</g>
+<g id="undoButton" class="enabled" style="cursor: pointer;">
+    <rect x="2008" y="-184" width="120" height="50" fill="#4CAF50" stroke="#2E7D32" stroke-width="2" rx="5"/>
+    <text x="2070" y="-146" font-size="36" font-weight="bold" fill="white" text-anchor="middle">UNDO</text>
 </g>
 </svg>

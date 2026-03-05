@@ -4,26 +4,26 @@ Initial code by Jeff Schiller, salvaged from https://web.archive.org/web/2006020
 
 __TODO__:
 
-☑Sound FX
+☑Add: sound FX
 
-☑Upgrade SVG to version 2 (less namespaces)
+☑Modernise code: remove unecessary namespaces (upgrade SVG to version 2)
 
-☑var to let/const
+☑Modernise code: var to let/const for memory conservation
 
-☑Completion detection
+☑Add: completion detection
 
-☑mousedown/move/up events to pointer ones so it works on mobile
+☑Modernise code: mousedown/move/up events to pointer ones so it works on mobile
 
-☑Background matches system/browser dark/light setting
+☑Accessibility: match background to system/browser dark/light setting
 
-☑Undo feature
+☑Add: undo feature
 
-☐Widen card numbers for better readability, especially on mobile
+☐Accessibility: widen card numbers for better readability, especially on mobile
 
-☐Autoplay to completion when Deck is empty and all cards are face-up
+☐Add: autoplay to completion when Deck is empty and all cards are face-up
 
-☐Hint feature
+☐Add: hint feature
 
-☐Visual completion celebration for deaf users
+☐Accessibility: visual completion celebration for deaf users
 
-☐Top left dropdown selection for reverse/face design options
+☐Add: a dropdown (at the top left?) selection for reverse/face design options

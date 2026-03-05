@@ -20,12 +20,12 @@ __TODO__:
 
 ☑Accessibility: widen card numbers for better readability, especially on mobile
 
-☐Add: timer
+☑Add: timer
+
+☑Accessibility: visual completion indicator for deaf users
 
 ☐Add: autoplay to completion when Deck is empty and all cards are face-up
 
 ☐Add: hint feature
-
-☐Accessibility: visual completion celebration for deaf users
 
 ☐Add: a dropdown (at the top left?) selection for reverse/face design options

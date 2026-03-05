@@ -937,6 +937,7 @@ function dragStop(evt) {
                 if (gCount++ > 51) {
                     document.getElementById("jizzmate").play();
                     document.getElementById("tabletop").setAttribute("stroke","url(#animrot)");
+		    document.getElementById("undobutton").remove;
                 } else {
                     document.getElementById("dropcard").play();
                 }

@@ -20,6 +20,8 @@ __TODO__:
 
 ☑Accessibility: widen card numbers for better readability, especially on mobile
 
+☑Add: timer
+
 ☐Add: autoplay to completion when Deck is empty and all cards are face-up
 
 ☐Add: hint feature

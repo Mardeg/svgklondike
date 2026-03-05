@@ -23,3 +23,5 @@ __TODO__:
 ☐Autoplay to completion when Deck is empty and all cards are face-up
 
 ☐Visual completion celebration for deaf users
+
+☐Top left dropdown selection for reverse/face design options

@@ -16,11 +16,13 @@ __TODO__:
 
 ☑Background matches system/browser dark/light setting
 
-☑Undo Feature
+☑Undo feature
 
 ☐Widen card numbers for better readability, especially on mobile
 
 ☐Autoplay to completion when Deck is empty and all cards are face-up
+
+☐Hint feature
 
 ☐Visual completion celebration for deaf users
 

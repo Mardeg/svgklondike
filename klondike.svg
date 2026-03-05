@@ -32,7 +32,7 @@
 <style>
 /* <![CDATA[ */
 *{touch-action: none;user-select:none}
-svg {color-scheme: light dark; background-color: light-dark(#FFF,#000); height:100dvh; width:100dvw}
+svg {color-scheme: light dark; background-color: light-dark(#CCC,#333); height:100dvh; width:100dvw}
 #undoButton.disabled rect {fill: #CCCCCC;stroke: #999999;}
 #undoButton.disabled text {fill: #999999;}
 #undoButton.enabled:hover rect {fill: #45a049;}

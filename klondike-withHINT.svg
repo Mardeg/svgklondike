@@ -741,6 +741,7 @@ function hint() {
     const h = document.querySelectorAll("[data-highlight]");
     if(h.length > 0) return; // Hint was already given
     let cardPile = null;
+	/*
     // First target the other Tableaus from each one iterating through it's face-up cards
     for (let p = 0; p < 7; ++p) {
 	cardPile = gTableau[p];
@@ -760,6 +761,7 @@ function hint() {
 	    temPile.pop();
 	}
     }
+	*/
     // Next target all Tableaus with the Waste card
     for (let i = 0; i < 7; ++i) {
 	if(moveCardsToTableau([gWaste.top()],i,true)) {

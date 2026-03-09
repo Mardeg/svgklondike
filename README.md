@@ -28,4 +28,4 @@ __TODO__:
 
 ☐Add: autoplay to completion when Deck is empty and all cards are face-up
 
-☐Add: country flags in the centre of the bottom border for translation and different card symbols
+☐Internationalisation: country flags in the centre of the bottom border for translation and different card symbols

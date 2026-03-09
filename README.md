@@ -30,4 +30,6 @@ __TODO__:
 
 ☐Internationalisation: country flags in the centre of the bottom border for translation and different card symbols
 
+☐Add: animate waste turning over to become the deck when it's empty, and animate flipping facedown cards
+
 ☐Accessibility: Left and Right handed modes

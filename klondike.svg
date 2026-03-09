@@ -762,11 +762,20 @@ function hint() {
 	    return;
 	}
     }
-    // Next target the Foundation with just the top face-up cards
     let topCards = [];
     for (let i = 0; i < 7; ++i) {
 	topCards.push([gTableau[i].top(),i]);
     }
+    // Flip the first face-down card, if there is one, on top of a tableau pile
+    let flipped = false;
+    for (const toFlip of topCards) {
+	    if (toFlip[0] && !toFlip[0].isFaceUp()) {
+		flipTopTableauCard(toFlip[1]);
+		flipped = true;
+	    }
+    }
+    if (flipped && typeof arguments.callee !== 'undefined') arguments.callee();
+    // Next target the Foundation with just the top face-up cards
     topCards.push([gWaste.top(),null]);
     for (const toMove of topCards) {
 	if (toMove[0] && toMove[0].isFaceUp()) {
@@ -778,15 +787,7 @@ function hint() {
 	    }
 	}
     }
-    // Then target face-down cards on top
     topCards.pop();
-    // Flip the first face-down card, if there is one, on top of a tableau pile
-    for (const toFlip of topCards) {
-	    if (toFlip[0] && !toFlip[0].isFaceUp()) {
-		flipTopTableauCard(toFlip[1])
-		return;
-	    }
-    }
     // otherwise highlight the top face-down card in the deck if there is one
     if(gDeck.size() > 0) highlight({elemName:"#uniqueoutline"});
 }

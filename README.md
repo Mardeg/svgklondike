@@ -29,3 +29,5 @@ __TODO__:
 ☐Add: autoplay to completion when Deck is empty and all cards are face-up
 
 ☐Internationalisation: country flags in the centre of the bottom border for translation and different card symbols
+
+☐Accessibility: Left and Right handed modes

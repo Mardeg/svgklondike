@@ -774,7 +774,10 @@ function hint() {
 		flipped = true;
 	    }
     }
-    if (flipped && typeof arguments.callee !== 'undefined') arguments.callee();
+    if (flipped && typeof arguments.callee !== 'undefined') {
+	arguments.callee();
+	return;
+    }
     // Next target the Foundation with just the top face-up cards
     topCards.push([gWaste.top(),null]);
     for (const toMove of topCards) {

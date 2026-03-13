@@ -34,4 +34,4 @@ __TODO__:
 
 ☐Accessibility: Left and Right handed modes
 
-##Ongoing Undertaking: Keep this game working in the MyPal browser on ReactOS
+## Ongoing Undertaking: Keep this game working in the MyPal browser on ReactOS

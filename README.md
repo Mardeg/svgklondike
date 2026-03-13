@@ -33,3 +33,5 @@ __TODO__:
 ☐Add: animate waste turning over to become the deck when it's empty, and animate flipping facedown cards
 
 ☐Accessibility: Left and Right handed modes
+
+##Ongoing Undertaking: Keep this game working in the MyPal browser on ReactOS

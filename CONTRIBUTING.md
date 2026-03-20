@@ -6,7 +6,7 @@ Contributions are welcome and your help is appreciated!
 ## Steps for contributing to SVG Klondike:
 
 ### 1. Identify an Issue
-* Browse existing issues that have a coding plan.
+* Browse existing issues that have a coding plan in the comments.
 * Once an issue is chosen, feel free to break it into sub-issues linked to that issue.
 
 ### 2. Implementation & Handoff

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 1741 4690">
+<svg xmlns="http://www.w3.org/2000/svg" version="2" viewBox="0 0 1741 4690" role="application" aria-labelledby="deck-title">
+<title id="deck-title">Classic Playing Cards</title>
 <metadata xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
           xmlns:dcterms="http://purl.org/dc/terms/"
           xmlns:dc11="http://purl.org/dc/elements/1.1/"
@@ -25,6 +26,30 @@
     </cc:License>
   </rdf:RDF>
 </metadata>
+<style>
+/* <![CDATA[ */
+text{
+  font-size:32px;
+  opacity:0.3;
+  user-select:none;
+  line-height:40px;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+}
+a:hover > text, a:active > text{opacity: 0.9; cursor: pointer}
+view#Nav:target ~ a,:root:not(:has(:target)) view#Nav ~ a {cursor: zoom-in;}
+:root:has(:target) view#Nav:not(:target) ~ a {cursor: default;}
+a[href="#Nav"] > text {cursor: zoom-out;}
+:not(view:target[id$="N"]) ~ a:not(:has(g)), #Nav:target ~ a:not(:has(g)) {
+  opacity: 0;
+  pointer-events: none;
+}
+view:target[id$="N"] ~ a:not(:has(g)) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ]]> */
+</style>
   <defs>
     <!-- BASE CARD FRAME (Inset by 1.5px to lock a 3px stroke completely inside a 241x335 boundary) -->
     <rect id="card-base" x="1.5" y="1.5" width="238" height="332" rx="10.6" ry="10.6"
@@ -110,9 +135,9 @@
     <g id="♣8"> <use href="#rank-8" x="11.5" y="17.5" /><use href="#pip♣" x="11" y="55.5" /></g>
     <g id="♣9"> <use href="#rank-9" x="11.5" y="17.5" /><use href="#pip♣" x="11" y="55.5" /></g>
     <g id="♣10"><use style="stroke:#000000;" href="#rank-10" x="11.5" y="17.5" /><use href="#pip♣" x="11" y="55.5" /></g>
-    <g id="♣J"><use href="#rank-J" x="22.5" y="17.5" /><use href="#pip♣" x="11" y="55.5" /><use href="#left-large♣" transform="translate(0, -106.5)" /></g>
-    <g id="♣Q"><use href="#rank-Q" x="11.5" y="17.5" /><use href="#pip♣" x="11" y="55.5" /><use href="#left-large♣" transform="translate(0, -106.5)" /></g>
-    <g id="♣K"><use href="#rank-K" x="13.5" y="17.5" /><use href="#pip♣" x="11" y="55.5" /><use href="#left-large♣" transform="translate(0, -106.5)" /></g>
+    <g id="♣J"><use href="#rank-J" x="22.5" y="16.5" /><use href="#pip♣" x="11" y="55.5" /><use href="#left-large♣" transform="translate(0, -106.5)" /></g>
+    <g id="♣Q"><use href="#rank-Q" x="11.5" y="20.5" /><use href="#pip♣" x="11" y="55.5" /><use href="#left-large♣" transform="translate(0, -106.5)" /></g>
+    <g id="♣K"><use href="#rank-K" x="13.5" y="16" /><use href="#pip♣" x="11" y="55.5" /><use href="#left-large♣" transform="translate(0, -106.5)" /></g>
     <g id="♦A"><use style="fill:#c8102e;" href="#rank-A" x="11.5" y="17.5" /><use href="#pip♦" x="22" y="65.5" /></g>
     <g id="♦2"><use style="fill:#c8102e;" href="#rank-2" x="11.5" y="17.5" /><use href="#pip♦" x="22" y="65.5" /></g>
     <g id="♦3"><use style="fill:#c8102e;" href="#rank-3" x="11.5" y="17.5" /><use href="#pip♦" x="22" y="65.5" /></g>
@@ -123,9 +148,9 @@
     <g id="♦8"><use style="fill:#c8102e;" href="#rank-8" x="11.5" y="17.5" /><use href="#pip♦" x="22" y="65.5" /></g>
     <g id="♦9"><use style="fill:#c8102e;" href="#rank-9" x="11.5" y="17.5" /><use href="#pip♦" x="22" y="65.5" /></g>
     <g id="♦10"><use style="stroke:#c8102e;" href="#rank-10" x="11.5" y="17.5" /><use href="#pip♦" x="22" y="65.5" /></g>
-    <g id="♦J"><use style="fill:#c8102e;" href="#rank-J" x="22.5" y="17.5" /><use href="#pip♦" x="22" y="65.5" /><use href="#left-large♦" transform="translate(0, -106.5)" /></g>
-    <g id="♦Q"><use style="fill:#c8102e;" href="#rank-Q" x="11.5" y="17.5" /><use href="#pip♦" x="22" y="65.5" /><use href="#left-large♦" transform="translate(0, -106.5)" /></g>
-    <g id="♦K"><use style="fill:#c8102e;" href="#rank-K" x="13.5" y="17.5" /><use href="#pip♦" x="22" y="65.5" /><use href="#left-large♦" transform="translate(0, -106.5)" /></g>
+    <g id="♦J"><use style="fill:#c8102e;" href="#rank-J" x="22.5" y="16.5" /><use href="#pip♦" x="22" y="65.5" /><use href="#left-large♦" transform="translate(0, -106.5)" /></g>
+    <g id="♦Q"><use style="fill:#c8102e;" href="#rank-Q" x="11.5" y="20.5" /><use href="#pip♦" x="22" y="65.5" /><use href="#left-large♦" transform="translate(0, -106.5)" /></g>
+    <g id="♦K"><use style="fill:#c8102e;" href="#rank-K" x="13.5" y="16" /><use href="#pip♦" x="22" y="65.5" /><use href="#left-large♦" transform="translate(0, -106.5)" /></g>
     <g id="♠A"><use href="#rank-A" x="11.5" y="17.5" /><use href="#pip♠" x="22" y="55.5" /></g>
     <g id="♠2"><use href="#rank-2" x="11.5" y="17.5" /><use href="#pip♠" x="22" y="55.5" /></g>
     <g id="♠3"><use href="#rank-3" x="11.5" y="17.5" /><use href="#pip♠" x="22" y="55.5" /></g>
@@ -136,9 +161,9 @@
     <g id="♠8"><use href="#rank-8" x="11.5" y="17.5" /><use href="#pip♠" x="22" y="55.5" /></g>
     <g id="♠9"><use href="#rank-9" x="11.5" y="17.5" /><use href="#pip♠" x="22" y="55.5" /></g>
     <g id="♠10"><use style="stroke:#000000;" href="#rank-10" x="11.5" y="17.5" /><use href="#pip♠" x="22" y="55.5" /></g>
-    <g id="♠J"><use href="#rank-J" x="22.5" y="17.5" /><use href="#pip♠" x="22" y="55.5" /><use href="#left-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
-    <g id="♠Q"><use href="#rank-Q" x="11.5" y="17.5" /><use href="#pip♠" x="22" y="55.5" /><use href="#left-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
-    <g id="♠K"><use href="#rank-K" x="13.5" y="17.5" /><use href="#pip♠" x="22" y="55.5" /><use href="#left-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
+    <g id="♠J"><use href="#rank-J" x="22.5" y="16.5" /><use href="#pip♠" x="22" y="55.5" /><use href="#left-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
+    <g id="♠Q"><use href="#rank-Q" x="11.5" y="20.5" /><use href="#pip♠" x="22" y="55.5" /><use href="#left-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
+    <g id="♠K"><use href="#rank-K" x="13.5" y="16" /><use href="#pip♠" x="22" y="55.5" /><use href="#left-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
     <g id="♥A"><use style="fill:#c8102e;" href="#rank-A" x="11.5" y="17.5" /><use href="#pip♥" x="22" y="75.5" /></g>
     <g id="♥2"><use style="fill:#c8102e;" href="#rank-2" x="11.5" y="17.5" /><use href="#pip♥" x="22" y="75.5" /></g>
     <g id="♥3"><use style="fill:#c8102e;" href="#rank-3" x="11.5" y="17.5" /><use href="#pip♥" x="22" y="75.5" /></g>
@@ -149,9 +174,9 @@
     <g id="♥8"><use style="fill:#c8102e;" href="#rank-8" x="11.5" y="17.5" /><use href="#pip♥" x="22" y="75.5" /></g>
     <g id="♥9"><use style="fill:#c8102e;" href="#rank-9" x="11.5" y="17.5" /><use href="#pip♥" x="22" y="75.5" /></g>
     <g id="♥10"><use style="stroke:#c8102e;" href="#rank-10" x="11.5" y="17.5" /><use href="#pip♥" x="22" y="75.5" /></g>
-    <g id="♥J"><use style="fill:#c8102e;" href="#rank-J" x="22.5" y="17.5" /><use href="#pip♥" x="22" y="75.5" /><use href="#left-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
-    <g id="♥Q"><use style="fill:#c8102e;" href="#rank-Q" x="11.5" y="17.5" /><use href="#pip♥" x="22" y="75.5" /><use href="#left-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
-    <g id="♥K" ><use style="fill:#c8102e;" href="#rank-K" x="13.5" y="17.5" /><use href="#pip♥" x="22" y="75.5" /><use href="#left-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
+    <g id="♥J"><use style="fill:#c8102e;" href="#rank-J" x="22.5" y="16.5" /><use href="#pip♥" x="22" y="75.5" /><use href="#left-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
+    <g id="♥Q"><use style="fill:#c8102e;" href="#rank-Q" x="11.5" y="20.5" /><use href="#pip♥" x="22" y="75.5" /><use href="#left-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
+    <g id="♥K" ><use style="fill:#c8102e;" href="#rank-K" x="13.5" y="16" /><use href="#pip♥" x="22" y="75.5" /><use href="#left-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/></g>
     <g id="index-JokerBlack">
       <use href="#pip-JokerWand" x="-32" y="28" style="stroke:#000000;" transform="scale(2,2)" />
     </g>
@@ -362,243 +387,301 @@
     </g>
   </g>
 </defs>
+  <view id="Nav" viewBox="0 0 1741 4690" />
+  <view id="CAN" viewBox="0 0 241 335" />
+  <view id="C2N" viewBox="0 335 241 335" />
+  <view id="C3N" viewBox="0 670 241 335" />
+  <view id="C4N" viewBox="0 1005 241 335" />
+  <view id="C5N" viewBox="0 1340 241 335" />
+  <view id="C6N" viewBox="0 1675 241 335" />
+  <view id="C7N" viewBox="0 2010 241 335" />
+  <view id="C8N" viewBox="0 2345 241 335" />
+  <view id="C9N" viewBox="0 2680 241 335" />
+  <view id="C10N" viewBox="0 3015 241 335" />
+  <view id="CJN" viewBox="0 3350 241 335" />
+  <view id="CQN" viewBox="0 3685 241 335" />
+  <view id="CKN" viewBox="0 4020 241 335" />
+  <view id="DAN" viewBox="500 0 241 335" />
+  <view id="D2N" viewBox="500 335 241 335" />
+  <view id="D3N" viewBox="500 670 241 335" />
+  <view id="D4N" viewBox="500 1005 241 335" />
+  <view id="D5N" viewBox="500 1340 241 335" />
+  <view id="D6N" viewBox="500 1675 241 335" />
+  <view id="D7N" viewBox="500 2010 241 335" />
+  <view id="D8N" viewBox="500 2345 241 335" />
+  <view id="D9N" viewBox="500 2680 241 335" />
+  <view id="D10N" viewBox="500 3015 241 335" />
+  <view id="DJN" viewBox="500 3350 241 335" />
+  <view id="DQN" viewBox="500 3685 241 335" />
+  <view id="DKN" viewBox="500 4020 241 335" />
+  <view id="SAN" viewBox="1000 0 241 335" />
+  <view id="S2N" viewBox="1000 335 241 335" />
+  <view id="S3N" viewBox="1000 670 241 335" />
+  <view id="S4N" viewBox="1000 1005 241 335" />
+  <view id="S5N" viewBox="1000 1340 241 335" />
+  <view id="S6N" viewBox="1000 1675 241 335" />
+  <view id="S7N" viewBox="1000 2010 241 335" />
+  <view id="S8N" viewBox="1000 2345 241 335" />
+  <view id="S9N" viewBox="1000 2680 241 335" />
+  <view id="S10N" viewBox="1000 3015 241 335" />
+  <view id="SJN" viewBox="1000 3350 241 335" />
+  <view id="SQN" viewBox="1000 3685 241 335" />
+  <view id="SKN" viewBox="1000 4020 241 335" />
+  <view id="HAN" viewBox="1500 0 241 335" />
+  <view id="H2N" viewBox="1500 335 241 335" />
+  <view id="H3N" viewBox="1500 670 241 335" />
+  <view id="H4N" viewBox="1500 1005 241 335" />
+  <view id="H5N" viewBox="1500 1340 241 335" />
+  <view id="H6N" viewBox="1500 1675 241 335" />
+  <view id="H7N" viewBox="1500 2010 241 335" />
+  <view id="H8N" viewBox="1500 2345 241 335" />
+  <view id="H9N" viewBox="1500 2680 241 335" />
+  <view id="H10N" viewBox="1500 3015 241 335" />
+  <view id="HJN" viewBox="1500 3350 241 335" />
+  <view id="HQN" viewBox="1500 3685 241 335" />
+  <view id="HKN" viewBox="1500 4020 241 335" />
+  <view id="JBN" viewBox="0 4355 241 335" />
+  <view id="JRN" viewBox="500 4355 241 335" />
+  <view id="BACK-BLUEN" viewBox="1000 4355 241 335" />
+  <view id="BACK-REDN" viewBox="1500 4355 241 335" />
+
   <!-- CARD CA: ACE OF CLUBS                      -->
+  <a href="#CAN">
   <g id="card-CA" transform="translate(0, 0)">
     <use href="#card-base" />
-    
     <!-- Large Center Pip -->
     <use href="#centre-large♣" />
-    
     <!-- Corner Indices -->
     <use href="#♣A" />
     <use href="#♣A" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="314">📇</text></a>
+  <a href="#C2N" role="button" aria-label="Go to TWO OF CLUBS"><text x="150" y="314">⏭️</text></a>
 
   <!-- CARD C2: TWO OF CLUBS                      -->
+  <a href="#C2N">
   <g id="card-C2" transform="translate(0, 335)">
     <use href="#card-base" />
-    
     <!-- Top Central Pip -->
     <use href="#centre-large♣" transform="translate(0, -106.5)" />
-    
     <!-- Bottom Central Pip -->
     <use href="#centre-large♣"  transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-    
     <!-- Corner Indices -->
     <use href="#♣2" />
     <use href="#♣2" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#CAN" role="button" aria-label="Go to ACE OF CLUBS"><text x="50" y="649">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="649">📇</text></a>
+  <a href="#C3N" role="button" aria-label="Go to THREE OF CLUBS"><text x="150" y="649">⏭️</text></a>
 
   <!-- CARD C3: THREE OF CLUBS                      -->
+  <a href="#C3N">
   <g id="card-C3" transform="translate(0, 670)">
     <use href="#card-base" />
-    
     <!-- Top Central Pip -->
     <use href="#centre-large♣" transform="translate(0, -106.5)" />
-    
     <!-- Large Center Pip -->
     <use href="#centre-large♣" />
-
     <!-- Bottom Central Pip -->
     <use  href="#centre-large♣"  transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-    
     <!-- Corner Indices -->
     <use href="#♣3" />
     <use href="#♣3" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#C2N" role="button" aria-label="Go to TWO OF CLUBS"><text x="50" y="984">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="984">📇</text></a>
+  <a href="#C4N" role="button" aria-label="Go to FOUR OF CLUBS"><text x="150" y="984">⏭️</text></a>
 
   <!-- CARD C4: FOUR OF CLUBS                      -->
+  <a href="#C4N" >
   <g id="card-C4" transform="translate(0, 1005)">
     <use href="#card-base" />
-    
     <!-- Top Left Pip -->
     <use href="#left-large♣" transform="translate(0, -106.5)" />
-    
     <!-- Top Right Pip -->
     <use href="#right-large♣" transform="translate(0, -106.5)" />
-    
     <!-- Bottom Left Pip -->
     <use href="#left-large♣"  transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-    
     <!-- Bottom Right Pip -->
     <use href="#right-large♣"  transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-
     <!-- Corner Indices -->
     <use href="#♣4" />
     <use href="#♣4" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#C3N" role="button" aria-label="Go to THREE OF CLUBS"><text x="50" y="1319">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="1319">📇</text></a>
+  <a href="#C5N" role="button" aria-label="Go to FIVE OF CLUBS"><text x="150" y="1319">⏭️</text></a>
 
   <!-- CARD C5: FIVE OF CLUBS                      -->
+  <a href="#C5N">
   <g id="card-C5" transform="translate(0, 1340)">
     <use href="#card-base" />
-    
     <!-- Top Left Pip -->
     <use href="#left-large♣" transform="translate(0, -106.5)" />
-    
     <!-- Top Right Pip -->
     <use href="#right-large♣" transform="translate(0, -106.5)" />
-    
     <!-- Center Pip -->
     <use href="#centre-large♣" />
-    
     <!-- Bottom Left Pip -->
     <use href="#left-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-    
     <!-- Bottom Right Pip -->
     <use href="#right-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-
     <!-- Corner Indices -->
     <use href="#♣5" />
     <use href="#♣5" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#C4N" role="button" aria-label="Go to FOUR OF CLUBS"><text x="50" y="1654">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="1654">📇</text></a>
+  <a href="#C6N" role="button" aria-label="Go to SIX OF CLUBS"><text x="150" y="1654">⏭️</text></a>
 
   <!-- CARD C6: SIX OF CLUBS                       -->
+  <a href="#C6N">
   <g id="card-C6" transform="translate(0, 1675)">
     <use href="#card-base" />
-    
     <!-- Top Row (Left & Right) -->
     <use href="#left-large♣" transform="translate(0, -106.5)" />
     <use href="#right-large♣" transform="translate(0, -106.5)" />
-    
     <!-- Middle Row (Left & Right) -->
     <use href="#left-large♣" />
     <use href="#right-large♣" />
-    
     <!-- Bottom Row (Left & Right - Matrix Rotated) -->
     <use href="#left-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#right-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-
     <!-- Corner Indices -->
     <use href="#♣6" />
     <use href="#♣6" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#C5N" role="button" aria-label="Go to FIVE OF CLUBS"><text x="50" y="1989">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="1989">📇</text></a>
+  <a href="#C7N" role="button" aria-label="Go to SEVEN OF CLUBS"><text x="150" y="1989">⏭️</text></a>
 
   <!-- CARD C7: SEVEN OF CLUBS                       -->
+  <a href="#C7N">
   <g id="card-C7" transform="translate(0, 2010)">
     <use href="#card-base" />
-    
     <!-- Top Row (Left & Right) -->
     <use href="#left-large♣" transform="translate(0, -106.5)" />
     <use href="#right-large♣" transform="translate(0, -106.5)" />
-
     <!-- Mid-top Central Pip -->
     <use href="#centre-large♣" transform="translate(0, -53.25)" />
-    
     <!-- Middle Row (Left & Right) -->
     <use href="#left-large♣" />
     <use href="#right-large♣" />
-    
     <!-- Bottom Row (Left & Right - Matrix Rotated) -->
     <use href="#left-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#right-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-
     <!-- Corner Indices -->
     <use href="#♣7" />
     <use href="#♣7" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#C6N" role="button" aria-label="Go to SIX OF CLUBS"><text x="50" y="2324">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="2324">📇</text></a>
+  <a href="#C8N" role="button" aria-label="Go to EIGHT OF CLUBS"><text x="150" y="2324">⏭️</text></a>
 
   <!-- CARD C8: EIGHT OF CLUBS                       -->
+  <a href="#C8N">
   <g id="card-C8" transform="translate(0, 2345)">
     <use href="#card-base" />
-    
     <!-- Top Row (Left & Right) -->
     <use href="#left-large♣" transform="translate(0, -106.5)" />
     <use href="#right-large♣" transform="translate(0, -106.5)" />
-
     <!-- Mid-top Central Pip -->
     <use href="#centre-large♣" transform="translate(0, -53.25)" />
-    
     <!-- Middle Row (Left & Right) -->
     <use href="#left-large♣" />
     <use href="#right-large♣" />
-    
     <!-- Mid-bottom Central Pip -->
     <use href="#centre-large♣" transform="translate(0, 53.25) rotate(180, 120.5, 167.5)" />
-
     <!-- Bottom Row (Left & Right - Matrix Rotated) -->
     <use href="#left-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#right-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-
     <!-- Corner Indices -->
     <use href="#♣8" />
     <use href="#♣8" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#C7N" role="button" aria-label="Go to SEVEN OF CLUBS"><text x="50" y="2659">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="2659">📇</text></a>
+  <a href="#C9N" role="button" aria-label="Go to NINE OF CLUBS"><text x="150" y="2659">⏭️</text></a>
 
   <!-- CARD C9: NINE OF CLUBS                       -->
-  <g id="card-09" transform="translate(0, 2680)">
+  <a href="#C9N"><g id="card-09" transform="translate(0, 2680)">
     <use href="#card-base" />
-    
     <!-- Row 1: Outer Top (Left & Right) -->
     <use href="#left-large♣" transform="translate(0, -106.5)" />
     <use href="#right-large♣" transform="translate(0, -106.5)" />
-
     <!-- Row 2: Inner Top (Left & Right) -->
     <use href="#left-large♣" transform="translate(0, -35.5)" />
     <use href="#right-large♣" transform="translate(0, -35.5)" />
-    
     <!-- Dead Center Pip -->
     <use href="#centre-large♣" />
-    
     <!-- Row 3: Inner Bottom (Left & Right - Matrix Rotated) -->
     <use href="#left-large♣" transform="translate(0, 35.5) rotate(180, 120.5, 167.5)"/>
     <use href="#right-large♣" transform="translate(0, 35.5) rotate(180, 120.5, 167.5)"/>
-
     <!-- Row 4: Outer Bottom (Left & Right - Matrix Rotated) -->
     <use href="#left-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#right-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-
     <!-- Corner Indices -->
     <use href="#♣9" />
     <use href="#♣9" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#C8N" role="button" aria-label="Go to EIGHT OF CLUBS"><text x="50" y="2994">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="2994">📇</text></a>
+  <a href="#C10N" role="button" aria-label="Go to TEN OF CLUBS"><text x="150" y="2994">⏭️</text></a>
 
   <!-- CARD C10: TEN OF CLUBS                       -->
+  <a href="#C10N">
   <g id="card-C10" transform="translate(0, 3015)">
     <use href="#card-base" />
-    
     <!-- Row 1: Outer Top (Left & Right) -->
     <use href="#left-large♣" transform="translate(0, -106.5)" />
     <use href="#right-large♣" transform="translate(0, -106.5)" />
-
     <!-- Row 2: Inner Top (Left & Right) -->
     <use href="#left-large♣" transform="translate(0, -35.5)" />
     <use href="#right-large♣" transform="translate(0, -35.5)" />
-    
     <!-- Mid-central-->
     <use href="#centre-large♣" transform="translate(0, -71)" />
     <use href="#centre-large♣" transform="translate(0, 71) rotate(180, 120.5, 167.5)" />
-    
     <!-- Row 3: Inner Bottom (Left & Right - Matrix Rotated) -->
     <use href="#left-large♣" transform="translate(0, 35.5) rotate(180, 120.5, 167.5)"/>
     <use href="#right-large♣" transform="translate(0, 35.5) rotate(180, 120.5, 167.5)"/>
-
     <!-- Row 4: Outer Bottom (Left & Right - Matrix Rotated) -->
     <use href="#left-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#right-large♣" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
-
     <!-- Corner Indices -->
     <use href="#♣10" />
     <use href="#♣10" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#C9N" role="button" aria-label="Go to NINE OF CLUBS"><text x="50" y="3329">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="3329">📇</text></a>
+  <a href="#CJN" role="button" aria-label="Go to JACK OF CLUBS"><text x="150" y="3329">⏭️</text></a>
 
   <!-- CARD DA: ACE OF DIAMONDS                   -->
+  <a href="#DAN">
   <g id="card-DA" transform="translate(500, 0)">
     <use href="#card-base" />
     <use href="#centre-large♦" />
     <use href="#♦A" />
     <use href="#♦A" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#CKN" role="button" aria-label="Go to KING OF CLUBS"><text x="550" y="314">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="314">📇</text></a>
+  <a href="#D2N" role="button" aria-label="Go to TWO OF DIAMONDS"><text x="650" y="314">⏭️</text></a>
 
   <!-- CARD D2: TWO OF DIAMONDS                   -->
+  <a href="#D2N">
   <g id="card-D2" transform="translate(500, 335)">
     <use href="#card-base" />
     <use href="#centre-large♦" transform="translate(0, -106.5)" />
     <use href="#centre-large♦" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♦2" />
     <use href="#♦2" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#DAN" role="button" aria-label="Go to ACE OF DIAMONDS"><text x="550" y="649">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="649">📇</text></a>
+  <a href="#D3N" role="button" aria-label="Go to THREE OF DIAMONDS"><text x="650" y="649">⏭️</text></a>
 
   <!-- CARD D3: THREE OF DIAMONDS                 -->
+  <a href="#D3N">
   <g id="card-D3" transform="translate(500, 670)">
     <use href="#card-base" />
     <use href="#centre-large♦" transform="translate(0, -106.5)" />
@@ -606,10 +689,13 @@
     <use href="#centre-large♦" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♦3" />
     <use href="#♦3" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#D2N" role="button" aria-label="Go to TWO OF DIAMONDS"><text x="550" y="984">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="984">📇</text></a>
+  <a href="#D4N" role="button" aria-label="Go to FOUR OF DIAMONDS"><text x="650" y="984">⏭️</text></a>
 
   <!-- CARD D4: FOUR OF DIAMONDS                  -->
-  <g id="card-D4" transform="translate(500, 1005)">
+  <a href="#D4N"><g id="card-D4" transform="translate(500, 1005)">
     <use href="#card-base" />
     <use href="#left-large♦" transform="translate(0, -106.5)" />
     <use href="#right-large♦" transform="translate(0, -106.5)" />
@@ -617,9 +703,13 @@
     <use href="#right-large♦" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♦4" />
     <use href="#♦4" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#D3N" role="button" aria-label="Go to THREE OF DIAMONDS"><text x="550" y="1319">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="1319">📇</text></a>
+  <a href="#D5N" role="button" aria-label="Go to FIVE OF DIAMONDS"><text x="650" y="1319">⏭️</text></a>
 
   <!-- CARD D5: FIVE OF DIAMONDS                  -->
+  <a href="#D5N">
   <g id="card-D5" transform="translate(500, 1340)">
     <use href="#card-base" />
     <use href="#left-large♦" transform="translate(0, -106.5)" />
@@ -629,9 +719,13 @@
     <use href="#right-large♦" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♦5" />
     <use href="#♦5" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#D4N" role="button" aria-label="Go to FOUR OF DIAMONDS"><text x="550" y="1654">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="1654">📇</text></a>
+  <a href="#D6N" role="button" aria-label="Go to SIX OF DIAMONDS"><text x="650" y="1654">⏭️</text></a>
 
   <!-- CARD D6: SIX OF DIAMONDS                   -->
+  <a href="#D6N">
   <g id="card-D6" transform="translate(500, 1675)">
     <use href="#card-base" />
     <use href="#left-large♦" transform="translate(0, -106.5)" />
@@ -642,9 +736,13 @@
     <use href="#right-large♦" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♦6" />
     <use href="#♦6" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#D5N" role="button" aria-label="Go to FIVE OF DIAMONDS"><text x="550" y="1989">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="1989">📇</text></a>
+  <a href="#D7N" role="button" aria-label="Go to SEVEN OF DIAMONDS"><text x="650" y="1989">⏭️</text></a>
 
   <!-- CARD D7: SEVEN OF DIAMONDS                 -->
+  <a href="#D7N">
   <g id="card-D7" transform="translate(500, 2010)">
     <use href="#card-base" />
     <use href="#left-large♦" transform="translate(0, -106.5)" />
@@ -656,9 +754,13 @@
     <use href="#right-large♦" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♦7" />
     <use href="#♦7" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#D6N" role="button" aria-label="Go to SIX OF DIAMONDS"><text x="550" y="2324">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="2324">📇</text></a>
+  <a href="#D8N" role="button" aria-label="Go to EIGHT OF DIAMONDS"><text x="650" y="2324">⏭️</text></a>
 
   <!-- CARD D8: EIGHT OF DIAMONDS                 -->
+  <a href="#D8N">
   <g id="card-D8" transform="translate(500, 2345)">
     <use href="#card-base" />
     <use href="#left-large♦" transform="translate(0, -106.5)" />
@@ -671,10 +773,13 @@
     <use href="#right-large♦" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♦8" />
     <use href="#♦8" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#D7N" role="button" aria-label="Go to SEVEN OF DIAMONDS"><text x="550" y="2659">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="2659">📇</text></a>
+  <a href="#D9N" role="button" aria-label="Go to NINE OF DIAMONDS"><text x="650" y="2659">⏭️</text></a>
 
   <!-- CARD D9: NINE OF DIAMONDS                  -->
-  <g id="card-D9" transform="translate(500, 2680)">
+  <a href="#D9N"><g id="card-D9" transform="translate(500, 2680)">
     <use href="#card-base" />
     <use href="#left-large♦" transform="translate(0, -106.5)" />
     <use href="#right-large♦" transform="translate(0, -106.5)" />
@@ -687,9 +792,13 @@
     <use href="#right-large♦" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♦9" />
     <use href="#♦9" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#D8N" role="button" aria-label="Go to EIGHT OF DIAMONDS"><text x="550" y="2994">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="2994">📇</text></a>
+  <a href="#D10N" role="button" aria-label="Go to TEN OF DIAMONDS"><text x="650" y="2994">⏭️</text></a>
 
   <!-- CARD D10: TEN OF DIAMONDS                  -->
+  <a href="#D10N">
   <g id="card-D10" transform="translate(500, 3015)">
     <use href="#card-base" />
     <use href="#left-large♦" transform="translate(0, -106.5)" />
@@ -704,25 +813,38 @@
     <use href="#right-large♦" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♦10" />
     <use href="#♦10" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#D9N" role="button" aria-label="Go to NINE OF DIAMONDS"><text x="550" y="3329">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="3329">📇</text></a>
+  <a href="#DJN" role="button" aria-label="Go to JACK OF DIAMONDS"><text x="650" y="3329">⏭️</text></a>
 
   <!-- CARD SA: ACE OF SPADES                     -->
+  <a href="#SAN">
   <g id="card-SA" transform="translate(1000, 0)">
     <use href="#card-base" />
     <use href="#centre-large♠" />
     <use href="#♠A" />
     <use href="#♠A" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#DKN" role="button" aria-label="Go to KING OF DIAMONDS"><text x="1050" y="314">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="314">📇</text></a>
+  <a href="#S2N" role="button" aria-label="Go to TWO OF SPADES"><text x="1150" y="314">⏭️</text></a>
 
   <!-- CARD S2: TWO OF SPADES                     -->
+  <a href="#S2N">
   <g id="card-S2" transform="translate(1000, 335)">
     <use href="#card-base" />
     <use href="#centre-large♠" transform="translate(0, -106.5)" />
     <use href="#centre-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♠2" />
     <use href="#♠2" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#SAN" role="button" aria-label="Go to ACE OF SPADES"><text x="1050" y="649">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="649">📇</text></a>
+  <a href="#S3N" role="button" aria-label="Go to THREE OF SPADES"><text x="1150" y="649">⏭️</text></a>
+
   <!-- CARD S3: THREE OF SPADES                 -->
+  <a href="#S3N">
   <g id="card-S3" transform="translate(1000, 670)">
     <use href="#card-base" />
     <use href="#centre-large♠" transform="translate(0, -106.5)" />
@@ -730,9 +852,13 @@
     <use href="#centre-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♠3" />
     <use href="#♠3" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#S2N" role="button" aria-label="Go to TWO OF SPADES"><text x="1050" y="984">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="984">📇</text></a>
+  <a href="#S4N" role="button" aria-label="Go to FOUR OF SPADES"><text x="1150" y="984">⏭️</text></a>
 
   <!-- CARD S4: FOUR OF SPADES                  -->
+  <a href="#S4N">
   <g id="card-S4" transform="translate(1000, 1005)">
     <use href="#card-base" />
     <use href="#left-large♠" transform="translate(0, -106.5)" />
@@ -741,9 +867,13 @@
     <use href="#right-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♠4" />
     <use href="#♠4" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#S3N" role="button" aria-label="Go to THREE OF SPADES"><text x="1050" y="1319">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="1319">📇</text></a>
+  <a href="#S5N" role="button" aria-label="Go to FIVE OF SPADES"><text x="1150" y="1319">⏭️</text></a>
 
   <!-- CARD S5: FIVE OF SPADES                  -->
+  <a href="#S5N">
   <g id="card-S5" transform="translate(1000, 1340)">
     <use href="#card-base" />
     <use href="#left-large♠" transform="translate(0, -106.5)" />
@@ -753,9 +883,13 @@
     <use href="#right-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♠5" />
     <use href="#♠5" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#S4N" role="button" aria-label="Go to FOUR OF SPADES"><text x="1050" y="1654">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="1654">📇</text></a>
+  <a href="#S6N" role="button" aria-label="Go to SIX OF SPADES"><text x="1150" y="1654">⏭️</text></a>
 
   <!-- CARD S6: SIX OF SPADES                   -->
+  <a href="#S6N">
   <g id="card-S6" transform="translate(1000, 1675)">
     <use href="#card-base" />
     <use href="#left-large♠" transform="translate(0, -106.5)" />
@@ -766,9 +900,13 @@
     <use href="#right-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♠6" />
     <use href="#♠6" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#S5N" role="button" aria-label="Go to FIVE OF SPADES"><text x="1050" y="1989">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="1989">📇</text></a>
+  <a href="#S7N" role="button" aria-label="Go to SEVEN OF SPADES"><text x="1150" y="1989">⏭️</text></a>
 
   <!-- CARD S7: SEVEN OF SPADES                 -->
+  <a href="#S7N">
   <g id="card-S7" transform="translate(1000, 2010)">
     <use href="#card-base" />
     <use href="#left-large♠" transform="translate(0, -106.5)" />
@@ -780,9 +918,13 @@
     <use href="#right-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♠7" />
     <use href="#♠7" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#S6N" role="button" aria-label="Go to SIX OF SPADES"><text x="1050" y="2324">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="2324">📇</text></a>
+  <a href="#S8N" role="button" aria-label="Go to EIGHT OF SPADES"><text x="1150" y="2324">⏭️</text></a>
 
   <!-- CARD S8: EIGHT OF SPADES                 -->
+  <a href="#S8N">
   <g id="card-S8" transform="translate(1000, 2345)">
     <use href="#card-base" />
     <use href="#left-large♠" transform="translate(0, -106.5)" />
@@ -795,9 +937,13 @@
     <use href="#right-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♠8" />
     <use href="#♠8" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#S7N" role="button" aria-label="Go to SEVEN OF SPADES"><text x="1050" y="2659">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="2659">📇</text></a>
+  <a href="#S9N" role="button" aria-label="Go to NINE OF SPADES"><text x="1150" y="2659">⏭️</text></a>
 
   <!-- CARD S9: NINE OF SPADES                  -->
+  <a href="#S9N">
   <g id="card-S9" transform="translate(1000, 2680)">
     <use href="#card-base" />
     <use href="#left-large♠" transform="translate(0, -106.5)" />
@@ -811,10 +957,13 @@
     <use href="#right-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♠9" />
     <use href="#♠9" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#S8N" role="button" aria-label="Go to EIGHT OF SPADES"><text x="1050" y="2994">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="2994">📇</text></a>
+  <a href="#S10N" role="button" aria-label="Go to TEN OF SPADES"><text x="1150" y="2994">⏭️</text></a>
 
   <!-- CARD S10: TEN OF SPADES                  -->
-  <g id="card-S10" transform="translate(1000, 3015)">
+  <a href="#S10N"><g id="card-S10" transform="translate(1000, 3015)">
     <use href="#card-base" />
     <use href="#left-large♠" transform="translate(0, -106.5)" />
     <use href="#right-large♠" transform="translate(0, -106.5)" />
@@ -828,36 +977,51 @@
     <use href="#right-large♠" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♠10" />
     <use href="#♠10" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#S9N" role="button" aria-label="Go to NINE OF SPADES"><text x="1050" y="3329">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="3329">📇</text></a>
+  <a href="#SJN" role="button" aria-label="Go to JACK OF SPADES"><text x="1150" y="3329">⏭️</text></a>
 
   <!-- CARD HA: ACE OF HEARTS                     -->
+  <a href="#HAN">
   <g id="card-HA" transform="translate(1500, 0)">
     <use href="#card-base" />
     <use href="#centre-large♥" />
     <use href="#♥A" />
     <use href="#♥A" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#SKN" role="button" aria-label="Go to KING OF SPADES"><text x="1550" y="314">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="314">📇</text></a>
+  <a href="#H2N" role="button" aria-label="Go to TWO OF HEARTS"><text x="1650" y="314">⏭️</text></a>
 
   <!-- CARD H2: TWO OF HEARTS                     -->
+  <a href="#H2N">
   <g id="card-H2" transform="translate(1500, 335)">
     <use href="#card-base" />
     <use href="#centre-large♥" transform="translate(0, -106.5)" />
     <use href="#centre-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♥2" />
     <use href="#♥2" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#HAN" role="button" aria-label="Go to ACE OF HEARTS"><text x="1550" y="649">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="649">📇</text></a>
+  <a href="#H3N" role="button" aria-label="Go to THREE OF HEARTS"><text x="1650" y="649">⏭️</text></a>
 
   <!-- CARD H3: THREE OF HEARTS                   -->
-  <g id="card-H3" transform="translate(1500, 670)">
+  <a href="#H3N"><g id="card-H3" transform="translate(1500, 670)">
     <use href="#card-base" />
     <use href="#centre-large♥" transform="translate(0, -106.5)" />
     <use href="#centre-large♥" />
     <use href="#centre-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♥3" />
     <use href="#♥3" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#H2N" role="button" aria-label="Go to TWO OF HEARTS"><text x="1550" y="984">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="984">📇</text></a>
+  <a href="#H4N" role="button" aria-label="Go to FOUR OF HEARTS"><text x="1650" y="984">⏭️</text></a>
 
   <!-- CARD H4: FOUR OF HEARTS                    -->
+  <a href="#H4N">
   <g id="card-H4" transform="translate(1500, 1005)">
     <use href="#card-base" />
     <use href="#left-large♥" transform="translate(0, -106.5)" />
@@ -866,9 +1030,13 @@
     <use href="#right-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♥4" />
     <use href="#♥4" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#H3N" role="button" aria-label="Go to THREE OF HEARTS"><text x="1550" y="1319">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="1319">📇</text></a>
+  <a href="#H5N" role="button" aria-label="Go to FIVE OF HEARTS"><text x="1650" y="1319">⏭️</text></a>
 
   <!-- CARD H5: FIVE OF HEARTS                    -->
+  <a href="#H5N">
   <g id="card-H5" transform="translate(1500, 1340)">
     <use href="#card-base" />
     <use href="#left-large♥" transform="translate(0, -106.5)" />
@@ -878,9 +1046,13 @@
     <use href="#right-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♥5" />
     <use href="#♥5" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#H4N" role="button" aria-label="Go to FOUR OF HEARTS"><text x="1550" y="1654">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="1654">📇</text></a>
+  <a href="#H6N" role="button" aria-label="Go to SIX OF HEARTS"><text x="1650" y="1654">⏭️</text></a>
 
   <!-- CARD H6: SIX OF HEARTS                     -->
+  <a href="#H6N">
   <g id="card-H6" transform="translate(1500, 1675)">
     <use href="#card-base" />
     <use href="#left-large♥" transform="translate(0, -106.5)" />
@@ -891,9 +1063,13 @@
     <use href="#right-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♥6" />
     <use href="#♥6" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#H5N" role="button" aria-label="Go to FIVE OF HEARTS"><text x="1550" y="1989">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="1989">📇</text></a>
+  <a href="#H7N" role="button" aria-label="Go to SEVEN OF HEARTS"><text x="1650" y="1989">⏭️</text></a>
 
   <!-- CARD H7: SEVEN OF HEARTS                   -->
+  <a href="#H7N">
   <g id="card-H7" transform="translate(1500, 2010)">
     <use href="#card-base" />
     <use href="#left-large♥" transform="translate(0, -106.5)" />
@@ -905,9 +1081,13 @@
     <use href="#right-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♥7" />
     <use href="#♥7" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#H6N" role="button" aria-label="Go to SIX OF HEARTS"><text x="1550" y="2324">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="2324">📇</text></a>
+  <a href="#H8N" role="button" aria-label="Go to EIGHT OF HEARTS"><text x="1650" y="2324">⏭️</text></a>
 
   <!-- CARD H8: EIGHT OF HEARTS                   -->
+  <a href="#H8N">
   <g id="card-H8" transform="translate(1500, 2345)">
     <use href="#card-base" />
     <use href="#left-large♥" transform="translate(0, -106.5)" />
@@ -920,9 +1100,13 @@
     <use href="#right-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♥8" />
     <use href="#♥8" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#H7N" role="button" aria-label="Go to SEVEN OF HEARTS"><text x="1550" y="2659">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="2659">📇</text></a>
+  <a href="#H9N" role="button" aria-label="Go to NINE OF HEARTS"><text x="1650" y="2659">⏭️</text></a>
 
   <!-- CARD H9: NINE OF HEARTS                    -->
+  <a href="#H9N">
   <g id="card-H9" transform="translate(1500, 2680)">
     <use href="#card-base" />
     <use href="#left-large♥" transform="translate(0, -106.5)" />
@@ -936,10 +1120,13 @@
     <use href="#right-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♥9" />
     <use href="#♥9" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#H8N" role="button" aria-label="Go to EIGHT OF HEARTS"><text x="1550" y="2994">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="2994">📇</text></a>
+  <a href="#H10N" role="button" aria-label="Go to TEN OF HEARTS"><text x="1650" y="2994">⏭️</text></a>
 
   <!-- CARD H10: TEN OF HEARTS                    -->
-  <g id="card-H10" transform="translate(1500, 3015)">
+  <a href="#H9N"><g id="card-H10" transform="translate(1500, 3015)">
     <use href="#card-base" />
     <use href="#left-large♥" transform="translate(0, -106.5)" />
     <use href="#right-large♥" transform="translate(0, -106.5)" />
@@ -953,83 +1140,160 @@
     <use href="#right-large♥" transform="translate(0, 106.5) rotate(180, 120.5, 167.5)"/>
     <use href="#♥10" />
     <use href="#♥10" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#H9N" role="button" aria-label="Go to NINE OF HEARTS"><text x="1550" y="3329">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="3329">📇</text></a>
+  <a href="#HJN" role="button" aria-label="Go to JACK OF HEARTS"><text x="1650" y="3329">⏭️</text></a>
 
   <!-- ========================================== -->
   <!-- ROW 11: JACKS (Y = 3350)                    -->
   <!-- ========================================== -->
+  <a href="#CJN">
   <g id="card-CJ" transform="translate(0, 3350)">
     <use href="#card-base" /><use href="#image-JACK" /><use href="#♣J" /><use href="#♣J" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#DJN">
   <g id="card-DJ" transform="translate(500, 3350)">
     <use href="#card-base" /><use href="#image-JACK" /><use href="#♦J" /><use href="#♦J" transform="rotate(180, 120.5, 167.5)" />
-  </g>
-  <g id="card-SJ" transform="translate(1000, 3350)">
+  </g></a>
+  <a href="#SJN"><g id="card-SJ" transform="translate(1000, 3350)">
     <use href="#card-base" /><use href="#image-JACK" /><use href="#♠J" /><use href="#♠J" transform="rotate(180, 120.5, 167.5)" />
-  </g>
-  <g id="card-HJ" transform="translate(1500, 3350)">
+  </g></a>
+  <a href="#HJN"><g id="card-HJ" transform="translate(1500, 3350)">
     <use href="#card-base" /><use href="#image-JACK" /><use href="#♥J" /><use href="#♥J" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
 
   <!-- ========================================== -->
   <!-- ROW 12: QUEENS (Y = 3685)                   -->
   <!-- ========================================== -->
+  <a href="#CQN">
   <g id="card-CQ" transform="translate(0, 3685)">
     <use href="#card-base" /><use href="#image-QUEEN" /><use href="#♣Q" /><use href="#♣Q" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#DQN">
   <g id="card-DQ" transform="translate(500, 3685)">
     <use href="#card-base" /><use href="#image-QUEEN" /><use href="#♦Q" /><use href="#♦Q" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#SQN">
   <g id="card-SQ" transform="translate(1000, 3685)">
     <use href="#card-base" /><use href="#image-QUEEN" /><use href="#♠Q" /><use href="#♠Q" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#HQN">
   <g id="card-HQ" transform="translate(1500, 3685)">
     <use href="#card-base" /><use href="#image-QUEEN" /><use href="#♥Q" /><use href="#♥Q" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
 
   <!-- ========================================== -->
   <!-- ROW 13: KINGS (Y = 4020)                    -->
   <!-- ========================================== -->
+  <a href="#CKN">
   <g id="card-CK" transform="translate(0, 4020)">
     <use href="#card-base" /><use href="#image-KING" /><use href="#♣K" /><use href="#♣K" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#DKN">
   <g id="card-DK" transform="translate(500, 4020)">
     <use href="#card-base" /><use href="#image-KING" /><use href="#♦K" /><use href="#♦K" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#SKN">
   <g id="card-SK" transform="translate(1000, 4020)">
     <use href="#card-base" /><use href="#image-KING" /><use href="#♠K" /><use href="#♠K" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#HKN">
   <g id="card-HK" transform="translate(1500, 4020)">
     <use href="#card-base" /><use href="#image-KING" /><use href="#♥K" /><use href="#♥K" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <!-- Noble navigation -->
+  <a href="#C10N" role="button" aria-label="Go to TEN OF CLUBS"><text x="50" y="3664">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="3664">📇</text></a>
+  <a href="#CQN" role="button" aria-label="Go to QUEEN OF CLUBS"><text x="150" y="3664">⏭️</text></a>
 
-  <!-- CARD JR: BLACK JOKER (Slot: X=500, Y=4355) -->
+  <a href="#CJN" role="button" aria-label="Go to JACK OF CLUBS"><text x="50" y="3999">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="3999">📇</text></a>
+  <a href="#CKN" role="button" aria-label="Go to KING OF CLUBS"><text x="150" y="3999">⏭️</text></a>
+
+  <a href="#CQN" role="button" aria-label="Go to QUEEN OF CLUBS"><text x="50" y="4334">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="4334">📇</text></a>
+  <a href="#DAN" role="button" aria-label="Go to ACE OF DIAMONDS"><text x="150" y="4334">⏭️</text></a>
+
+  <a href="#D10N" role="button" aria-label="Go to TEN OF DIAMONDS"><text x="550" y="3664">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="3664">📇</text></a>
+  <a href="#DQN" role="button" aria-label="Go to QUEEN OF DIAMONDS"><text x="650" y="3664">⏭️</text></a>
+
+  <a href="#DJN" role="button" aria-label="Go to JACK OF DIAMONDS"><text x="550" y="3999">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="3999">📇</text></a>
+  <a href="#DKN" role="button" aria-label="Go to KING OF DIAMONDS"><text x="650" y="3999">⏭️</text></a>
+
+  <a href="#DQN" role="button" aria-label="Go to QUEEN OF DIAMONDS"><text x="550" y="4334">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="4334">📇</text></a>
+  <a href="#SAN" role="button" aria-label="Go to ACE OF SPADES"><text x="650" y="4334">⏭️</text></a>
+
+  <a href="#S10N" role="button" aria-label="Go to TEN OF SPADES"><text x="1050" y="3664">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="3664">📇</text></a>
+  <a href="#SQN" role="button" aria-label="Go to QUEEN OF SPADES"><text x="1150" y="3664">⏭️</text></a>
+
+  <a href="#SJN" role="button" aria-label="Go to JACK OF SPADES"><text x="1050" y="3999">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="3999">📇</text></a>
+  <a href="#SKN" role="button" aria-label="Go to KING OF SPADES"><text x="1150" y="3999">⏭️</text></a>
+
+  <a href="#SQN" role="button" aria-label="Go to QUEEN OF SPADES"><text x="1050" y="4334">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="4334">📇</text></a>
+  <a href="#HAN" role="button" aria-label="Go to ACE OF HEARTS"><text x="1150" y="4334">⏭️</text></a>
+
+  <a href="#H10N" role="button" aria-label="Go to TEN OF HEARTS"><text x="1550" y="3664">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="3664">📇</text></a>
+  <a href="#HQN" role="button" aria-label="Go to QUEEN OF HEARTS"><text x="1650" y="3664">⏭️</text></a>
+
+  <a href="#HJN" role="button" aria-label="Go to JACK OF HEARTS"><text x="1550" y="3999">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="3999">📇</text></a>
+  <a href="#HKN" role="button" aria-label="Go to KING OF HEARTS"><text x="1650" y="3999">⏭️</text></a>
+
+  <a href="#HQN" role="button" aria-label="Go to QUEEN OF HEARTS"><text x="1550" y="4334">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="4334">📇</text></a>
+  <a href="#CAN" role="button" aria-label="Go to ACE OF CLUBS"><text x="1650" y="4334">⏭️</text></a>
+
+<!-- CARD JR: BLACK JOKER (Slot: X=500, Y=4355) -->
+  <a href="#JBN">
   <g id="card-JB" transform="translate(0, 4355)">
     <use href="#card-base" />
     <use href="#image-joker" style="fill:#000000; stroke:#000000;" />
     <use href="#index-JokerBlack" />
     <use href="#index-JokerBlack" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#BACK-REDN" role="button" aria-label="Go to RED CARD BACK"><text x="50" y="4669">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="4669">📇</text></a>
+  <a href="#JRN" role="button" aria-label="Go to RED JOKER"><text x="150" y="4669">⏭️</text></a>
 
   <!-- CARD JR: RED JOKER (Slot: X=500, Y=4355) -->
+  <a href="#JRN">
   <g id="card-JR" transform="translate(500, 4355)">
     <use href="#card-base" />
     <use href="#image-joker" style="fill:#c8102e; stroke:#c8102e;" />
     <use href="#index-JokerRed" />
     <use href="#index-JokerRed" transform="rotate(180, 120.5, 167.5)" />
-  </g>
+  </g></a>
+  <a href="#JBN" role="button" aria-label="Go to BLACK JOKER"><text x="550" y="4669">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="4669">📇</text></a>
+  <a href="#BACK-BLUEN" role="button" aria-label="Go to BLUE CARD BACK"><text x="650" y="4669">⏭️</text></a>
 
   <!-- CARD BACK BLUE (Slot: X=1000, Y=4355) -->
+  <a href="#BACK-BLUEN">
   <g id="card-BACK-BLUE" transform="translate(1000, 4355)">
     <use href="#card-base" />
     <use href="#aperiodic-lattice" style="fill:#1d4ed8;stroke:#1d4ed8" />
-  </g>
+  </g></a>
+  <a href="#JRN" role="button" aria-label="Go to RED JOKER"><text x="1050" y="4669">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="4669">📇</text></a>
+  <a href="#BACK-REDN" role="button" aria-label="Go to RED CARD BACK"><text x="1150" y="4669">⏭️</text></a>
 
   <!-- CARD BACK RED (Slot: X=1500, Y=4355) -->
+  <a href="#BACK-REDN">
   <g id="card-BACK-RED" transform="translate(1500, 4355)">
     <use href="#card-base" />
     <use href="#aperiodic-lattice" style="fill:#c8102e;stroke:#c8102e" />
-  </g>
+  </g></a>
+  <a href="#BACK-BLUEN" role="button" aria-label="Go to BLUE CARD BACK"><text x="1550" y="4669">⏮️</text></a>
+  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="4669">📇</text></a>
+  <a href="#JBN" role="button" aria-label="Go to BLACK JOKER"><text x="1650" y="4669">⏭️</text></a>
 
   <!-- URL #Fragment IDs FOR VIEWING INDIVIDUAL CARDS -->
   <view id="CA" viewBox="0 0 241 335" />

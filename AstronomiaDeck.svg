@@ -37,6 +37,9 @@ text{
 }
 a:hover > text, a:active > text{opacity: 0.9; cursor: pointer}
 view#Nav:target ~ a,:root:not(:has(:target)) view#Nav ~ a {cursor: zoom-in;}
+@media (hover: hover) {
+  view#Nav:target ~ a:not(:hover) > g image,:root:not(:has(:target)) view#Nav ~ a:not(:hover) > g{opacity:0.85}
+}
 :root:has(:target) view#Nav:not(:target) ~ a {cursor: default;}
 a[href="#Nav"] > text {cursor: zoom-out;}
 :not(view:target[id$="N"]) ~ a:not(:has(g)), #Nav:target ~ a:not(:has(g)) {

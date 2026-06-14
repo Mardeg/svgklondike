@@ -348,9 +348,9 @@ view:target[id$="N"] ~ a:not(:has(g)) {
 
     <!-- Paper Texture and Color -->
     <linearGradient id="paperGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#f2ebd9" />
-      <stop offset="70%" stop-color="#e3d6ba" />
-      <stop offset="100%" stop-color="#a6946f" />
+      <stop offset="0%" stop-color="#26242f" />
+      <stop offset="70%" stop-color="#73664a" />
+      <stop offset="100%" stop-color="#f2ebd9" />
     </linearGradient>
 
     <!-- Charred Edge Gradient -->
@@ -363,14 +363,14 @@ view:target[id$="N"] ~ a:not(:has(g)) {
     <!-- Fire Gradients -->
     <linearGradient id="fireCore" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#ffffff" stop-opacity="0" />
-      <stop offset="15%" stop-color="#fff2a3" stop-opacity="0.95" />
-      <stop offset="50%" stop-color="#ffaa00" />
+      <stop offset="25%" stop-color="#fff2a3" stop-opacity="0.25" />
+      <stop offset="75%" stop-color="#ffaa00" />
       <stop offset="100%" stop-color="#e63d00" />
     </linearGradient>
 
     <linearGradient id="fireOuter" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#ff5500" stop-opacity="0" />
-      <stop offset="25%" stop-color="#ff3300" stop-opacity="0.85" />
+      <stop offset="50%" stop-color="#ff3300" stop-opacity="0.33" />
       <stop offset="100%" stop-color="#4a0000" stop-opacity="0.95" />
     </linearGradient>
 

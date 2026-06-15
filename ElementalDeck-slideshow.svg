@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg version="2" xmlns="http://www.w3.org/2000/svg">
+<svg version="2" xmlns="http://www.w3.org/2000/svg" width="241" height="335" role="application" aria-labelledby="deck-title">
+<title id="deck-title">Elemental Playing Cards</title>
+<metadata xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+          xmlns:dcterms="http://purl.org/dc/terms/"
+          xmlns:dc11="http://purl.org/dc/elements/1.1/"
+          xmlns:cc="http://creativecommons.org/ns#" >
+  <rdf:RDF>
+    <cc:Work rdf:about="*description goes here*">
+     <dc11:format>image/svg+xml</dc11:format>
+      <dc11:type  rdf:resource="http://purl.org/dc/dcmitype/InteractiveResource" />
+      <cc:license rdf:resource="https://creativecommons.org/publicdomain/zero/1.0/" />
+      <cc:license rdf:resource="https://opendatacommons.org/licenses/pddl/1-0/"  />
+      <cc:attributionName>Mardeg</cc:attributionName>
+    </cc:Work>
+    <cc:License    rdf:about="https://creativecommons.org/publicdomain/zero/1.0/">
+      <cc:permits  rdf:resource="http://creativecommons.org/ns#Reproduction" />
+      <cc:permits  rdf:resource="http://creativecommons.org/ns#Distribution" />
+      <cc:permits  rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      <cc:legalcode rdf:resource="https://creativecommons.org/publicdomain/zero/1.0/legalcode" />
+      <dcterms:isVersionOf rdf:resource="https://creativecommons.org/publicdomain/" />
+    </cc:License>
+    <cc:License rdf:about="https://opendatacommons.org/licenses/pddl/summary/" >
+      <cc:legalcode rdf:resource="https://opendatacommons.org/licenses/pddl/1-0/index.html" />
+      <dcterms:isVersionOf rdf:resource="https://opendatacommons.org/licenses/pddl/" />
+    </cc:License>
+  </rdf:RDF>
+</metadata>
 <style>
 /* <![CDATA[ */
 svg{width:100dvw;height:100dvh}
@@ -300,9 +326,9 @@ svg{width:100dvw;height:100dvh}
 
     <!-- Paper Texture and Color -->
     <linearGradient id="paperGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#f2ebd9" />
-      <stop offset="70%" stop-color="#e3d6ba" />
-      <stop offset="100%" stop-color="#a6946f" />
+      <stop offset="0%" stop-color="#26242f" />
+      <stop offset="70%" stop-color="#73664a" />
+      <stop offset="100%" stop-color="#f2ebd9" />
     </linearGradient>
 
     <!-- Charred Edge Gradient -->
@@ -1111,7 +1137,7 @@ svg{width:100dvw;height:100dvh}
   <g id="card-H10" transform="translate(1500, 3015)">
     <use href="#fire-base" />
     <use href="#fire-outline" />
-    <g fill-opacity="0.5" mask="url(#cardMask)">
+    <g opacity="0.5" mask="url(#cardMask)">
     <use href="#left-large♥" transform="translate(0, -106.5)" />
     <use href="#right-large♥" transform="translate(0, -106.5)" />
     <use href="#left-large♥" transform="translate(0, -35.5)" />
@@ -1269,7 +1295,68 @@ svg{width:100dvw;height:100dvh}
 </defs>
 <animate attributeName="viewBox" repeatCount="indefinite" begin="0s" calcMode="discrete"
   values="0 0 241 335;0 335 241 335;0 670 241 335;0 1005 241 335;0 1340 241 335;0 1675 241 335;0 2010 241 335;0 2345 241 335;0 2680 241 335;0 3015 241 335;0 3350 241 335;0 3685 241 335;0 4020 241 335;500 0 241 335;500 335 241 335;500 670 241 335;500 1005 241 335;500 1340 241 335;500 1675 241 335;500 2010 241 335;500 2345 241 335;500 2680 241 335;500 3015 241 335;500 3350 241 335;500 3685 241 335;500 4020 241 335;1000 0 241 335;1000 335 241 335;1000 670 241 335;1000 1005 241 335;1000 1340 241 335;1000 1675 241 335;1000 2010 241 335;1000 2345 241 335;1000 2680 241 335;1000 3015 241 335;1000 3350 241 335;1000 3685 241 335;1000 4020 241 335;1500 0 241 335;1500 335 241 335;1500 670 241 335;1500 1005 241 335;1500 1340 241 335;1500 1675 241 335;1500 2010 241 335;1500 2345 241 335;1500 2680 241 335;1500 3015 241 335;1500 3350 241 335;1500 3685 241 335;1500 4020 241 335;0 4355 241 335;500 4355 241 335;1000 4355 241 335;1500 4355 241 335"
+  end="nCA.begin;nC2.begin;nC3.begin;nC4.begin;nC5.begin;nC6.begin;nC7.begin;nC8.begin;nC9.begin;nC10.begin;nCJ.begin;nCQ.begin;nCK.begin;nDA.begin;nD2.begin;nD3.begin;nD4.begin;nD5.begin;nD6.begin;nD7.begin;nD8.begin;nD9.begin;nD10.begin;nDJ.begin;nDQ.begin;nDK.begin;nSA.begin;nS2.begin;nS3.begin;nS4.begin;nS5.begin;nS6.begin;nS7.begin;nS8.begin;nS9.begin;nS10.begin;nSJ.begin;nSQ.begin;nSK.begin;nHA.begin;nH2.begin;nH3.begin;nH4.begin;nH5.begin;nH6.begin;nH7.begin;nH8.begin;nH9.begin;nH10.begin;nHJ.begin;nHQ.begin;nHK.begin;nBB.begin;nBR.begin"
   dur="280s" />
+<animate id="nCA" attributeName="viewBox" to="0 0 241 335" begin="aBR.click;aC2.auxclick" dur=".1s" fill="freeze" />
+<animate id="nC2" attributeName="viewBox" to="0 335 241 335" begin="aCA.click;aCA.wheel;aC3.auxclick" dur=".1s" fill="freeze" />
+<animate id="nC3" attributeName="viewBox" to="0 670 241 335" begin="aC2.click;aC2.wheel;aC4.auxclick" dur=".1s" fill="freeze" />
+<animate id="nC4" attributeName="viewBox" to="0 1005 241 335" begin="aC3.click;aC3.wheel;aC5.auxclick" dur=".1s" fill="freeze" />
+<animate id="nC5" attributeName="viewBox" to="0 1340 241 335" begin="aC4.click;aC4.wheel;aC6.auxclick" dur=".1s" fill="freeze" />
+<animate id="nC6" attributeName="viewBox" to="0 1675 241 335" begin="aC5.click;aC5.wheel;aC7.auxclick" dur=".1s" fill="freeze" />
+<animate id="nC7" attributeName="viewBox" to="0 2010 241 335" begin="aC6.click;aC6.wheel;aC8.auxclick" dur=".1s" fill="freeze" />
+<animate id="nC8" attributeName="viewBox" to="0 2345 241 335" begin="aC7.click;aC7.wheel;aC9.auxclick" dur=".1s" fill="freeze" />
+<animate id="nC9" attributeName="viewBox" to="0 2680 241 335" begin="aC8.click;aC8.wheel;aC10.auxclick" dur=".1s" fill="freeze" />
+<animate id="nC10" attributeName="viewBox" to="0 3015 241 335" begin="aC9.click;aC9.wheel;aCJ.auxclick" dur=".1s" fill="freeze" />
+<animate id="nCJ" attributeName="viewBox" to="0 3350 241 335" begin="aC10.click;aC10.wheel;aCQ.auxclick" dur=".1s" fill="freeze" />
+<animate id="nCQ" attributeName="viewBox" to="0 3685 241 335" begin="aCJ.click;aCJ.wheel;aCK.auxclick" dur=".1s" fill="freeze" />
+<animate id="nCK" attributeName="viewBox" to="0 4020 241 335" begin="aCQ.click;aCQ.wheel;aDA.auxclick" dur=".1s" fill="freeze" />
+
+<animate id="nDA" attributeName="viewBox" to="500 0 241 335" begin="aCK.click;aCK.wheel;aD2.auxclick" dur=".1s" fill="freeze" />
+<animate id="nD2" attributeName="viewBox" to="500 335 241 335" begin="aDA.click;aDA.wheel;aD3.auxclick" dur=".1s" fill="freeze" />
+<animate id="nD3" attributeName="viewBox" to="500 670 241 335" begin="aD2.click;aD2.wheel;aD4.auxclick" dur=".1s" fill="freeze" />
+<animate id="nD4" attributeName="viewBox" to="500 1005 241 335" begin="aD3.click;aD3.wheel;aD5.auxclick" dur=".1s" fill="freeze" />
+<animate id="nD5" attributeName="viewBox" to="500 1340 241 335" begin="aD4.click;aD4.wheel;aD6.auxclick" dur=".1s" fill="freeze" />
+<animate id="nD6" attributeName="viewBox" to="500 1675 241 335" begin="aD5.click;aD5.wheel;aD7.auxclick" dur=".1s" fill="freeze" />
+<animate id="nD7" attributeName="viewBox" to="500 2010 241 335" begin="aD6.click;aD6.wheel;aD8.auxclick" dur=".1s" fill="freeze" />
+<animate id="nD8" attributeName="viewBox" to="500 2345 241 335" begin="aD7.click;aD7.wheel;aD9.auxclick" dur=".1s" fill="freeze" />
+<animate id="nD9" attributeName="viewBox" to="500 2680 241 335" begin="aD8.click;aD8.wheel;aD10.auxclick" dur=".1s" fill="freeze" />
+<animate id="nD10" attributeName="viewBox" to="500 3015 241 335" begin="aD9.click;aD9.wheel;aDJ.auxclick" dur=".1s" fill="freeze" />
+<animate id="nDJ" attributeName="viewBox" to="500 3350 241 335" begin="aD10.click;aD10.wheel;aDQ.auxclick" dur=".1s" fill="freeze" />
+<animate id="nDQ" attributeName="viewBox" to="500 3685 241 335" begin="aDJ.click;aDJ.wheel;aDK.auxclick" dur=".1s" fill="freeze" />
+<animate id="nDK" attributeName="viewBox" to="500 4020 241 335" begin="aDQ.click;aDQ.wheel;aSA.auxclick" dur=".1s" fill="freeze" />
+
+<animate id="nSA" attributeName="viewBox" to="1000 0 241 335" begin="aDK.click;aDK.wheel;aS2.auxclick" dur=".1s" fill="freeze" />
+<animate id="nS2" attributeName="viewBox" to="1000 335 241 335" begin="aSA.click;aSA.wheel;aS3.auxclick" dur=".1s" fill="freeze" />
+<animate id="nS3" attributeName="viewBox" to="1000 670 241 335" begin="aS2.click;aS2.wheel;aS4.auxclick" dur=".1s" fill="freeze" />
+<animate id="nS4" attributeName="viewBox" to="1000 1005 241 335" begin="aS3.click;aS3.wheel;aS5.auxclick" dur=".1s" fill="freeze" />
+<animate id="nS5" attributeName="viewBox" to="1000 1340 241 335" begin="aS4.click;aS4.wheel;aS6.auxclick" dur=".1s" fill="freeze" />
+<animate id="nS6" attributeName="viewBox" to="1000 1675 241 335" begin="aS5.click;aS5.wheel;aS7.auxclick" dur=".1s" fill="freeze" />
+<animate id="nS7" attributeName="viewBox" to="1000 2010 241 335" begin="aS6.click;aS6.wheel;aS8.auxclick" dur=".1s" fill="freeze" />
+<animate id="nS8" attributeName="viewBox" to="1000 2345 241 335" begin="aS7.click;aS7.wheel;aS9.auxclick" dur=".1s" fill="freeze" />
+<animate id="nS9" attributeName="viewBox" to="1000 2680 241 335" begin="aS8.click;aS8.wheel;aS10.auxclick" dur=".1s" fill="freeze" />
+<animate id="nS10" attributeName="viewBox" to="1000 3015 241 335" begin="aS9.click;aS9.wheel;aSJ.auxclick" dur=".1s" fill="freeze" />
+<animate id="nSJ" attributeName="viewBox" to="1000 3350 241 335" begin="aS10.click;aS10.wheel;aSQ.auxclick" dur=".1s" fill="freeze" />
+<animate id="nSQ" attributeName="viewBox" to="1000 3685 241 335" begin="aSJ.click;aSJ.wheel;aSK.auxclick" dur=".1s" fill="freeze" />
+<animate id="nSK" attributeName="viewBox" to="1000 4020 241 335" begin="aSQ.click;aSQ.wheel;aHA.auxclick" dur=".1s" fill="freeze" />
+
+<animate id="nHA" attributeName="viewBox" to="1500 0 241 335" begin="aSK.click;aSK.wheel;aH2.auxclick" dur=".1s" fill="freeze" />
+<animate id="nH2" attributeName="viewBox" to="1500 335 241 335" begin="aHA.click;aHA.wheel;aH3.auxclick" dur=".1s" fill="freeze" />
+<animate id="nH3" attributeName="viewBox" to="1500 670 241 335" begin="aH2.click;aH2.wheel;aH4.auxclick" dur=".1s" fill="freeze" />
+<animate id="nH4" attributeName="viewBox" to="1500 1005 241 335" begin="aH3.click;aH3.wheel;aH5.auxclick" dur=".1s" fill="freeze" />
+<animate id="nH5" attributeName="viewBox" to="1500 1340 241 335" begin="aH4.click;aH4.wheel;aH6.auxclick" dur=".1s" fill="freeze" />
+<animate id="nH6" attributeName="viewBox" to="1500 1675 241 335" begin="aH5.click;aH5.wheel;aH7.auxclick" dur=".1s" fill="freeze" />
+<animate id="nH7" attributeName="viewBox" to="1500 2010 241 335" begin="aH6.click;aH6.wheel;aH8.auxclick" dur=".1s" fill="freeze" />
+<animate id="nH8" attributeName="viewBox" to="1500 2345 241 335" begin="aH7.click;aH7.wheel;aH9.auxclick" dur=".1s" fill="freeze" />
+<animate id="nH9" attributeName="viewBox" to="1500 2680 241 335" begin="aH8.click;aH8.wheel;aH10.auxclick" dur=".1s" fill="freeze" />
+<animate id="nH10" attributeName="viewBox" to="1500 3015 241 335" begin="aH9.click;aH9.wheel;aHJ.auxclick" dur=".1s" fill="freeze" />
+<animate id="nHJ" attributeName="viewBox" to="1500 3350 241 335" begin="aH10.click;aH10.wheel;aHQ.auxclick" dur=".1s" fill="freeze" />
+<animate id="nHQ" attributeName="viewBox" to="1500 3685 241 335" begin="aHJ.click;aHJ.wheel;aHK.auxclick" dur=".1s" fill="freeze" />
+<animate id="nHK" attributeName="viewBox" to="1500 4020 241 335" begin="aHQ.click;aHQ.wheel;aJB.auxclick" dur=".1s" fill="freeze" />
+
+<animate id="nJB" attributeName="viewBox" to="0 4355 241 335" begin="aHK.click;aHK.wheel;aJR.auxclick" dur=".1s" fill="freeze" />
+<animate id="nJR" attributeName="viewBox" to="500 4355 241 335" begin="aJB.click;aJB.wheel;aBB.auxclick" dur=".1s" fill="freeze" />
+<animate id="nBB" attributeName="viewBox" to="1000 4355 241 335" begin="aJR.click;aJR.wheel;aBR.auxclick" dur=".1s" fill="freeze" />
+<animate id="nBR" attributeName="viewBox" to="1500 4355 241 335" begin="aBB.click;aBB.wheel;aCA.auxclick" dur=".1s" fill="freeze" />
 
 <use id="aCA" width="241" height="335" x="0" y="0" href="#CA" />
 <use id="aC2" width="241" height="335" x="0" y="335" href="#C2" />
@@ -1329,8 +1416,8 @@ svg{width:100dvw;height:100dvh}
 
 <use id="aJB" width="241" height="335" x="0" y="4355" href="#JB" />
 <use id="aJR" width="241" height="335" x="500" y="4355" href="#JR" />
-<use id="aBACK-BLUE" width="241" height="335" x="1000" y="4355" href="#BACK-BLUE" />
-<use id="aBACK-RED" width="241" height="335" x="1500" y="4355" href="#BACK-RED" />
+<use id="aBB" width="241" height="335" x="1000" y="4355" href="#BACK-BLUE" />
+<use id="aBR" width="241" height="335" x="1500" y="4355" href="#BACK-RED" />
 
 </svg>
 

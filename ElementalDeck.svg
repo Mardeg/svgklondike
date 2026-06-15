@@ -1328,7 +1328,7 @@ view:target[id$="N"] ~ a:not(:has(g)) {
   <a href="#H10N"><g id="card-H10" transform="translate(1500, 3015)">
     <use href="#fire-base" />
     <use href="#fire-outline" />
-    <g fill-opacity="0.5" mask="url(#cardMask)">
+    <g opacity="0.5" mask="url(#cardMask)">
     <use href="#left-large♥" transform="translate(0, -106.5)" />
     <use href="#right-large♥" transform="translate(0, -106.5)" />
     <use href="#left-large♥" transform="translate(0, -35.5)" />

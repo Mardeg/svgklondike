@@ -1,13 +1,11 @@
 export async function onRequest(context) {
   const url = new URL(context.request.url);
 
-  // 1. Silent root rewrite via an absolute network fetch
+  // 1. Silent root rewrite: Target the specific asset object directly
   if (url.pathname === "/") {
-    // Construct the direct absolute URL to the compressed asset
-    const assetUrl = `${url.protocol}//${url.host}/svgklondike.svgz`;
-    
-    // Fetch it completely cleanly over the network
-    const response = await fetch(assetUrl, context.request);
+    // Force a fresh request object pointing explicitly to the .svgz asset file
+    const targetRequest = new Request(new URL("/svgklondike.svgz", context.request.url));
+    const response = await context.env.ASSETS.fetch(targetRequest);
     
     return new Response(response.body, {
       status: response.status,

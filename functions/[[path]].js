@@ -1,11 +1,13 @@
 export async function onRequest(context) {
   const url = new URL(context.request.url);
 
-  // 1. Silent root rewrite: If a user hits "/", serve "svgklondike.svgz" invisibly
+  // 1. Silent root rewrite via an absolute network fetch
   if (url.pathname === "/") {
-    url.pathname = "/svgklondike.svgz";
-    const rewrittenRequest = new Request(url.toString(), context.request);
-    const response = await context.env.ASSETS.fetch(rewrittenRequest);
+    // Construct the direct absolute URL to the compressed asset
+    const assetUrl = `${url.protocol}//${url.host}/svgklondike.svgz`;
+    
+    // Fetch it completely cleanly over the network
+    const response = await fetch(assetUrl, context.request);
     
     return new Response(response.body, {
       status: response.status,
@@ -18,7 +20,7 @@ export async function onRequest(context) {
     });
   }
 
-  // 2. Global catch-all: Handle direct requests for any .svgz asset across the site
+  // 2. Global catch-all for direct requests
   if (url.pathname.endsWith(".svgz")) {
     const response = await context.env.ASSETS.fetch(context.request);
     
@@ -33,6 +35,5 @@ export async function onRequest(context) {
     });
   }
 
-  // Pass all other normal files through unmodified
   return context.next();
 }

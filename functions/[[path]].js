@@ -1,24 +1,28 @@
 export async function onRequest(context) {
   const url = new URL(context.request.url);
 
-  // 1. Silent root rewrite: Target the specific asset object directly
+  // 1. Silent root rewrite: Pull from GitHub Pages and manually fix the response
   if (url.pathname === "/") {
-    // Force a fresh request object pointing explicitly to the .svgz asset file
-    const targetRequest = new Request(new URL("/svgklondike.svgz", context.request.url));
-    const response = await context.env.ASSETS.fetch(targetRequest);
+    // REPLACE 'yourusername' with your actual GitHub username
+    const githubAssetUrl = "https://mardeg.github.io/svgklondike/klondike.svgz";
     
-    return new Response(response.body, {
-      status: response.status,
+    // Fetch the asset from GitHub (even though GitHub's headers are broken)
+    const githubResponse = await fetch(githubAssetUrl);
+    
+    // Create a pristine response, forcing the headers that GitHub dropped
+    return new Response(githubResponse.body, {
+      status: githubResponse.status,
       headers: {
         "Content-Type": "image/svg+xml",
         "Content-Encoding": "gzip",
-        "Cache-Control": "no-transform, no-cache"
+        "Cache-Control": "no-transform, no-cache",
+        "Access-Control-Allow-Origin": "*"
       },
       encodeBody: "manual"
     });
   }
 
-  // 2. Global catch-all for direct requests
+  // 2. Global catch-all for direct .svgz requests on the Cloudflare side
   if (url.pathname.endsWith(".svgz")) {
     const response = await context.env.ASSETS.fetch(context.request);
     

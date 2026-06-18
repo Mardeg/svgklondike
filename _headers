@@ -7,7 +7,7 @@
 /*.bas
   Content-Type: text/plain; charset=utf-8
 
-/*.svg.gz
+/*.bin.svgz
   Content-Type: image/svg+xml
   Content-Encoding: gzip
   Cache-Control: no-transform

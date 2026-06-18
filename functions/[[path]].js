@@ -31,7 +31,8 @@ export async function onRequest(context) {
       headers: {
         "Content-Type": "image/svg+xml",
         "Content-Encoding": "gzip",
-        "Cache-Control": "no-transform, no-cache"
+        "Cache-Control": "no-transform, no-cache",
+        "Access-Control-Allow-Origin": "*"
       },
       encodeBody: "manual"
     });

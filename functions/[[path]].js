@@ -3,7 +3,6 @@ export async function onRequest(context) {
 
   // 1. Silent root rewrite: Pull from GitHub Pages and manually fix the response
   if (url.pathname === "/") {
-    // REPLACE 'yourusername' with your actual GitHub username
     const githubAssetUrl = "https://mardeg.github.io/svgklondike/klondike.svgz";
     
     // Fetch the asset from GitHub (even though GitHub's headers are broken)

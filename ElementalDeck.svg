@@ -57,6 +57,8 @@ view:target[id$="N"] ~ a:not(:has(g)) {
     <!-- BASE CARD FRAME (Inset by 1.5px to lock a 3px stroke completely inside a 241x335 boundary) -->
     <rect id="card-base" x="1.5" y="1.5" width="238" height="332" rx="10.6" ry="10.6"
           style="fill:none; stroke:#000000; stroke-width:3; display:inline;" />
+    <rect id="card-base-solid" x="1.5" y="1.5" width="238" height="332" rx="10.6" ry="10.6"
+          style="fill:#FFFFFF; stroke:#000000; stroke-width:3; display:inline;" />
     <clipPath id="base-clip">
       <rect x="0.5" y="0.5" width="240" height="334" rx="14" ry="14" />
     </clipPath>
@@ -1528,7 +1530,7 @@ view:target[id$="N"] ~ a:not(:has(g)) {
   <!-- CARD BACK BLUE (Slot: X=1000, Y=4355) -->
   <a href="#BACK-BLUEN">
   <g id="card-BACK-BLUE" transform="translate(1000, 4355)">
-    <use href="#card-base" />
+    <use href="#card-base-solid" />
     <use href="#aperiodic-lattice" style="fill:#1d4ed8;stroke:#1d4ed8" />
   </g></a>
   <a href="#JRN" role="button" aria-label="Go to RED JOKER"><text x="1050" y="4669">⏮️</text></a>
@@ -1538,7 +1540,7 @@ view:target[id$="N"] ~ a:not(:has(g)) {
   <!-- CARD BACK RED (Slot: X=1500, Y=4355) -->
   <a href="#BACK-REDN">
   <g id="card-BACK-RED" transform="translate(1500, 4355)">
-    <use href="#card-base" />
+    <use href="#card-base-solid" />
     <use href="#aperiodic-lattice" style="fill:#c8102e;stroke:#c8102e" />
   </g></a>
   <a href="#BACK-BLUEN" role="button" aria-label="Go to BLUE CARD BACK"><text x="1550" y="4669">⏮️</text></a>

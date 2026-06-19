@@ -59,8 +59,11 @@ svg {color-scheme: light dark; background-color: light-dark(#BBB,#333); height:1
 #tabletop:not([stroke="brown"]) + #timer > text {
 	animation-play-state: paused;
 }
-g[data-highlight="face"] use {fill: url(#animrot);stroke: url(#animrot)}
-#uniqueoutline[data-highlight="back"] path {fill: url(#animrot);stroke: url(#animrot) !important}
+g[data-highlight="face"] use, 
+image[data-highlight="face"] {
+  filter: drop-shadow(0px 0px 8px #ffcc00) drop-shadow(0px 0px 3px #ff9900);
+}
+#uniqueoutline[data-highlight="back"] path {fill: url(#animrot) !important;stroke: url(#animrot) !important}
 image[width="759"] {
 	image-rendering:-moz-crisp-edges;
 	image-rendering:pixelated;
@@ -70,6 +73,15 @@ image[width="759"] {
 	transform-origin: center;
 	transform-box: fill-box;
 }
+.svg-dropdown { cursor: pointer; }
+.dropdown-options { display: none; }
+.svg-dropdown.open .dropdown-options { display: inline; }
+.dropdown-bg { fill: #2c1a0c; stroke: #543419; stroke-width: 2; rx: 4px; }
+.dropdown-option-bg { fill: #3d2411; stroke: #543419; stroke-width: 1; }
+.dropdown-option-bg:hover { fill: #5c381a; }
+.dropdown-text { fill: #ffffff; font-family: sans-serif; font-size: 16px; user-select: none; }
+.dropdown-arrow { fill: #ffffff; }
+
 /* ]]> */
 </style>
 <script>
@@ -92,14 +104,6 @@ function DragEvent(_pointerevt, _pointertype, _clientx, _clienty, _userx, _usery
     this.mouseoffsety = _mouseoffsety;
 }
 
-function inspect(obj) {
-    const str = [];
-    for (const element in obj) {
-        str.push(element);
-    }
-    str.sort();
-    alert(obj + ":" + str.join(' '));
-}
 let draggingElement = null;
 let nMouseOffsetX = 0;
 let nMouseOffsetY = 0;
@@ -363,6 +367,33 @@ function getScreenCTM(){
     }
     return sCTM;
 }
+function deckChoice(s) {
+    switch(s) {
+        case "Clas": return "deckspritesheet.svg"
+        case "Astr": return "AstronomiaDeck.svg"
+        case "Elem": return "ElementalDeck.svg"
+        default: return "";
+    }
+}
+function deckLabel(d) {
+    switch(d) {
+        case "deckspritesheet.svg": return "Classic"
+        case "AstronomiaDeck.svg": return "Astronomia"
+        case "ElementalDeck.svg": return "Elemental"
+        default: return "Basic";
+    }
+}
+function colourLabel(c) {
+    switch(c) {
+	case "RED": return "Red Back"
+	default: return "Blue Back";
+    }
+}
+let chosenDeck = location.hash?deckChoice(location.hash.slice(1, 5)):"";
+let rORb = location.hash?(location.hash.slice(-3)=="RED"?"RED":"BLUE"):"BLUE";
+window.onhashchange = () => location.reload();
+let gBackName = chosenDeck + "#BACK-" + rORb;
+
 const eNOSUIT = 0;
 const eHEART = 1;
 const eDIAMOND = 2;
@@ -370,9 +401,8 @@ const eCLUB = 3;
 const eSPADE = 4;
 const eSUITMIN = 1;
 const eSUITMAX = 4;
-const gSuitNames = ["UNKNOWN SUIT","heart","diamond","club","spade" ];
-const gCardNames = ["UNKNOWN CARD","1","2","3","4","5","6","7","8","9","10","jack","queen","king","joker"];
-const gBackName = "#card_back";
+const gSuitNames = ["UNKNOWN SUIT","H","D","C","S" ];
+const gCardNames = ["UNKNOWN CARD","A","2","3","4","5","6","7","8","9","10","J","Q","K","joker"];
 const eJOKER = 0;
 const eJACK = 11;
 const eQUEEN = 12;
@@ -389,12 +419,12 @@ function Card(inCardNum) {
     this.bFaceUp = false;
     const val = this.getValue();
     if (val === eJOKER) {
-        this.elemName = "#" + (this.isRed() ? "red" : "black") + "_joker";
+        this.elemName = chosenDeck + "#J" + (this.isRed() ? "R" : "B");
     }else{
-        this.elemName = "#my_";
+        this.elemName = chosenDeck + "#";
         const suit = this.getSuit();
         if (suit !== eNOSUIT) {
-            this.elemName += gSuitNames[suit] + "_" + gCardNames[val];
+            this.elemName += gSuitNames[suit] + gCardNames[val];
         }else{
             alert("Invalid card, card num = " + this.cardNum);
         }
@@ -433,7 +463,7 @@ Card.prototype.isFaceUp = function() {
 };
 
 Card.prototype.toString = function() {
-    return (gCardNames[this.getValue()] + " of " + gSuitNames[this.getSuit()] + "s");
+    return (gCardNames[this.getValue()] + " of " + gSuitNames[this.getSuit()]);
 };
 
 Card.prototype.flip = function() {
@@ -492,7 +522,13 @@ TableauPile.prototype.push = function(card) {
     const gid = this.rootElem.getAttribute("id") + "_" + oldSize;
     newg.setAttribute("id", gid);
     newg.setAttribute("transform", "translate(0,"+CARD_VERT_OFFSET+")");
-    let use = document.createElementNS(SVGNS, "use");
+    let use = document.createElementNS(SVGNS, (chosenDeck=="")?"use":"image");
+    if(chosenDeck!="") {
+	use.setAttribute("width", "171");
+	use.setAttribute("height", "233");
+	use.setAttribute("y", "-235.27");
+	use.setAttribute("x", "-2");
+    }
     if(card.isFaceUp()) {
         use.setAttribute("href", card.elemName);
     }else{
@@ -571,7 +607,13 @@ CardStack.prototype.push = function(card,allowDrag) {
     // update DOM
     // if we are face up or the stack was empty but now is not
     if(card.isFaceUp() || oldLength < 1) {
-        let use = document.createElementNS(SVGNS, "use");
+        let use = document.createElementNS(SVGNS, (chosenDeck=="")?"use":"image");
+	if(chosenDeck!="") {
+		use.setAttribute("width", "171");
+		use.setAttribute("height", "233");
+		use.setAttribute("y", "-235.27");
+		use.setAttribute("x", "-2");
+	}
         if(card.isFaceUp()) {
             use.setAttribute("href", card.elemName);
             if(allowDrag) {
@@ -692,7 +734,7 @@ function startSolitaire() {
     
     // enable draw action on the deck
     gDeck.elem.addEventListener("click", drawCard, false);
-
+    if(chosenDeck!="")document.getElementById("waste").setAttribute("transform","translate(1850,-115)");
 }
 
 function setUndo(TorF) {
@@ -807,8 +849,10 @@ function highlight(dragFrom,dragTo) {
 	if(!dragTo) { // highlight the border of the deck to flip from it
 	    document.querySelector(dragFrom.elemName).setAttribute("data-highlight","back");
 	}else{ // highlight the face of the card to drag and of the target
-	    document.querySelector(dragFrom.elemName).setAttribute("data-highlight","face");
-	    if(dragTo != "MT")document.querySelector(dragTo.elemName).setAttribute("data-highlight","face");
+            const hlFrom = chosenDeck!=""?'image[href="' + dragFrom.elemName + '"]':dragFrom.elemName;
+            const hlTo = chosenDeck!=""?'image[href="' + dragTo.elemName + '"]':dragTo.elemName;
+	    document.querySelector(hlFrom).setAttribute("data-highlight","face");
+	    if(dragTo != "MT")document.querySelector(hlTo).setAttribute("data-highlight","face");
 	}
     }
 }
@@ -901,21 +945,6 @@ function moveCardToFoundation(card, foundationNum, showhint) {
     }
 
     return bResult;
-}
-
-function dumpPile(pile) {
-    let str = "";
-    for(let loop = 0; loop < 13; ++loop) {
-        if(pile.at(loop*4)) 
-            str += pile.at(loop*4).toString() + ", ";
-        if(pile.at(loop*4+1)) 
-            str += pile.at(loop*4+1).toString() + ", ";
-        if(pile.at(loop*4+2)) 
-            str += pile.at(loop*4+2).toString() + ", ";
-        if(pile.at(loop*4+3)) 
-            str += pile.at(loop*4+3).toString() + ",\n";
-    }
-    alert(str);
 }
 
 // This makes sure the appropriate pile of cards is moved to the 
@@ -1063,7 +1092,55 @@ function initGame() {
     addDragEventListener("dragstart", dragStart);
     addDragEventListener("dragdrop", dragStop);
     document.getElementById("undoButton").addEventListener("click", undoButtonClick, false);
+    console.log(chosenDeck, rORb);
+    selectDeck(chosenDeck, deckLabel(chosenDeck), undefined, true);
+    selectColour(rORb, colourLabel(rORb), undefined, true);
     startSolitaire();
+}
+
+// Open/Close the target dropdown panel
+function toggleDropdown(id) {
+    const el = document.getElementById(id);
+    const wasOpen = el.classList.contains('open');
+    
+    // Close all menus first to keep it tidy
+    document.querySelectorAll('.svg-dropdown').forEach(d => d.classList.remove('open'));
+    
+    // Toggle state
+    if (!wasOpen) el.classList.add('open');
+}
+
+// Global window listener to close menus if player clicks outside them on the green felt
+window.addEventListener('click', function(e) {
+    if (!e.target.closest('.svg-dropdown')) {
+        document.querySelectorAll('.svg-dropdown').forEach(d => d.classList.remove('open'));
+	const menu = document.getElementById('ui-controls');
+	menu.removeAttribute("onclick");
+	menu.setAttribute("style","opacity:0.5;pointer-events:none");
+	menu.querySelectorAll("g").forEach(el => {el.removeAttribute("onclick");});
+	menu.querySelectorAll(".dropdown-arrow").forEach(el => {el.setAttribute("opacity", "0");});
+    }
+});
+
+// Selection Callback: Handle Deck Shift
+function selectDeck(fileValue, labelText, event, readOnly) {
+    if(!readOnly) event.stopPropagation(); // Stop menu from instantly re-opening
+    
+    // Visual text label feedback
+    document.getElementById('current-deck-label').textContent = "Deck: " + labelText;
+    document.getElementById('dropdown-deck').classList.remove('open');
+    
+    if(!readOnly)location.hash=labelText + "-" + rORb;
+}
+
+// Selection Callback: Handle Back Colour Shift
+function selectColour(colourValue, labelText, event, readOnly) {
+    if(!readOnly) event.stopPropagation();
+    
+    document.getElementById('current-colour-label').textContent = labelText;
+    document.getElementById('dropdown-colour').classList.remove('open');
+    
+    if(!readOnly)location.hash=deckLabel(chosenDeck) + "-" + colourValue;
 }
 
 // END SOLITAIRE MODEL
@@ -1100,7 +1177,18 @@ function init() {
     <g id="queen"><text transform="scale(0.56453 1)"   font-family="Bitstream Vera Serif,serif" font-weight="bold"   font-size="41" textLength="32" lengthAdjust="spacingAndGlyphs">Q</text></g>
     <g id="jack"><text transform="scale(0.56453 1)"    font-family="Bitstream Vera Serif,serif" font-weight="bold"   font-size="40" textLength="24" lengthAdjust="spacingAndGlyphs">J</text></g>
 
-    <g id="outline"><path style="fill:none;stroke:#000000;stroke-width:2.5" d="M 0,0C0,3.78 3.09,6.87 6.87,6.87L159.715,6.87C163.485,6.87 166.575,3.78 166.575,0L166.575,-228.4C166.575,-232.18 163.485,-235.27 159.715,-235.27L6.87,-235.27C3.09,-235.27 0,-232.18 0,-228.4L0,0 z"/></g>
+  <filter id="slotGlow" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="15" result="blur" />
+    <feComponentTransfer>
+      <!-- Controls the center opacity (0.35) and softens the fade -->
+      <feFuncA type="linear" slope="0.35" />
+    </feComponentTransfer>
+    <feMerge>
+      <feMergeNode />
+    </feMerge>
+  </filter>
+
+    <g id="outline"><rect width="150" height="210" x="8.28" y="-222.5" rx="10" ry="10" style="filter: url(#slotGlow); pointer-events: none;" /></g>
     <g id="uniqueoutline"><path style="fill:none;stroke:none;stroke-width:10" d="M 0,0C0,3.78 3.09,6.87 6.87,6.87L159.715,6.87C163.485,6.87 166.575,3.78 166.575,0L166.575,-228.4C166.575,-232.18 163.485,-235.27 159.715,-235.27L6.87,-235.27C3.09,-235.27 0,-232.18 0,-228.4L0,0 z"/></g>
 
     <g id="base"><path style="fill:#FFFFFF;stroke:#000000;stroke-width:2.5" d="M 0,0C0,3.78 3.09,6.87 6.87,6.87L159.715,6.87C163.485,6.87 166.575,3.78 166.575,0L166.575,-228.4C166.575,-232.18 163.485,-235.27 159.715,-235.27L6.87,-235.27C3.09,-235.27 0,-232.18 0,-228.4L0,0 z"/></g>
@@ -1128,313 +1216,313 @@ function init() {
         <path d="M6.75-0.8C6.74,2.67,1.53,5.19,0,7.93C-1.53,5.18-6.74,2.66-6.75-0.8c0-1.64,1.51-2.97,3.38-2.97C-1.51-3.77,0-2.44,0-0.8c0-1.64,1.51-2.97,3.38-2.97S6.75-2.44,6.75-0.8z"/>
     </g>
 
-    <g id="my_club_1">
+    <g id="CA">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#ace"/>
     </g>
-    <g id="my_club_2">
+    <g id="C2">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_2" />
     </g>
-    <g id="my_club_3">
+    <g id="C3">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_3" />
     </g>
-    <g id="my_club_4">
+    <g id="C4">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_4"/>
     </g>
-    <g id="my_club_5">
+    <g id="C5">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_5"/>
     </g>
-    <g id="my_club_6">
+    <g id="C6">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_6"/>
     </g>
-    <g id="my_club_7">
+    <g id="C7">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_7"/>
     </g>
-    <g id="my_club_8">
+    <g id="C8">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_8"/>
     </g>
-    <g id="my_club_9">
+    <g id="C9">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_9"/>
     </g>
-    <g id="my_club_10">
+    <g id="C10">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(55,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_10"/>
     </g>
-    <g id="my_club_jack">
+    <g id="CJ">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(43,-210) scale(2.0) rotate(180)"/>
         <use x="12" y="-195" href="#jack"/>
     </g>
-    <g id="my_club_queen">
+    <g id="CQ">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#queen"/>
     </g>
-    <g id="my_club_king">
+    <g id="CK">
         <use href="#base" x="0" y="0"/>
         <use href="#club" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#club" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#king"/>
     </g>
-    <g id="my_spade_1">
+    <g id="SA">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#ace"/>
     </g>
-    <g id="my_spade_2">
+    <g id="S2">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_2"/>
     </g>
-    <g id="my_spade_3">
+    <g id="S3">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_3"/>
     </g>
-    <g id="my_spade_4">
+    <g id="S4">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_4"/>
     </g>
-    <g id="my_spade_5">
+    <g id="S5">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_5"/>
     </g>
-    <g id="my_spade_6">
+    <g id="S6">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_6"/>
     </g>
-    <g id="my_spade_7">
+    <g id="S7">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_7"/>
     </g>
-    <g id="my_spade_8">
+    <g id="S8">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_8"/>
     </g>
-    <g id="my_spade_9">
+    <g id="S9">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_9"/>
     </g>
-    <g id="my_spade_10">
+    <g id="S10">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(55,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_10"/>
     </g>
-    <g id="my_spade_jack">
+    <g id="SJ">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(43,-210) scale(2.0) rotate(180)"/>
         <use x="12" y="-195" href="#jack"/>
     </g>
-    <g id="my_spade_queen">
+    <g id="SQ">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#queen"/>
     </g>
-    <g id="my_spade_king">
+    <g id="SK">
         <use href="#base" x="0" y="0"/>
         <use href="#spade" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#spade" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#king"/>
     </g>
-    <g id="my_heart_1">
+    <g id="HA">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#ace"/>
     </g>
-    <g id="my_heart_2">
+    <g id="H2">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_2"/>
     </g>
-    <g id="my_heart_3">
+    <g id="H3">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_3"/>
     </g>
-    <g id="my_heart_4">
+    <g id="H4">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_4"/>
     </g>
-    <g id="my_heart_5">
+    <g id="H5">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_5"/>
     </g>
-    <g id="my_heart_6">
+    <g id="H6">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_6"/>
     </g>
-    <g id="my_heart_7">
+    <g id="H7">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_7"/>
     </g>
-    <g id="my_heart_8">
+    <g id="H8">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_8"/>
     </g>
-    <g id="my_heart_9">
+    <g id="H9">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_9"/>
     </g>
-    <g id="my_heart_10">
+    <g id="H10">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(55,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_10"/>
     </g>
-    <g id="my_heart_jack">
+    <g id="HJ">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(43,-210) scale(2.0) rotate(180)"/>
         <use x="12" y="-195" href="#jack"/>
     </g>
-    <g id="my_heart_queen">
+    <g id="HQ">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#queen"/>
     </g>
-    <g id="my_heart_king">
+    <g id="HK">
         <use href="#base" x="0" y="0"/>
         <use href="#heart" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#heart" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#king"/>
     </g>
-    <g id="my_diamond_1">
+    <g id="DA">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#ace"/>
     </g>
-    <g id="my_diamond_2">
+    <g id="D2">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_2"/>
     </g>
-    <g id="my_diamond_3">
+    <g id="D3">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_3"/>
     </g>
-    <g id="my_diamond_4">
+    <g id="D4">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_4"/>
     </g>
-    <g id="my_diamond_5">
+    <g id="D5">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_5"/>
     </g>
-    <g id="my_diamond_6">
+    <g id="D6">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_6"/>
     </g>
-    <g id="my_diamond_7">
+    <g id="D7">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_7"/>
     </g>
-    <g id="my_diamond_8">
+    <g id="D8">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_8"/>
     </g>
-    <g id="my_diamond_9">
+    <g id="D9">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_9"/>
     </g>
-    <g id="my_diamond_10">
+    <g id="D10">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(55,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#n_10"/>
     </g>
-    <g id="my_diamond_jack">
+    <g id="DJ">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(43,-210) scale(2.0) rotate(180)"/>
         <use x="12" y="-195" href="#jack"/>
     </g>
-    <g id="my_diamond_queen">
+    <g id="DQ">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
         <use x="8" y="-195" href="#queen"/>
     </g>
-    <g id="my_diamond_king">
+    <g id="DK">
         <use href="#base" x="0" y="0"/>
         <use href="#diamond" transform="translate(85,-115) scale(8.0) rotate(180)"/>
         <use href="#diamond" transform="translate(45,-210) scale(2.0) rotate(180)"/>
@@ -1443,16 +1531,17 @@ function init() {
 
     <g id="back">
         <use href="#base" x="335.15" y="972.55"/>
-        <rect style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.71613282;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;" width="131.96480" height="177.42918" x="358.44342" y="761.04138" transform="matrix(1.157448,0,0,1.291938,-72.77354,-239.3770)" ry="2.7421434" rx="2.7421434" />
-        <rect width="131.9648" height="177.42918" rx="2.9805906" ry="2.8864667" x="358.44342" y="761.04138" transform="matrix(1.064852,0,0,1.227341,-33.46908,-184.4809)" style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.3131706;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
-        <rect width="131.9648" height="177.42918" rx="0" ry="0" x="358.44342" y="761.04138" transform="matrix(0.901291,0,0,1.107675,35.95190,-82.79633)" style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.2520694;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
-        <rect width="131.9648" height="177.42918" rx="0" ry="0" x="358.44342" y="761.04138" transform="matrix(0.829188,0,0,1.052291,66.55439,-35.73366)" style="fill:#0062ff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.3392839;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
+        <rect style="fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.71613282;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;" width="131.96480" height="177.42918" x="358.44342" y="761.04138" transform="matrix(1.157448,0,0,1.291938,-72.77354,-239.3770)" ry="2.7421434" rx="2.7421434" />
+        <rect width="131.9648" height="177.42918" rx="2.9805906" ry="2.8864667" x="358.44342" y="761.04138" transform="matrix(1.064852,0,0,1.227341,-33.46908,-184.4809)" style="fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.3131706;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
+        <rect width="131.9648" height="177.42918" rx="0" ry="0" x="358.44342" y="761.04138" transform="matrix(0.901291,0,0,1.107675,35.95190,-82.79633)" style="fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.2520694;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
+        <rect width="131.9648" height="177.42918" rx="0" ry="0" x="358.44342" y="761.04138" transform="matrix(0.829188,0,0,1.052291,66.55439,-35.73366)" style="fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1.3392839;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"/>
 
-        <rect width="28.4" height="6.6" x="369.5" y="856.1" style="fill:#0062ff;stroke:none"/>
-        <rect width="28.4" height="6.6" x="440.3" y="855.5" style="fill:#0062ff;stroke:none"/>
+        <rect width="28.4" height="6.6" x="369.5" y="856.1" style="stroke:none"/>
+        <rect width="28.4" height="6.6" x="440.3" y="855.5" style="stroke:none"/>
     </g>
 
-    <use id="card_back" href="#back" transform="translate(-335.15, -972.55)"/>
+    <use id="BACK-BLUE" href="#back" style="fill:#1D4ED8" transform="translate(-335.15, -972.55)"/>
+    <use id="BACK-RED" href="#back" style="fill:#C8102E" transform="translate(-335.15, -972.55)"/>
 
 <linearGradient id='animrot' gradientUnits='objectBoundingBox' x1='0' y1='0' x2='1' y2='1'>
    <stop offset='0' stop-color='red'>
@@ -1543,10 +1632,10 @@ function init() {
 <g id="waste" transform="translate(1850,120)"/>
 
 <!-- Four foundation piles -->
-<g id="foundation_diamond" transform="translate(1650,595)"/>
-<g id="foundation_heart" transform="translate(1850,595)"/>
-<g id="foundation_club" transform="translate(1650,870)"/>
-<g id="foundation_spade" transform="translate(1850,870)"/>
+<g id="foundation_D" transform="translate(1650,595)"/>
+<g id="foundation_H" transform="translate(1850,595)"/>
+<g id="foundation_C" transform="translate(1650,870)"/>
+<g id="foundation_S" transform="translate(1850,870)"/>
 
 </g>
 <g id="undoButton" style="cursor: pointer;">
@@ -1562,4 +1651,60 @@ function init() {
 	c0,18.9-11.4,23.1-22.3,24.3c1.8,1.5,3.3,4.5,3.3,9.1c0,6.6-0.1,11.9-0.1,13.5c0,1.3,0.9,2.9,3.3,2.4C83.6,89.4,97.6,71,97.6,49.2
 	C97.7,22,75.8,0,48.9,0z"/>
 </a><a id="mj" href="https://monotilejigsaws.pages.dev" transform="translate(13.75,957.75)"><title>Do a jigsaw puzzle instead</title><text font-size="32">🧩</text></a>
+<!-- UI Navigation Group (Positioned inside the top-left margin) -->
+<g id="ui-controls" transform="translate(0, 0)">
+  
+  <!-- DECK SELECTOR DROPDOWN (X=60, Y=-190) -->
+  <g id="dropdown-deck" class="svg-dropdown" onclick="toggleDropdown('dropdown-deck')">
+    <rect class="dropdown-bg" x="50" y="-224" width="180" height="35"/>
+    <text id="current-deck-label" class="dropdown-text" x="65" y="-201">Deck: Basic</text>
+    <polygon class="dropdown-arrow" points="210,-211 220,-211 215,-201"/>
+    
+    <!-- Collapsible Options List -->
+    <g class="dropdown-options">
+      <!-- Basic -->
+      <g onclick="selectDeck('', 'Basic', event)">
+        <rect class="dropdown-option-bg" x="50" y="-189" width="180" height="35"/>
+        <text class="dropdown-text" x="65" y="-166">Basic</text>
+      </g>
+      <!-- Classic -->
+      <g onclick="selectDeck('deckspritesheet.svg', 'Classic', event)">
+        <rect class="dropdown-option-bg" x="50" y="-154" width="180" height="35"/>
+        <text class="dropdown-text" x="65" y="-131">Classic</text>
+      </g>
+      <!-- Astronomia -->
+      <g onclick="selectDeck('AstronomiaDeck.svg', 'Astronomia', event)">
+        <rect class="dropdown-option-bg" x="50" y="-119" width="180" height="35"/>
+        <text class="dropdown-text" x="65" y="-96">Astronomia</text>
+      </g>
+      <!-- Elemental -->
+      <g onclick="selectDeck('ElementalDeck.svg', 'Elemental', event)">
+        <rect class="dropdown-option-bg" x="50" y="-84" width="180" height="35"/>
+        <text class="dropdown-text" x="65" y="-61">Elemental</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- COLOUR SELECTOR DROPDOWN (X=260, Y=-190) -->
+  <g id="dropdown-colour" class="svg-dropdown" onclick="toggleDropdown('dropdown-colour')">
+    <rect class="dropdown-bg" x="260" y="-224" width="150" height="35"/>
+    <text id="current-colour-label" class="dropdown-text" x="275" y="-201">Blue Back</text>
+    <polygon class="dropdown-arrow" points="385,-211 395,-211 390,-201"/>
+    
+    <!-- Collapsible Options List -->
+    <g class="dropdown-options">
+      <!-- Blue -->
+      <g onclick="selectColour('BLUE', 'Blue Back', event)">
+        <rect class="dropdown-option-bg" x="260" y="-189" width="150" height="35"/>
+        <text class="dropdown-text" x="275" y="-166">Blue Back</text>
+      </g>
+      <!-- Red -->
+      <g onclick="selectColour('RED', 'Red Back', event)">
+        <rect class="dropdown-option-bg" x="260" y="-154" width="150" height="35"/>
+        <text class="dropdown-text" x="275" y="-131">Red Back</text>
+      </g>
+    </g>
+  </g>
+  
+</g>
 </svg>

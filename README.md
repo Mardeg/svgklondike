@@ -26,7 +26,7 @@ __TODO__:
 
 ☑Add: hint feature
 
-☑Add: multiple decks and choice of back colours
+☑Add: extra deck themes and choice of back colours
 
 ☐Add: autoplay to completion when Deck is empty and all cards are face-up
 

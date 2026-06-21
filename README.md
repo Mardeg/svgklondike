@@ -44,3 +44,12 @@ Only the Basic and Classic decks (and any future SVG-only decks) work fully.
 Since MyPal never added support for AVIF bitmap images, those images won't show up from the Astronomia, Elemental and any future decks with AVIF images.
 
 The ranks, pips and card backs will still show up on those decks in MyPal since they are SVG.
+
+For anyone wanting to include working bitmap images in decks they create from the TemplateDeck.svg so they're visible in the MyPal browser, the following formats will work:
+
+* JPG
+* GIF
+* PNG
+* WebP
+
+The width:height ratio of 5:7 is what to aim for. The exact cardsize is 241x335 although it's safer to at least double that for bitmap images due to the game scaling up to fill the browser viewport, along with the provided Fullscreen toggle.

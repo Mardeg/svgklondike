@@ -39,5 +39,8 @@ __TODO__:
 ☐Accessibility: Left and Right handed modes
 
 ## Ongoing Undertaking: Keep this game working in the MyPal browser on ReactOS
-Only the Basic and Classic decks (and any future SVG-only decks) work fully. Since MyPal never added support for AVIF bitmap images, those images won't show up from the Astronomia, Elemental and any future decks with bitmap images.
-The ranks, pips and card backs will still show up on those decks in MyPalsince they are SVG.
+Only the Basic and Classic decks (and any future SVG-only decks) work fully.
+
+Since MyPal never added support for AVIF bitmap images, those images won't show up from the Astronomia, Elemental and any future decks with AVIF images.
+
+The ranks, pips and card backs will still show up on those decks in MyPal since they are SVG.

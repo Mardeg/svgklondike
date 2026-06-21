@@ -45,7 +45,7 @@ Since MyPal never added support for AVIF bitmap images, those images won't show 
 
 The ranks, pips and card backs will still show up on those decks in MyPal since they are SVG.
 
-For anyone wanting to include working bitmap images in decks they create from the TemplateDeck.svg so they're visible in the MyPal browser, the following formats will work:
+For anyone wanting to include working bitmap images in decks they create from the **TemplateDeck.svg** so they're visible in the MyPal browser, the following formats will work:
 
 * JPG
 * GIF

@@ -82,41 +82,25 @@ image[width="759"] {
 .dropdown-text,.dropdown-label { fill: #ffffff; font-family: sans-serif; font-size: 16px; user-select: none; }
 .dropdown-text {font-size:48px}
 .dropdown-arrow { fill: #ffffff; }
-        @media (orientation: portrait) {
-            #rotateOverlay {
-                display: block;
-            }
-            /* Optional: dim or disable the game */
-            svg {
-                opacity: 0.3;
-                pointer-events: none;
-            }
-        }
-        @media (orientation: landscape) {
-            #rotateOverlay {
-                display: none;
-            }
-            svg {
-                opacity: 1;
-                pointer-events: auto;
-            }
-        }
+#rotateOverlay rect {fill: rgba(0, 0, 0, 0.8);}
         
-        #rotateOverlay {
-            display: none;
-        }
-        
-        #rotateOverlay rect {
-            fill: rgba(0, 0, 0, 0.8);
-        }
-        
-        #rotateOverlay text {
+#rotateOverlay text {
             font-size: 48px;
             fill: white;
             font-family: sans-serif;
             text-anchor: middle;
             dominant-baseline: middle;
-        }
+}
+#rotateOverlay {
+	display: none;
+}
+@media (orientation: portrait) {
+	svg > g:not(#rotateOverlay) { 
+		opacity: 0.3; pointer-events: none; 
+		}
+	#rotateOverlay { display: block; } }
+}
+        
 /* ]]> */
 </style>
 <script>
@@ -1742,7 +1726,14 @@ function init() {
   
 </g>
 <g id="rotateOverlay">
-    <rect width="100%" height="100%" />
-    <text x="50%" y="50%">Please rotate your device 🔄</text>
-</g>
-</svg>
+  <!-- semi-transparent dark overlay -->
+  <rect y="-230" width="100%" height="100%" fill="rgba(0,0,0,0.75)"/>
+  <!-- centered, white, readable text -->
+  <text x="50%" y="33%"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        fill="#fff"
+        font-size="250">
+    Please rotate your device 🔄
+  </text>
+</g></svg>

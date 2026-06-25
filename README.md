@@ -53,3 +53,5 @@ For anyone wanting to include working bitmap images in decks they create from th
 * WebP
 
 The width:height ratio of 5:7 is what to aim for. The exact cardsize is 241x335 although it's safer to at least double that for bitmap images due to the game scaling up to fill the browser viewport, along with the provided Fullscreen toggle.
+
+[![Star History Chart](https://starhistory.link/Mardeg/svgklondike.svg?theme=cyan)](https://starhistory.link/Mardeg/svgklondike)

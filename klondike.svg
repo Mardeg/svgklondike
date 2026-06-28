@@ -1684,7 +1684,7 @@ function init() {
 </a><a id="mj" href="https://monotilejigsaws.pages.dev" transform="translate(13.75,957.75)"><title>Do a jigsaw puzzle instead</title><text font-size="32">🧩</text></a>
 <g id="giveUp" onclick="location.reload()" style="visibility:hidden">
   <rect class="dropdown-option-bg" x="1500" y="-224" rx="4" ry="4" width="140" height="35"/>
-  <text x="1505" y="-198" class="dropdown-text" style="font-size:24px">🗑️RESTART</text>
+  <text x="1505" y="-198" class="dropdown-text" style="font-size:24px" textLength="128" lengthAdjust="spacingAndGlyphs">🗑️RESTART</text>
 </g>
 <text x="2130" y="-190" font-size="36" stroke="#FFF" font-weight="bold" >⤢</text>
 <rect stroke="none" x="2130" y="-215" width="38" height="999" fill="rgba(255,255,255,0)" style="cursor:zoom-in" onclick="if(!document.fullscreenElement){document.documentElement.requestFullscreen();this.style='cursor:zoom-out'}else{document.exitFullscreen();this.style='cursor:zoom-in'}"/>

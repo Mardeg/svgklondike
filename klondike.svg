@@ -1154,9 +1154,7 @@ window.addEventListener('click', function(e) {
     if (!e.target.closest('.svg-dropdown')) {
         document.querySelectorAll('.svg-dropdown').forEach(d => d.classList.remove('open'));
 	const menu = document.getElementById('ui-controls');
-	menu.removeAttribute("onclick");
-	menu.setAttribute("style","opacity:0.5;pointer-events:none");
-	menu.querySelectorAll("g").forEach(el => {el.removeAttribute("onclick");});
+	menu.setAttribute("style","opacity:0.5");
 	menu.querySelectorAll(".dropdown-arrow").forEach(el => {el.setAttribute("opacity", "0");});
 	document.getElementById("giveUp").setAttribute("style","visibility:hidden");
 	document.getElementById("whyDisabled").setAttribute("style","visibility:visible");
@@ -1192,6 +1190,11 @@ function triggerCelebration() {
     document.getElementById("tabletop").setAttribute("stroke","url(#animrot)");
     document.getElementById("undoButton").remove();
     document.querySelector('image[width="759"]').setAttribute("style","opacity:1;transform:scale(1)");
+    document.getElementById("giveUp").setAttribute("style","visibility:hidden");
+    document.getElementById("whyDisabled").setAttribute("style","visibility:hidden");
+    const menu = document.getElementById('ui-controls');
+    menu.setAttribute("style","opacity:1");
+    menu.querySelectorAll(".dropdown-arrow").forEach(el => {el.setAttribute("opacity", "1");});
 }
 function autoFinish() {
     if(gAutoFinishInProgress) return false;

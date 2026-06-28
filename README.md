@@ -30,7 +30,7 @@ __TODO__:
 
 ☑Add: fullscreen toggle at top right corner
 
-☐Add: autoplay to completion when Deck is empty and all cards are face-up
+☑Add: autoplay to completion when Deck is empty and all cards are face-up
 
 ☐Internationalisation: country flags in the centre of the bottom border for translation and different card symbols
 

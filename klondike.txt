@@ -99,7 +99,19 @@ image[width="759"] {
 		}
 	#rotateOverlay { display: block; } }
 }
-        
+@keyframes cardFly {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) rotate(360deg);
+        opacity: 1;
+    }
+}
 /* ]]> */
 </style>
 <script>
@@ -533,6 +545,7 @@ function flipTopTableauCard(t) {
     document.getElementById("flipcard").play();
     gTableau[tableau].push(card);
     gTableau[tableau].elem.removeEventListener("click", flipTopTableauCard, false);
+    autoFinish();
 }
 
 TableauPile.prototype.push = function(card) { 
@@ -795,6 +808,9 @@ function undo() {
     if(gUndoFrom.charAt() == "F") {
         let wf = gFoundation[parseInt(gUndoFrom.slice(1), 10)];
         wf.pop();
+	if(chosenDeck != "" && wf.elem.lastChild) {
+	wf.elem.lastChild.setAttribute("y", "-235.27");
+	}
         disableDrag(wf.elem.lastChild);
         gCount--;
     }else{
@@ -914,6 +930,7 @@ function flipDeck() {
     }
     document.getElementById("deckoutline").removeEventListener("click", flipDeck, false);
     gDeck.elem.addEventListener("click", drawCard, false);
+    autoFinish();
 }
 
 // This method returns false if the move failed (in which case it is the caller's
@@ -1094,6 +1111,7 @@ function dragStop(evt) {
                 } else {
                     document.getElementById("dropcard").play();
                 }
+		autoFinish();
             }
         }
     }
@@ -1173,7 +1191,66 @@ function selectColour(colourValue, labelText, event, readOnly) {
     
     if(!readOnly)location.hash=deckLabel(chosenDeck) + "-" + colourValue;
 }
+function autoFinish() {
+    if(gDeck.size() > 0) return;
+    
+    // Check if all tableau cards are face-up
+    for(let t = 0; t < 7; ++t) {
+        for(let c = 0; c < gTableau[t].size(); ++c) {
+            const card = gTableau[t].at(c);
+            if(card && !card.isFaceUp()) return;
+        }
+    }
+    
+    processAutoFinishQueue();
+}
 
+function processAutoFinishQueue() {
+    let moved = true;
+    let delay = 0;
+    
+    while(moved) {
+        moved = false;
+        
+        // Check waste pile
+        if(gWaste.top()) {
+            const card = gWaste.top();
+            if(moveCardToFoundation(card, card.getSuit(), true)) {
+                setTimeout(() => {
+                    if(gWaste.top() === card) {  // Safety check
+                        gWaste.pop();
+                        gFoundation[card.getSuit()].push(card, false);
+                        gCount++;
+                        document.getElementById("flipcard").play();
+                    }
+                }, delay);
+                delay += 300;
+                moved = true;
+                continue;
+            }
+        }
+        
+        // Check tableau piles
+        if(!moved) {
+            for(let t = 0; t < 7; ++t) {
+                const card = gTableau[t].top();
+                if(card && moveCardToFoundation(card, card.getSuit(), true)) {
+                    setTimeout(() => {
+                        if(gTableau[t].top() === card) {  // Safety check
+                            gTableau[t].pop();
+                            gFoundation[card.getSuit()].push(card, false);
+                            gCount++;
+                            document.getElementById("flipcard").play();
+                        }
+                    }, delay);
+                    delay += 300;
+                    moved = true;
+                    break;
+                }
+            }
+        }
+    }
+}
 // END SOLITAIRE MODEL
 
 function init() {

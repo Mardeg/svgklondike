@@ -99,7 +99,19 @@ image[width="759"] {
 		}
 	#rotateOverlay { display: block; } }
 }
-        
+@keyframes cardFly {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) rotate(360deg);
+        opacity: 1;
+    }
+}
 /* ]]> */
 </style>
 <script>
@@ -533,6 +545,7 @@ function flipTopTableauCard(t) {
     document.getElementById("flipcard").play();
     gTableau[tableau].push(card);
     gTableau[tableau].elem.removeEventListener("click", flipTopTableauCard, false);
+    autoFinish();
 }
 
 TableauPile.prototype.push = function(card) { 
@@ -795,6 +808,9 @@ function undo() {
     if(gUndoFrom.charAt() == "F") {
         let wf = gFoundation[parseInt(gUndoFrom.slice(1), 10)];
         wf.pop();
+	if(chosenDeck != "" && wf.elem.lastChild) {
+	wf.elem.lastChild.setAttribute("y", "-235.27");
+	}
         disableDrag(wf.elem.lastChild);
         gCount--;
     }else{
@@ -914,6 +930,7 @@ function flipDeck() {
     }
     document.getElementById("deckoutline").removeEventListener("click", flipDeck, false);
     gDeck.elem.addEventListener("click", drawCard, false);
+    autoFinish();
 }
 
 // This method returns false if the move failed (in which case it is the caller's
@@ -1056,6 +1073,7 @@ function dragStop(evt) {
             for(let loop = 0; loop < cardPile.length; ++loop) {
                 fromPile.pop();
                 bMoveItBack = false;
+		autoFinish();
             }
         }
     }
@@ -1084,16 +1102,8 @@ function dragStop(evt) {
 		highlight();
                 fromPile.pop();
                 bMoveItBack = false;
-                if (gCount++ > 51) {
-		    const title = document.querySelector("title");
-		    title.textContent = title.textContent.replace(/^./u, "🃏");
-                    document.getElementById("jizzmate").play();
-                    document.getElementById("tabletop").setAttribute("stroke","url(#animrot)");
-                    document.getElementById("undoButton").remove();
-		    document.querySelector('image[width="759"]').setAttribute("style","opacity:1;transform:scale(1)");
-                } else {
-                    document.getElementById("dropcard").play();
-                }
+		gCount++;
+		if(autoFinish() == false) document.getElementById("dropcard").play();
             }
         }
     }
@@ -1173,7 +1183,74 @@ function selectColour(colourValue, labelText, event, readOnly) {
     
     if(!readOnly)location.hash=deckLabel(chosenDeck) + "-" + colourValue;
 }
+let gAutoFinishInProgress = false;
 
+function triggerCelebration() {
+    const title = document.querySelector("title");
+    title.textContent = title.textContent.replace(/^./u, "🃏");
+    document.getElementById("jizzmate").play();
+    document.getElementById("tabletop").setAttribute("stroke","url(#animrot)");
+    document.getElementById("undoButton").remove();
+    document.querySelector('image[width="759"]').setAttribute("style","opacity:1;transform:scale(1)");
+}
+function autoFinish() {
+    if(gAutoFinishInProgress) return false;
+    if(gDeck.size() > 0) return false;
+    if(gWaste.size() > 1) return false;  // Do not autoFinish with more than one card in waste
+    
+    // Check if all tableau cards are face-up
+    for(let t = 0; t < 7; ++t) {
+        for(let c = 0; c < gTableau[t].size(); ++c) {
+            const card = gTableau[t].at(c);
+            if(card && !card.isFaceUp()) return false;
+        }
+    }
+    
+    gAutoFinishInProgress = true;
+    processNextAutoFinishCard();
+    return true;  // Started auto-finish
+}
+function processNextAutoFinishCard() {
+    // Check waste pile first
+    if(gWaste.top()) {
+        const card = gWaste.top();
+        if(moveCardToFoundation(card, card.getSuit(), true)) {
+            gWaste.pop();
+            gFoundation[card.getSuit()].push(card, false);
+            gCount++;
+            document.getElementById("flipcard").play();
+            
+            if (gCount > 52) {
+                triggerCelebration();
+                gAutoFinishInProgress = false;
+            } else {
+                setTimeout(processNextAutoFinishCard, 300);
+            }
+            return;
+        }
+    }
+    
+    // Check tableau piles
+    for(let t = 0; t < 7; ++t) {
+        const card = gTableau[t].top();
+        if(card && moveCardToFoundation(card, card.getSuit(), true)) {
+            gTableau[t].pop();
+            gFoundation[card.getSuit()].push(card, false);
+            gCount++;
+            document.getElementById("flipcard").play();
+            if (gCount > 52) {
+                triggerCelebration();
+                gAutoFinishInProgress = false;
+            } else {
+                setTimeout(processNextAutoFinishCard, 300);
+            }
+            return;
+        }
+    }
+    
+    // No more cards to move
+    gAutoFinishInProgress = false;
+}
 // END SOLITAIRE MODEL
 
 function init() {

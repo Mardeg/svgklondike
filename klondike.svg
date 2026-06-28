@@ -1637,10 +1637,10 @@ function init() {
 <text x="1745" y="320" font-size="36" opacity="0.2">Foundation</text>
 <rect x="1620" y="334" rx="20" ry="20" width="430" height="570" stroke="black" stroke-width="2.5" stroke-opacity="0.2" fill="none"/>
 
-<g transform="translate(1650,595)" id="MT2"><use href="#outline"/><use href="#diamond" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
-<g transform="translate(1850,595)" id="MT1"><use href="#outline" /><use href="#heart" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
-<g transform="translate(1650,870)" id="MT3"><use href="#outline" /><use href="#club" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
-<g transform="translate(1850,870)" id="MT4"><use href="#outline" /><use href="#spade" opacity="0.2" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1650,595)" id="MT2"><use href="#outline"/><use href="#diamond" opacity="0.4" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1850,595)" id="MT1"><use href="#outline" /><use href="#heart" opacity="0.4" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1650,870)" id="MT3"><use href="#outline" /><use href="#club" opacity="0.4" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
+<g transform="translate(1850,870)" id="MT4"><use href="#outline" /><use href="#spade" opacity="0.4" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
 
 <!-- These elements are what I attach cards to in the game -->
 <!-- Within the script, I reorder these piles depending on which

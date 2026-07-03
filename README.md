@@ -61,4 +61,5 @@ Other places this game is at:
 * [itch](https://mardeg.itch.io/svg-klondike)
 * [gamejolt](https://mardeg.gamejolt.io/SVGklondike)
 * [newgrounds](https://www.newgrounds.com/portal/view/1039859)
+* [spreadmygame](https://www.spreadmygame.com/?p=games&g=383)
 * [kongregate](https://www.kongregate.com/en/games/Mardeg/svg-klondike_preview?guest_access_key=d45b01497af998b4c9d0cb1d537979a9ad98480fd910d46570ae311d79ea9503)

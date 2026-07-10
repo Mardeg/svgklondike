@@ -2116,7 +2116,8 @@ function init() {
     </g>
   </g>
   <!-- LANGUAGE SELECTOR DROPDOWN (X=440, Y=-190) -->
-  <g id="dropdown-language" class="svg-dropdown" style="opacity:0.5" onclick="toggleDropdown('dropdown-language')">
+  <g id="dropdown-language" class="svg-dropdown" style="opacity:0.5;cursor:not-allowed" onclick="toggleDropdown('dropdown-language')">
+  <title>Coming soon…</title>
     <rect class="dropdown-bg" x="440" y="-224" width="70" height="35"/>
     <text id="current-language-label" class="dropdown-label" x="455" y="-201">🇬🇧</text>
     <polygon class="dropdown-arrow" points="490,-211 500,-211 495,-201"/>

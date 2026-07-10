@@ -99,19 +99,6 @@ image[width="759"] {
 		}
 	#rotateOverlay { display: block; } }
 }
-@keyframes cardFly {
-    0% {
-        transform: translate(0, 0) rotate(0deg);
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.8;
-    }
-    100% {
-        transform: translate(var(--tx), var(--ty)) rotate(360deg);
-        opacity: 1;
-    }
-}
 /* ]]> */
 </style>
 <script>
@@ -260,10 +247,42 @@ function pointerMove(evt) {
         }
     }
 }
-
+let gPrimedCardHref = "";
 function pointerUp(evt) {
     if (window.getSelection) window.getSelection().removeAllRanges();
     if (!draggingElement) return;
+
+    const targetElement = evt.target; 
+    if (!targetElement || targetElement.tagName === "svg") return;
+
+    const currentHref = targetElement.getAttribute("href");
+    if (!currentHref) return;
+
+    // Second click: If this href matches the one we primed on click one
+    if (gPrimedCardHref === currentHref) {
+        // Run autoplay and catch whether it successfully relocated a card
+        const moveSucceeded = singleAutoplayCard();
+        gPrimedCardHref = ""; // Clear state immediately
+        
+        if (moveSucceeded) {
+            // CRITICAL SYSTEM CLEANUP: Shut down the drag engine variables 
+            // so dragStop/dragDropCallbacks are completely bypassed!
+            if (draggingElement) {
+                draggingElement.releasePointerCapture(evt.pointerId);
+            }
+            const title = document.querySelector("title");
+            title.textContent = title.textContent.replace(/^./u, "🂠");
+            
+            draggingElement = null;
+            nMouseOffsetX = 0;
+            nMouseOffsetY = 0;
+            return; // Safe exit. Stops out-of-order dragStop execution dead.
+        }
+    }
+
+    // First click: Save this card's identity string
+    gPrimedCardHref = currentHref;
+    
     draggingElement.releasePointerCapture(evt.pointerId);
     if (dragDropCallbacks.length) {
         let p = document.documentElement.createSVGPoint();
@@ -299,8 +318,8 @@ function pointerUp(evt) {
                 break;
             }
         }
-	const title = document.querySelector("title");
-	title.textContent = title.textContent.replace(/^./u, "🂠");
+        const title = document.querySelector("title");
+        title.textContent = title.textContent.replace(/^./u, "🂠");
     }
     draggingElement = null;
     nMouseOffsetX = 0;
@@ -406,6 +425,43 @@ function getScreenCTM(){
         sCTM = tr.multiply(sCTM);
     }
     return sCTM;
+}
+function textureChoice(t) {
+    switch(t) {
+        case "wood":    return "url(#wood)";
+        case "leather": return "url(#leather)";
+        case "metal":   return "url(#metal)";
+        default:        return "green";
+    }
+}
+
+function textureLabel(t) {
+    switch(t) {
+        case "url(#wood)":    return "Woodgrain";
+        case "url(#leather)": return "Leather";
+        case "url(#metal)":   return "50s Bonnet";
+        default:              return "Green Felt";
+    }
+}
+function languageChoice(l) {
+    switch(l) {
+        case "french":   return "fr";
+        case "spanish":  return "es";
+        case "italian":  return "it";
+        case "german":   return "de";
+        case "swiss":    return "sv";
+        default:         return "en";
+    }
+}
+function languageLabel(t) {
+    switch(t) {
+        case "fr":    return "🇫🇷";
+        case "es":    return "🇪🇸";
+        case "it":    return "🇮🇹";
+        case "de":    return "🇩🇪";
+        case "sv":    return "🇨🇭";
+        default:              return "🇬🇧";
+    }
 }
 function deckChoice(s) {
     switch(s) {
@@ -935,8 +991,8 @@ function flipDeck() {
 
 // This method returns false if the move failed (in which case it is the caller's
 // responsibility to re-own the card objects) or true if the cards were 
-// successfully moved to the tableau pile (in which case the caller should 
-// relinquish all responsibility of the card objects)
+// successfully moved (or not moved, when showhint exists) to the tableau pile (in which case 
+// the caller should relinquish all responsibility of the card objects)
 // cardPile is a JavaScript array of Card objects here
 function moveCardsToTableau(pile, tableauNum, showhint) {
     const tabNum = parseInt(tableauNum);
@@ -967,8 +1023,8 @@ function moveCardsToTableau(pile, tableauNum, showhint) {
 
 // This method returns false if the move failed (in which case it is the caller's
 // responsibility to re-own the card object) or true if the card was successfully
-// moved to the foundation pile (in which case the caller should relinquish all
-// responsibility of the card object)
+// moved (or not moved, if showhint exists) to the foundation pile (in which case 
+// the caller should relinquish all responsibility of the card object)
 function moveCardToFoundation(card, foundationNum, showhint) {
     const foundNum = parseInt(foundationNum);
     if(foundNum < 1 || foundNum > 4) { return false; }
@@ -1134,6 +1190,7 @@ function initGame() {
     document.getElementById("undoButton").addEventListener("click", undoButtonClick, false);
     selectDeck(chosenDeck, deckLabel(chosenDeck), undefined, true);
     selectColour(rORb, colourLabel(rORb), undefined, true);
+    selectLanguage("english", languageLabel("en"), undefined, true);
     startSolitaire();
 }
 
@@ -1141,7 +1198,6 @@ function initGame() {
 function toggleDropdown(id) {
     const el = document.getElementById(id);
     const wasOpen = el.classList.contains('open');
-    
     // Close all menus first to keep it tidy
     document.querySelectorAll('.svg-dropdown').forEach(d => d.classList.remove('open'));
     
@@ -1181,6 +1237,30 @@ function selectColour(colourValue, labelText, event, readOnly) {
     
     if(!readOnly)location.hash=deckLabel(chosenDeck) + "-" + colourValue;
 }
+// Selection Callback: Handle Language
+function selectLanguage(languageValue, labelText, event, readOnly) {
+    if(!readOnly) event.stopPropagation();
+    
+    document.getElementById('current-language-label').textContent = labelText;
+    document.getElementById('dropdown-language').classList.remove('open');
+    
+    if(!readOnly)location.hash=deckLabel(chosenDeck) + "-" + colourValue;
+}
+function selectTexture(textureValue, labelText, event) {
+    event.stopPropagation();
+    document.getElementById('current-texture-label').textContent = "Table: " + labelText;
+    console.log("texture classList: " + document.getElementById('dropdown-texture').classList);
+    document.getElementById('dropdown-texture').classList.remove('open');
+    const tt=document.getElementById("tabletop");
+    if (textureValue=="felt"){
+	tt.setAttribute("fill", "green");
+	tt.removeAttribute("filter");
+    }else {
+	tt.setAttribute("fill", textureValue=="leather"?"#361D0B":"#A41720");
+	tt.setAttribute("filter", textureChoice(textureValue));
+    }
+}
+
 let gAutoFinishInProgress = false;
 
 function triggerCelebration() {
@@ -1196,6 +1276,103 @@ function triggerCelebration() {
     menu.setAttribute("style","opacity:1");
     menu.querySelectorAll(".dropdown-arrow").forEach(el => {el.setAttribute("opacity", "1");});
 }
+function singleAutoplayCard() {
+    if (!gPrimedCardHref) return false;
+
+    highlight(false);
+
+    let targetCard = null;
+    let sourcePileType = ""; 
+    let sourceTableauIndex = -1;
+    let fullMovingSlice = []; 
+
+    const wasteTop = gWaste.top();
+    if (wasteTop && gPrimedCardHref.includes(wasteTop.elemName)) {
+        targetCard = wasteTop;
+        sourcePileType = "waste";
+    }
+    
+    if (!targetCard) {
+        for (let t = 0; t < 7; ++t) {
+            const pileCards = gTableau[t].cards; 
+            for (let i = 0; i < pileCards.length; ++i) {
+                const card = pileCards[i];
+                if (card && card.isFaceUp() && gPrimedCardHref.includes(card.elemName)) {
+                    targetCard = card;
+                    sourcePileType = "tableau";
+                    sourceTableauIndex = t;
+                    fullMovingSlice = pileCards.slice(i); 
+                    break;
+                }
+            }
+            if (targetCard) break;
+        }
+    }
+
+    if (!targetCard) {
+        document.getElementById("undomove").play();
+        return false;
+    }
+
+    // Foundation Route Check
+    if (fullMovingSlice.length <= 1) {
+        const suitNum = targetCard.getSuit();
+        if (moveCardToFoundation(targetCard, suitNum)) {
+            
+            gUndoFrom = "F" + suitNum;
+            gUndoTo = (sourcePileType === "waste") ? -1 : sourceTableauIndex;
+            gPrevCards = [targetCard]; // Wrap single card object in an array
+            setUndo(true);
+
+            // Mutate storage tracking arrays
+            if (sourcePileType === "waste") gWaste.pop();
+            if (sourcePileType === "tableau") gTableau[sourceTableauIndex].pop();
+            
+            gCount++;
+            document.getElementById("dropcard").play();
+            
+            if (gCount > 52) {
+                triggerCelebration();
+                gAutoFinishInProgress = false;
+            }
+            highlight();
+            return true; 
+        }
+    }
+
+    // Tableau Column Route Check
+    const movingGroup = sourcePileType === "waste" ? [targetCard] : fullMovingSlice;
+
+    for (let h = 0; h < 7; ++h) {
+        if (sourcePileType === "tableau" && h === sourceTableauIndex) continue; 
+        
+        if (moveCardsToTableau(movingGroup, h)) {
+            
+            gUndoFrom = "T" + h;
+            gUndoTo = (sourcePileType === "waste") ? -1 : sourceTableauIndex;
+            // Capture a safe copy array of the cards before mutating the old pile lengths
+            gPrevCards = [...movingGroup]; 
+            setUndo(true);
+
+            // Mutate storage tracking arrays safely
+            if (sourcePileType === "waste") {
+                gWaste.pop();
+            } else if (sourcePileType === "tableau") {
+                for (let p = 0; p < movingGroup.length; ++p) {
+                    gTableau[sourceTableauIndex].pop();
+                }
+            }
+            
+            highlight();
+            document.getElementById("dropcard").play();
+            return true; 
+        }
+    }
+
+    document.getElementById("undomove").play();
+    return false;
+}
+
 function autoFinish() {
     if(gAutoFinishInProgress) return false;
     if(gDeck.size() > 0) return false;
@@ -1213,6 +1390,7 @@ function autoFinish() {
     processNextAutoFinishCard();
     return true;  // Started auto-finish
 }
+
 function processNextAutoFinishCard() {
     // Check waste pile first
     if(gWaste.top()) {
@@ -1259,6 +1437,11 @@ function processNextAutoFinishCard() {
 function init() {
     setTimeout("initGame()", 50);    
 }
+// END SOLITAIRE MODEL
+
+function init() {
+    setTimeout("initGame()", 50);    
+}
 /* ]]> */
 // @license-end
 </script>
@@ -1291,14 +1474,125 @@ function init() {
   <filter id="slotGlow" x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur stdDeviation="15" result="blur" />
     <feComponentTransfer>
-      <!-- Controls the center opacity (0.35) and softens the fade -->
       <feFuncA type="linear" slope="0.35" />
     </feComponentTransfer>
     <feMerge>
       <feMergeNode />
     </feMerge>
   </filter>
-
+  <filter id="wood"><feTurbulence baseFrequency=".002 .02" numOctaves="9" result="n"/><feDiffuseLighting surfaceScale="9" lighting-color="#BA8C63"><feDistantLight elevation="60" azimuth="-90"/></feDiffuseLighting><feDisplacementMap in2="n" scale="50"/></filter>
+  <filter
+     style="color-interpolation-filters:sRGB;"
+     id="leather"
+      >
+    <feTurbulence
+       type="fractalNoise"
+       numOctaves="4"
+       baseFrequency="0.08 0.10" 
+       seed="42"
+       result="result0"
+       id="feTurbulence3274" />
+    <feTurbulence
+       type="fractalNoise"
+       numOctaves="4"
+       baseFrequency="0.04 0.05" 
+       seed="42"
+       result="result0" />
+    <feComponentTransfer in="result0" result="highContrastNoise">
+       <feFuncR type="linear" slope="1.8" intercept="-0.2"/>
+       <feFuncG type="linear" slope="1.8" intercept="-0.2"/>
+       <feFuncB type="linear" slope="1.8" intercept="-0.2"/>
+    </feComponentTransfer>
+    <feColorMatrix
+       result="result4"
+       in="highContrastNoise"
+       values="0"
+       type="saturate" />
+    <feComposite
+       in="SourceGraphic"
+       in2="result4"
+       operator="arithmetic"
+       k1="2.2" 
+       k2="0.3"
+       k3="0.3"
+       result="result2" />
+    <feColorMatrix
+       result="fbSourceGraphicAlpha"
+       in="fbSourceGraphic"
+       values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0" />
+    <feComposite
+       in2="result2"
+       in="fbSourceGraphic"
+       operator="arithmetic"
+       k2="3.5"
+       k3="2.0"
+       result="result91" />
+    <feBlend
+       in2="result91"
+       mode="multiply"
+       result="fbSourceGraphic" />
+    <feDiffuseLighting
+       id="feDiffuseLighting5676"
+       diffuseConstant="0.8" 
+       result="result1"
+       surfaceScale="6"> 
+      <feDistantLight
+         id="feDistantLight5678"
+         elevation="26" 
+         azimuth="225" />
+    </feDiffuseLighting>
+    <feComposite
+       in2="fbSourceGraphic"
+       result="result3"
+       k1="0.95"
+       k2="0.75"
+       k3="0.0"
+       in="result1"
+       operator="arithmetic" />
+  </filter>
+  <filter
+     style="color-interpolation-filters:sRGB;"
+     id="metal"
+   > 
+    <feTurbulence
+       type="fractalNoise"
+       numOctaves="2"
+       baseFrequency="0.0005 0.003" 
+       seed="14"
+       result="coarseNoise" />
+    <feComponentTransfer in="coarseNoise" result="isolatedStreaks">
+       <feFuncR type="discrete" tableValues="0 0 0 0 0.2 0.5 0.8 1"/>
+       <feFuncG type="discrete" tableValues="0 0 0 0 0.2 0.5 0.8 1"/>
+       <feFuncB type="discrete" tableValues="0 0 0 0 0.2 0.5 0.8 1"/>
+    </feComponentTransfer>
+    <feColorMatrix
+       type="matrix"
+       values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0"
+       in="isolatedStreaks"
+       result="surfaceMap" />
+    <feSpecularLighting
+       in="surfaceMap"
+       surfaceScale="12"
+       specularConstant="2.5"
+       specularExponent="50"
+       lighting-color="#ffffff"
+       result="chromeGleam">
+      <feDistantLight elevation="32" azimuth="145" />
+    </feSpecularLighting>
+    <feComposite
+       in="SourceGraphic"
+       in2="isolatedStreaks"
+       operator="arithmetic"
+       k1="0.5"
+       k2="0.7"
+       k3="0.0"
+       k4="0.0"
+       result="paintedSurface" />
+    <feBlend
+       in="chromeGleam"
+       in2="paintedSurface"
+       mode="screen" />
+  </filter>
     <g id="outline"><rect width="150" height="210" x="8.28" y="-222.5" rx="10" ry="10" style="filter: url(#slotGlow); pointer-events: none;" /></g>
     <g id="uniqueoutline"><path style="fill:none;stroke:none;stroke-width:10" d="M 0,0C0,3.78 3.09,6.87 6.87,6.87L159.715,6.87C163.485,6.87 166.575,3.78 166.575,0L166.575,-228.4C166.575,-232.18 163.485,-235.27 159.715,-235.27L6.87,-235.27C3.09,-235.27 0,-232.18 0,-228.4L0,0 z"/></g>
 
@@ -1805,7 +2099,7 @@ function init() {
   <g id="dropdown-colour" class="svg-dropdown" onclick="toggleDropdown('dropdown-colour')">
     <rect class="dropdown-bg" x="260" y="-224" width="150" height="35"/>
     <text id="current-colour-label" class="dropdown-label" x="275" y="-201">Blue Back</text>
-    <polygon class="dropdown-arrow" points="385,-211 395,-211 390,-201"/>
+    <polygon class="dropdown-arrow" points="390,-211 400,-211 395,-201"/>
     
     <!-- Collapsible Options List -->
     <g class="dropdown-options">
@@ -1821,9 +2115,79 @@ function init() {
       </g>
     </g>
   </g>
+  <!-- LANGUAGE SELECTOR DROPDOWN (X=440, Y=-190) -->
+  <g id="dropdown-language" class="svg-dropdown" style="opacity:0.5" onclick="toggleDropdown('dropdown-language')">
+    <rect class="dropdown-bg" x="440" y="-224" width="70" height="35"/>
+    <text id="current-language-label" class="dropdown-label" x="455" y="-201">🇬🇧</text>
+    <polygon class="dropdown-arrow" points="490,-211 500,-211 495,-201"/>
+    
+    <!-- Collapsible Options List -->
+    <g class="dropdown-options" style="display:none">
+      <!-- English -->
+      <g onclick="selectLanguage('english', '🇬🇧', event)">
+        <rect class="dropdown-option-bg" x="440" y="-189" width="70" height="80"/>
+        <text class="dropdown-text" x="445" y="-131">🇬🇧</text>
+      </g>
+      <!-- French -->
+      <g onclick="selectLanguage('french', '🇫🇷', event)">
+        <rect class="dropdown-option-bg" x="440" y="-109" width="70" height="80"/>
+        <text class="dropdown-text" x="445" y="-51">🇫🇷</text>
+      </g>
+      <!-- Spanish -->
+      <g onclick="selectLanguage('spanish', '🇪🇸', event)">
+        <rect class="dropdown-option-bg" x="440" y="-29" width="70" height="80"/>
+        <text class="dropdown-text" x="445" y="29">🇪🇸</text>
+      </g>
+      <!-- Italian -->
+      <g onclick="selectLanguage('italian', '🇮🇹', event)">
+        <rect class="dropdown-option-bg" x="440" y="51" width="70" height="80"/>
+        <text class="dropdown-text" x="445" y="109">🇮🇹</text>
+      </g>
+      <!-- German -->
+      <g onclick="selectLanguage('spanish', '🇩🇪', event)">
+        <rect class="dropdown-option-bg" x="440" y="131" width="70" height="80"/>
+        <text class="dropdown-text" x="445" y="189">🇩🇪</text>
+      </g>
+      <!-- Swiss -->
+      <g onclick="selectLanguage('italian', '🇨🇭', event)">
+        <rect class="dropdown-option-bg" x="440" y="210" width="70" height="80"/>
+        <text class="dropdown-text" x="445" y="269">🇨🇭</text>
+      </g>
+    </g>
+  </g>
 </g>
+  <!-- TABLE TEXTURE DROPDOWN (X=440, Y=-190) -->
+  <g id="dropdown-texture" class="svg-dropdown" onclick="toggleDropdown('dropdown-texture')">
+    <rect class="dropdown-bg" x="540" y="-224" width="200" height="35"/>
+    <text id="current-texture-label" class="dropdown-label" x="555" y="-201">Table: Green Felt</text>
+    <polygon class="dropdown-arrow" points="720,-211 730,-211 725,-201"/>
+    
+    <!-- Collapsible Options List -->
+    <g class="dropdown-options">
+      <!-- Green Felt -->
+      <g onclick="selectTexture('felt', 'Green Felt', event)">
+        <rect class="dropdown-option-bg" x="490" y="-189" width="300" height="80"/>
+        <text class="dropdown-text" x="505" y="-131">Green Felt</text>
+      </g>
+      <!-- Woodgrain -->
+      <g onclick="selectTexture('wood', 'Woodgrain', event)">
+        <rect class="dropdown-option-bg" x="490" y="-109" width="300" height="80"/>
+        <text class="dropdown-text" x="505" y="-51">Woodgrain</text>
+      </g>
+      <!-- Leather -->
+      <g onclick="selectTexture('leather', 'Leather', event)">
+        <rect class="dropdown-option-bg" x="490" y="-29" width="300" height="80"/>
+        <text class="dropdown-text" x="505" y="29">Leather</text>
+      </g>
+      <!-- 50s Bonnet -->
+      <g onclick="selectTexture('metal', '50s Bonnet', event)">
+        <rect class="dropdown-option-bg" x="490" y="51" width="300" height="80"/>
+        <text class="dropdown-text" x="505" y="109">50s Bonnet</text>
+      </g>
+    </g>
+  </g>
 <g id="whyDisabled" style="visibility:hidden">
-  <rect stroke="none" x="50" y="-215" width="360" height="38" fill="rgba(255,255,255,0)" style="cursor:not-allowed" />
+  <rect stroke="none" x="50" y="-215" width="460" height="38" fill="rgba(255,255,255,0)" style="cursor:not-allowed" />
   <title>These can only be set before play starts</title>
 </g>
 <g id="rotateOverlay">

@@ -430,7 +430,7 @@ function textureChoice(t) {
     switch(t) {
         case "wood":    return "url(#wood)";
         case "leather": return "url(#leather)";
-        case "metal":   return "url(#metal)";
+        case "illusion":return "url(#illusion)";
         default:        return "green";
     }
 }
@@ -439,7 +439,7 @@ function textureLabel(t) {
     switch(t) {
         case "url(#wood)":    return "Woodgrain";
         case "url(#leather)": return "Leather";
-        case "url(#metal)":   return "50s Bonnet";
+        case "url(#illusion)":   return "Illusion";
         default:              return "Green Felt";
     }
 }
@@ -1252,11 +1252,11 @@ function selectTexture(textureValue, labelText, event) {
     console.log("texture classList: " + document.getElementById('dropdown-texture').classList);
     document.getElementById('dropdown-texture').classList.remove('open');
     const tt=document.getElementById("tabletop");
-    if (textureValue=="felt"){
-	tt.setAttribute("fill", "green");
+    if (["felt", "illusion"].includes(textureValue)){
+	tt.setAttribute("fill", textureChoice(textureValue));
 	tt.removeAttribute("filter");
     }else {
-	tt.setAttribute("fill", textureValue=="leather"?"#361D0B":"#A41720");
+	tt.setAttribute("fill", "#361D0B");
 	tt.setAttribute("filter", textureChoice(textureValue));
     }
 }
@@ -1550,49 +1550,26 @@ function init() {
        in="result1"
        operator="arithmetic" />
   </filter>
-  <filter
-     style="color-interpolation-filters:sRGB;"
-     id="metal"
-   > 
-    <feTurbulence
-       type="fractalNoise"
-       numOctaves="2"
-       baseFrequency="0.0005 0.003" 
-       seed="14"
-       result="coarseNoise" />
-    <feComponentTransfer in="coarseNoise" result="isolatedStreaks">
-       <feFuncR type="discrete" tableValues="0 0 0 0 0.2 0.5 0.8 1"/>
-       <feFuncG type="discrete" tableValues="0 0 0 0 0.2 0.5 0.8 1"/>
-       <feFuncB type="discrete" tableValues="0 0 0 0 0.2 0.5 0.8 1"/>
-    </feComponentTransfer>
-    <feColorMatrix
-       type="matrix"
-       values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0"
-       in="isolatedStreaks"
-       result="surfaceMap" />
-    <feSpecularLighting
-       in="surfaceMap"
-       surfaceScale="12"
-       specularConstant="2.5"
-       specularExponent="50"
-       lighting-color="#ffffff"
-       result="chromeGleam">
-      <feDistantLight elevation="32" azimuth="145" />
-    </feSpecularLighting>
-    <feComposite
-       in="SourceGraphic"
-       in2="isolatedStreaks"
-       operator="arithmetic"
-       k1="0.5"
-       k2="0.7"
-       k3="0.0"
-       k4="0.0"
-       result="paintedSurface" />
-    <feBlend
-       in="chromeGleam"
-       in2="paintedSurface"
-       mode="screen" />
-  </filter>
+    <filter id="blurMe">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
+    </filter>
+    <pattern id="illusion" width="300" height="300" x="40" y="40" patternUnits="userSpaceOnUse">
+      <rect fill="#8C8C8C" width="300" height="300" />
+      <g id="e1-full" filter="url(#blurMe)">
+        <g id="e1-half">
+          <g id="e1">
+            <ellipse style="fill:#F81010;stroke:#000000;stroke-width:1" cx="150" cy="50" rx="13" ry="25" />
+            <ellipse fill="none" stroke="#FFFFFF" stroke-width="1" pathLength="100" stroke-dasharray="50" stroke-dashoffset="-25" cx="150" cy="50" rx="13" ry="25" />
+          </g>
+          <use href="#e1" transform="rotate(30,150,150)" />
+          <use href="#e1" transform="rotate(60,150,150)" />
+          <use href="#e1" transform="rotate(90,150,150)" />
+          <use href="#e1" transform="rotate(120,150,150)" />
+          <use href="#e1" transform="rotate(150,150,150)" />
+        </g>
+        <use href="#e1-half" transform="rotate(180,150,150)" />
+      </g>
+    </pattern>
     <g id="outline"><rect width="150" height="210" x="8.28" y="-222.5" rx="10" ry="10" style="filter: url(#slotGlow); pointer-events: none;" /></g>
     <g id="uniqueoutline"><path style="fill:none;stroke:none;stroke-width:10" d="M 0,0C0,3.78 3.09,6.87 6.87,6.87L159.715,6.87C163.485,6.87 166.575,3.78 166.575,0L166.575,-228.4C166.575,-232.18 163.485,-235.27 159.715,-235.27L6.87,-235.27C3.09,-235.27 0,-232.18 0,-228.4L0,0 z"/></g>
 
@@ -2180,10 +2157,10 @@ function init() {
         <rect class="dropdown-option-bg" x="490" y="-29" width="300" height="80"/>
         <text class="dropdown-text" x="505" y="29">Leather</text>
       </g>
-      <!-- 50s Bonnet -->
-      <g onclick="selectTexture('metal', '50s Bonnet', event)">
+      <!-- Illusion -->
+      <g onclick="selectTexture('illusion', 'Illusion', event)">
         <rect class="dropdown-option-bg" x="490" y="51" width="300" height="80"/>
-        <text class="dropdown-text" x="505" y="109">50s Bonnet</text>
+        <text class="dropdown-text" x="505" y="109">Illusion</text>
       </g>
     </g>
   </g>

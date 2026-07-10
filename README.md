@@ -32,6 +32,10 @@ __TODO__:
 
 ☑Add: autoplay to completion when Deck is empty and all cards are face-up
 
+☑Add: autoplay a single card by double-clicking/tapping it
+
+☑Add: extra table themes
+
 ☐Internationalisation: country flags as a dropdown for translation and different card symbols
 
 ☐Add: animate waste turning over to become the deck when it's empty, and animate flipping facedown cards

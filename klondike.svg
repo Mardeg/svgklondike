@@ -426,31 +426,21 @@ function getScreenCTM(){
     }
     return sCTM;
 }
-function textureChoice(t) {
-    switch(t) {
-        case "wood":    return "url(#wood)";
-        case "leather": return "url(#leather)";
-        case "illusion":return "url(#illusion)";
-        default:        return "green";
-    }
-}
+const translations = {
+    fr: { deck:"Pioche", table:"Tapis", waste:"Écart", found:"Fondation", basic:"Basique", classic:"Classique", elem:"Élémentaire", back:"Dos", blue:"Bleu", red:"Rouge", green:"Tapis Vert", wood:"Effet Bois", leath:"Cuir", ill:"Illusion", why:"Ces options ne peuvent être définies qu'avant le début de la partie", jigsaw:"Faites plutôt un puzzle", proj:"Projection" },
+    es: { deck:"Mazo", table:"Tapete", waste:"Descarte", found:"Base", basic:"Básico", classic:"Clásico", elem:"Elemental", back:"Dorso", blue:"Azul", red:"Rojo", green:"Fieltro Verde", wood:"Madera", leath:"Cuero", ill:"Ilusión", why:"Esto solo se puede configurar antes de empezar a jugar", jigsaw:"Haz un rompecabezas en su lugar", proj:"Proyección" },
+    it: { deck:"Tallone", table:"Tavolo", waste:"Pozzetto", found:"Fondazione", basic:"Base", classic:"Classico", elem:"Elementale", back:"Dorso", blue:"Blu", red:"Rosso", green:"Panno Verde", wood:"Legno", leath:"Pelle", ill:"Illusione", why:"Queste opzioni possono essere impostate solo prima dell'inizio del gioco", jigsaw:"Fai invece un puzzle", proj:"Proiezione" },
+    de: { deck:"Stoß", table:"Spielfeld", waste:"Abfall", found:"Fundament", basic:"Basis", classic:"Klassisch", elem:"Elementar", back:"Rückseite", blue:"Blau", red:"Rot", green:"Grüner Filz", wood:"Holz", leath:"Leder", ill:"Illusion", why:"Dies kann nur vor dem Spielstart eingestellt werden", jigsaw:"Mach stattdessen ein Puzzle", proj:"Projektion" },
+    ch: { deck:"Schtapfe", table:"Tisch teppich", waste:"Ablag", found:"Zielstaple", basic:"Einfach", classic:"Klassisch", elem:"Elementar", back:"Ruggsyte", blue:"Blau", red:"Rot", green:"Grüene Filz", wood:"Holzstruktur", leath:"Leder", ill:"Illusion", why:"Das cha me erst vorem Schpielschtart iischtelle", jigsaw:"Mach doch schtattdesse es Puzzle", proj:"Projektion" },
+    en: { deck:"Deck", table:"Tableau", waste:"Waste", found:"Foundation", basic:"Basic", classic:"Classic", elem:"Elemental", back:"Back", blue:"Blue", red:"Red", green:"Green Felt", wood:"Woodgrain", leath:"Leather", ill:"Illusion", why:"These can only be set before play starts", jigsaw:"Do a jigsaw puzzle instead", proj:"Project" }
+};
 
-function textureLabel(t) {
-    switch(t) {
-        case "url(#wood)":    return "Woodgrain";
-        case "url(#leather)": return "Leather";
-        case "url(#illusion)":   return "Illusion";
-        default:              return "Green Felt";
-    }
-}
-function languageChoice(l) {
-    switch(l) {
-        case "french":   return "fr";
-        case "spanish":  return "es";
-        case "italian":  return "it";
-        case "german":   return "de";
-        case "swiss":    return "sv";
-        default:         return "en";
+function transLang(ln) {
+    if (!ln) return;
+    const dict = translations[ln] || translations.en;
+    for (const i of ["deck","table","waste","found","basic","classic","elem","back","blue","red","green","wood","leath","ill","why","jigsaw","proj"]) {
+        const u = document.querySelector('[data-trans="' + i + '"]');
+        if (u) u.textContent = dict[i] || translations.en[i];
     }
 }
 function languageLabel(t) {
@@ -459,8 +449,24 @@ function languageLabel(t) {
         case "es":    return "🇪🇸";
         case "it":    return "🇮🇹";
         case "de":    return "🇩🇪";
-        case "sv":    return "🇨🇭";
-        default:              return "🇬🇧";
+        case "ch":    return "🇨🇭";
+        default:      return "🇬🇧";
+    }
+}
+function textureChoice(t) {
+    switch(t) {
+        case "wood":    return "url(#wood)";
+        case "leather": return "url(#leather)";
+        case "illusion":return "url(#illusion)";
+        default:        return "green";
+    }
+}
+function textureLabel(t) {
+    switch(t) {
+        case "wood":   return translations[chosenLang]?.wood   || translations.en.wood;
+        case "leath":  return translations[chosenLang]?.leath  || translations.en.leath;
+        case "ill":    return translations[chosenLang]?.ill    || translations.en.ill;
+        default:       return translations[chosenLang]?.green  || translations.en.green;
     }
 }
 function deckChoice(s) {
@@ -473,19 +479,20 @@ function deckChoice(s) {
 }
 function deckLabel(d) {
     switch(d) {
-        case "deckspritesheet.svg": return "Classic"
-        case "AstronomiaDeck.svg": return "Astronomia"
-        case "ElementalDeck.svg": return "Elemental"
-        default: return "Basic";
+        case "deckspritesheet.svg": return translations[chosenLang]?.classic || translations.en.classic;
+        case "ElementalDeck.svg":   return translations[chosenLang]?.elem || translations.en.elem;
+        case "AstronomiaDeck.svg":  return "Astronomia";
+        default:                    return translations[chosenLang]?.basic || translations.en.basic;
     }
 }
 function colourLabel(c) {
     switch(c) {
-	case "RED": return "Red Back"
-	default: return "Blue Back";
+	case "RED": return (translations[chosenLang]?.red || translations.en.red) + " " + (translations[chosenLang]?.back || translations.en.back);
+	default: return (translations[chosenLang]?.blue || translations.en.blue) + " " + (translations[chosenLang]?.back || translations.en.back);
     }
 }
 let chosenDeck = location.hash?deckChoice(location.hash.slice(1, 5)):"";
+let chosenLang = location.search.slice(1).toLowerCase();;
 let rORb = location.hash?(location.hash.slice(-3)=="RED"?"RED":"BLUE"):"BLUE";
 window.onhashchange = () => location.reload();
 let gBackName = chosenDeck + "#BACK-" + rORb;
@@ -1188,9 +1195,11 @@ function initGame() {
     addDragEventListener("dragstart", dragStart);
     addDragEventListener("dragdrop", dragStop);
     document.getElementById("undoButton").addEventListener("click", undoButtonClick, false);
+    transLang(chosenLang);
     selectDeck(chosenDeck, deckLabel(chosenDeck), undefined, true);
     selectColour(rORb, colourLabel(rORb), undefined, true);
-    selectLanguage("english", languageLabel("en"), undefined, true);
+    selectLanguage(chosenLang, languageLabel(chosenLang), undefined, true);
+    selectTexture('felt', textureLabel('green'), undefined, true)
     startSolitaire();
 }
 
@@ -1240,16 +1249,15 @@ function selectColour(colourValue, labelText, event, readOnly) {
 // Selection Callback: Handle Language
 function selectLanguage(languageValue, labelText, event, readOnly) {
     if(!readOnly) event.stopPropagation();
-    
+    chosenLang = languageValue;
     document.getElementById('current-language-label').textContent = labelText;
     document.getElementById('dropdown-language').classList.remove('open');
     
-    if(!readOnly)location.hash=deckLabel(chosenDeck) + "-" + colourValue;
+    if(!readOnly) location.href = location.pathname + "?" + chosenLang + location.hash;
 }
-function selectTexture(textureValue, labelText, event) {
-    event.stopPropagation();
+function selectTexture(textureValue, labelText, event, readOnly) {
+    if (!readOnly) event.stopPropagation();
     document.getElementById('current-texture-label').textContent = "Table: " + labelText;
-    console.log("texture classList: " + document.getElementById('dropdown-texture').classList);
     document.getElementById('dropdown-texture').classList.remove('open');
     const tt=document.getElementById("tabletop");
     if (["felt", "illusion"].includes(textureValue)){
@@ -1260,7 +1268,6 @@ function selectTexture(textureValue, labelText, event) {
 	tt.setAttribute("filter", textureChoice(textureValue));
     }
 }
-
 let gAutoFinishInProgress = false;
 
 function triggerCelebration() {
@@ -1968,7 +1975,7 @@ function init() {
   </text>
 </g>
 <image width="759" height="759" x="420" y="135" style="opacity:0;transform:scale(0.043478)" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhAQMAAABtKlAsAAAABlBMVEUAAAD///+l2Z/dAAAAr0lEQVQIW2P4DwQNDBDyQF4jYwPD/aD5tQ0MFyP1XYGkezCIDDkJJO972wLFD4SGAtX8vykNVH+nwoq5geHQ+YS5DQwPJV4pAsnTPaUNDF/k/j9sYPjxiHNqA8Np7V+SDQxHT+sDdT2VWiUOFN/7x7SB4ape9OIGho9dK1UbGJ4YJQDN+f9A9yjQ/KSFwUC7HAuPA+31WyIIJLMmNQPJ1KtA2fsVOpeBanxewN0MJgFWhmAYG8J1hQAAAABJRU5ErkJggg=="/>
-<text x="735" y="-150" font-size="36" opacity="0.2">Tableau</text>
+<text x="735" y="-150" font-size="36" opacity="0.2" data-trans="table">Tableau</text>
 <rect x="90" y="-140" rx="20" ry="20" width="1430" height="1044" stroke="black" stroke-width="2.5" stroke-opacity="0.2" fill="none"/>
 
 <g transform="translate(120,120)"><use href="#outline"/></g>
@@ -1979,13 +1986,13 @@ function init() {
 <g transform="translate(1120,120)"><use href="#outline"/></g>
 <g transform="translate(1320,120)"><use href="#outline"/></g>
 
-<text x="1690" y="-125" font-size="36" opacity="0.2">Deck</text>
-<text x="1880" y="-125" font-size="36" opacity="0.2">Waste</text>
+<text x="1690" y="-125" font-size="36" opacity="0.2" data-trans="deck">Deck</text>
+<text x="1880" y="-125" font-size="36" opacity="0.2" data-trans="waste">Waste</text>
 
 <g id="deckoutline" transform="translate(1650,120)" pointer-events="all"><use href="#uniqueoutline"/></g>
 <g transform="translate(1850,120)"><use href="#outline"/></g>
 
-<text x="1745" y="320" font-size="36" opacity="0.2">Foundation</text>
+<text x="1745" y="320" font-size="36" opacity="0.2" data-trans="found">Foundation</text>
 <rect x="1620" y="334" rx="20" ry="20" width="430" height="570" stroke="black" stroke-width="2.5" stroke-opacity="0.2" fill="none"/>
 
 <g transform="translate(1650,595)" id="MT2"><use href="#outline"/><use href="#diamond" opacity="0.4" transform="translate(85,-115) scale(8.0) rotate(180)"/></g>
@@ -2024,7 +2031,7 @@ function init() {
     <rect x="2008" y="-184" width="120" height="50" fill="#4CAF50" stroke="#2E7D32" stroke-width="2" rx="5"/>
     <text id="buttonText" x="2070" y="-146" font-size="36" font-weight="bold" text-anchor="middle">HINT</text>
 </g>
-<a href="https://github.com/Mardeg/svgklondike" transform="translate(2126,926) scale(0.4)"><title>GitHub project</title>
+<a href="https://github.com/Mardeg/svgklondike" transform="translate(2126,926) scale(0.4)"><title data-trans="proj">GitHub project</title>
 <circle cx="50" cy="50" r="50" fill="rgba(0,0,0,0)" stroke="none" />
 <path id="gh" d="M48.9,0C21.8,0,0,22,0,49.2C0,71,14,89.4,33.4,95.9c2.4,0.5,3.3-1.1,3.3-2.4c0-1.1-0.1-5.1-0.1-9.1
 	c-13.6,2.9-16.4-5.9-16.4-5.9c-2.2-5.7-5.4-7.2-5.4-7.2c-4.4-3,0.3-3,0.3-3c4.9,0.3,7.5,5.1,7.5,5.1c4.4,7.5,11.4,5.4,14.2,4.1
@@ -2032,7 +2039,7 @@ function init() {
 	c3.9-1.1,8.1-1.6,12.2-1.6s8.3,0.6,12.2,1.6c9.3-6.4,13.4-5.1,13.4-5.1c2.7,6.8,1,11.8,0.5,13c3.2,3.4,5,7.8,5,13.2
 	c0,18.9-11.4,23.1-22.3,24.3c1.8,1.5,3.3,4.5,3.3,9.1c0,6.6-0.1,11.9-0.1,13.5c0,1.3,0.9,2.9,3.3,2.4C83.6,89.4,97.6,71,97.6,49.2
 	C97.7,22,75.8,0,48.9,0z"/>
-</a><a id="mj" href="https://monotilejigsaws.pages.dev" transform="translate(13.75,957.75)"><title>Do a jigsaw puzzle instead</title><text font-size="32">🧩</text></a>
+</a><a id="mj" href="https://monotilejigsaws.pages.dev" transform="translate(13.75,957.75)"><title data-trans="jigsaw">Do a jigsaw puzzle instead</title><text font-size="32">🧩</text></a>
 <g id="giveUp" onclick="location.reload()" style="visibility:hidden">
   <rect class="dropdown-option-bg" x="1500" y="-224" rx="4" ry="4" width="140" height="35"/>
   <text x="1505" y="-198" class="dropdown-text" style="font-size:24px" textLength="128" lengthAdjust="spacingAndGlyphs">🗑️RESTART</text>
@@ -2052,12 +2059,12 @@ function init() {
       <!-- Basic -->
       <g onclick="selectDeck('', 'Basic', event)">
         <rect class="dropdown-option-bg" x="50" y="-189" width="360" height="80"/>
-        <text class="dropdown-text" x="65" y="-131">Basic</text>
+        <text class="dropdown-text" x="65" y="-131" data-trans="basic">Basic</text>
       </g>
       <!-- Classic -->
       <g onclick="selectDeck('deckspritesheet.svg', 'Classic', event)">
         <rect class="dropdown-option-bg" x="50" y="-109" width="360" height="80"/>
-        <text class="dropdown-text" x="65" y="-51">Classic</text>
+        <text class="dropdown-text" x="65" y="-51" data-trans="classic">Classic</text>
       </g>
       <!-- Astronomia -->
       <g onclick="selectDeck('AstronomiaDeck.svg', 'Astronomia', event)">
@@ -2067,7 +2074,7 @@ function init() {
       <!-- Elemental -->
       <g onclick="selectDeck('ElementalDeck.svg', 'Elemental', event)">
         <rect class="dropdown-option-bg" x="50" y="51" width="360" height="80"/>
-        <text class="dropdown-text" x="65" y="109">Elemental</text>
+        <text class="dropdown-text" x="65" y="109" data-trans="elem">Elemental</text>
       </g>
     </g>
   </g>
@@ -2083,51 +2090,50 @@ function init() {
       <!-- Blue -->
       <g onclick="selectColour('BLUE', 'Blue Back', event)">
         <rect class="dropdown-option-bg" x="260" y="-189" width="150" height="80"/>
-        <text class="dropdown-text" x="275" y="-131">Blue</text>
+        <text class="dropdown-text" x="275" y="-131" data-trans="blue">Blue</text>
       </g>
       <!-- Red -->
       <g onclick="selectColour('RED', 'Red Back', event)">
         <rect class="dropdown-option-bg" x="260" y="-109" width="150" height="80"/>
-        <text class="dropdown-text" x="275" y="-51">Red</text>
+        <text class="dropdown-text" x="275" y="-51" data-trans="red">Red</text>
       </g>
     </g>
   </g>
   <!-- LANGUAGE SELECTOR DROPDOWN (X=440, Y=-190) -->
-  <g id="dropdown-language" class="svg-dropdown" style="opacity:0.5;cursor:not-allowed" onclick="toggleDropdown('dropdown-language')">
-  <title>Coming soon…</title>
+  <g id="dropdown-language" class="svg-dropdown" onclick="toggleDropdown('dropdown-language')">
     <rect class="dropdown-bg" x="440" y="-224" width="70" height="35"/>
     <text id="current-language-label" class="dropdown-label" x="455" y="-201">🇬🇧</text>
     <polygon class="dropdown-arrow" points="490,-211 500,-211 495,-201"/>
     
     <!-- Collapsible Options List -->
-    <g class="dropdown-options" style="display:none">
+    <g class="dropdown-options">
       <!-- English -->
-      <g onclick="selectLanguage('english', '🇬🇧', event)">
+      <g onclick="selectLanguage('en', '🇬🇧', event)">
         <rect class="dropdown-option-bg" x="440" y="-189" width="70" height="80"/>
         <text class="dropdown-text" x="445" y="-131">🇬🇧</text>
       </g>
       <!-- French -->
-      <g onclick="selectLanguage('french', '🇫🇷', event)">
+      <g onclick="selectLanguage('fr', '🇫🇷', event)">
         <rect class="dropdown-option-bg" x="440" y="-109" width="70" height="80"/>
         <text class="dropdown-text" x="445" y="-51">🇫🇷</text>
       </g>
       <!-- Spanish -->
-      <g onclick="selectLanguage('spanish', '🇪🇸', event)">
+      <g onclick="selectLanguage('es', '🇪🇸', event)">
         <rect class="dropdown-option-bg" x="440" y="-29" width="70" height="80"/>
         <text class="dropdown-text" x="445" y="29">🇪🇸</text>
       </g>
       <!-- Italian -->
-      <g onclick="selectLanguage('italian', '🇮🇹', event)">
+      <g onclick="selectLanguage('it', '🇮🇹', event)">
         <rect class="dropdown-option-bg" x="440" y="51" width="70" height="80"/>
         <text class="dropdown-text" x="445" y="109">🇮🇹</text>
       </g>
       <!-- German -->
-      <g onclick="selectLanguage('spanish', '🇩🇪', event)">
+      <g onclick="selectLanguage('de', '🇩🇪', event)">
         <rect class="dropdown-option-bg" x="440" y="131" width="70" height="80"/>
         <text class="dropdown-text" x="445" y="189">🇩🇪</text>
       </g>
       <!-- Swiss -->
-      <g onclick="selectLanguage('italian', '🇨🇭', event)">
+      <g onclick="selectLanguage('ch', '🇨🇭', event)">
         <rect class="dropdown-option-bg" x="440" y="210" width="70" height="80"/>
         <text class="dropdown-text" x="445" y="269">🇨🇭</text>
       </g>
@@ -2143,30 +2149,30 @@ function init() {
     <!-- Collapsible Options List -->
     <g class="dropdown-options">
       <!-- Green Felt -->
-      <g onclick="selectTexture('felt', 'Green Felt', event)">
+      <g onclick="selectTexture('felt', textureLabel('green'), event)">
         <rect class="dropdown-option-bg" x="490" y="-189" width="300" height="80"/>
-        <text class="dropdown-text" x="505" y="-131">Green Felt</text>
+        <text class="dropdown-text" x="505" y="-131" data-trans="green">Green Felt</text>
       </g>
       <!-- Woodgrain -->
-      <g onclick="selectTexture('wood', 'Woodgrain', event)">
+      <g onclick="selectTexture('wood', textureLabel('wood'), event)">
         <rect class="dropdown-option-bg" x="490" y="-109" width="300" height="80"/>
-        <text class="dropdown-text" x="505" y="-51">Woodgrain</text>
+        <text class="dropdown-text" x="505" y="-51" data-trans="wood">Woodgrain</text>
       </g>
       <!-- Leather -->
-      <g onclick="selectTexture('leather', 'Leather', event)">
+      <g onclick="selectTexture('leather', textureLabel('leath'), event)">
         <rect class="dropdown-option-bg" x="490" y="-29" width="300" height="80"/>
-        <text class="dropdown-text" x="505" y="29">Leather</text>
+        <text class="dropdown-text" x="505" y="29" data-trans="leath">Leather</text>
       </g>
       <!-- Illusion -->
-      <g onclick="selectTexture('illusion', 'Illusion', event)">
+      <g onclick="selectTexture('illusion', textureLabel('ill'), event)">
         <rect class="dropdown-option-bg" x="490" y="51" width="300" height="80"/>
-        <text class="dropdown-text" x="505" y="109">Illusion</text>
+        <text class="dropdown-text" x="505" y="109" data-trans="ill">Illusion</text>
       </g>
     </g>
   </g>
 <g id="whyDisabled" style="visibility:hidden">
   <rect stroke="none" x="50" y="-215" width="460" height="38" fill="rgba(255,255,255,0)" style="cursor:not-allowed" />
-  <title>These can only be set before play starts</title>
+  <title data-trans="why">These can only be set before play starts</title>
 </g>
 <g id="rotateOverlay">
   <!-- semi-transparent dark overlay -->
@@ -2176,7 +2182,7 @@ function init() {
         text-anchor="middle"
         dominant-baseline="middle"
         fill="#fff"
-        font-size="250">
+        font-size="250" data-trans="plzrot">
     Please rotate your device 🔄
   </text>
 </g>

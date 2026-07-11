@@ -1231,7 +1231,7 @@ function selectDeck(fileValue, labelText, event, readOnly) {
     if(!readOnly) event.stopPropagation(); // Stop menu from instantly re-opening
     
     // Visual text label feedback
-    document.getElementById('current-deck-label').textContent = "Deck: " + labelText;
+    document.getElementById('current-deck-label').textContent = "🃏: " + labelText;
     document.getElementById('dropdown-deck').classList.remove('open');
     
     if(!readOnly)location.hash=labelText + "-" + rORb;
@@ -1257,7 +1257,7 @@ function selectLanguage(languageValue, labelText, event, readOnly) {
 }
 function selectTexture(textureValue, labelText, event, readOnly) {
     if (!readOnly) event.stopPropagation();
-    document.getElementById('current-texture-label').textContent = "Table: " + labelText;
+    document.getElementById('current-texture-label').textContent = "🏟️: " + labelText;
     document.getElementById('dropdown-texture').classList.remove('open');
     const tt=document.getElementById("tabletop");
     if (["felt", "illusion"].includes(textureValue)){

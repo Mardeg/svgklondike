@@ -2051,7 +2051,7 @@ function init() {
   <!-- DECK SELECTOR DROPDOWN (X=60, Y=-190) -->
   <g id="dropdown-deck" class="svg-dropdown" onclick="toggleDropdown('dropdown-deck')">
     <rect class="dropdown-bg" x="50" y="-224" width="180" height="35"/>
-    <text id="current-deck-label" class="dropdown-label" x="65" y="-201">Deck: Basic</text>
+    <text id="current-deck-label" class="dropdown-label" x="65" y="-201">🃏: Basic</text>
     <polygon class="dropdown-arrow" points="210,-211 220,-211 215,-201"/>
     
     <!-- Collapsible Options List -->
@@ -2143,7 +2143,7 @@ function init() {
   <!-- TABLE TEXTURE DROPDOWN (X=440, Y=-190) -->
   <g id="dropdown-texture" class="svg-dropdown" onclick="toggleDropdown('dropdown-texture')">
     <rect class="dropdown-bg" x="540" y="-224" width="200" height="35"/>
-    <text id="current-texture-label" class="dropdown-label" x="555" y="-201">Table: Green Felt</text>
+    <text id="current-texture-label" class="dropdown-label" x="555" y="-201">🏟️: Green Felt</text>
     <polygon class="dropdown-arrow" points="720,-211 730,-211 725,-201"/>
     
     <!-- Collapsible Options List -->

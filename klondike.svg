@@ -56,9 +56,12 @@ svg {color-scheme: light dark; background-color: light-dark(#BBB,#333); height:1
 #colon{
 	animation:colon 0.5s 0.25s linear 12000 alternate;
 }
-#tabletop:not([stroke="brown"]) + #timer > text {
+#tabletop:not([stroke="brown"]) + #timer > text,
+:has(> #help:hover) > #timer > text,
+:has(> #help:active) > #timer > text {
 	animation-play-state: paused;
 }
+
 g[data-highlight="face"] use, 
 image[data-highlight="face"] {
   filter: drop-shadow(0px 0px 8px #ffcc00) drop-shadow(0px 0px 3px #ff9900);
@@ -91,7 +94,7 @@ image[width="767"] {
             dominant-baseline: middle;
 }
 #help + image {opacity:0;transition: opacity 0.2s ease;}
-#help:hover + image,#help:active + image {opacity:1}
+#help:hover + image,#help:active + image,:has(> #help:hover) > #timer > text {opacity:1}
 #rotateOverlay {
 	display: none;
 }
@@ -477,6 +480,7 @@ function deckChoice(s) {
         case "Clas": return "deckspritesheet.svg"
         case "Astr": return "AstronomiaDeck.svg"
         case "Elem": return "ElementalDeck.svg"
+        case "Talt": return "TaltechDeck.svg"
         default: return "";
     }
 }
@@ -485,6 +489,7 @@ function deckLabel(d) {
         case "deckspritesheet.svg": return translations[chosenLang]?.classic || translations.en.classic;
         case "ElementalDeck.svg":   return translations[chosenLang]?.elem || translations.en.elem;
         case "AstronomiaDeck.svg":  return "Astronomia";
+	case "TaltechDeck.svg": return "Taltech";
         default:                    return translations[chosenLang]?.basic || translations.en.basic;
     }
 }

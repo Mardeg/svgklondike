@@ -489,7 +489,7 @@ function deckLabel(d) {
         case "deckspritesheet.svg": return translations[chosenLang]?.classic || translations.en.classic;
         case "ElementalDeck.svg":   return translations[chosenLang]?.elem || translations.en.elem;
         case "AstronomiaDeck.svg":  return "Astronomia";
-	case "TaltechDeck.svg": return "Taltech";
+	case "TaltechDeck.svg": return "Taltech"
         default:                    return translations[chosenLang]?.basic || translations.en.basic;
     }
 }
@@ -501,7 +501,7 @@ function colourLabel(c) {
 }
 let chosenDeck = location.hash?deckChoice(location.hash.slice(1, 5)):"";
 let chosenLang = location.search.slice(1).trim().toLowerCase().slice(0,2);
-chosenLang = (!/^(fr|es|it|de|ch)$/.test(chosenLang))?"":chosenLang;
+chosenLang = (!/^(fr|es|it|de|ch|eg)$/.test(chosenLang))?"":chosenLang;
 let rORb = location.hash?(location.hash.slice(-3)=="RED"?"RED":"BLUE"):"BLUE";
 window.onhashchange = () => location.reload();
 let gBackName = chosenDeck + "#BACK-" + rORb;
@@ -1204,10 +1204,10 @@ function initGame() {
     addDragEventListener("dragstart", dragStart);
     addDragEventListener("dragdrop", dragStop);
     document.getElementById("undoButton").addEventListener("click", undoButtonClick, false);
-    transLang(chosenLang);
-    selectDeck(chosenDeck, deckLabel(chosenDeck), undefined, true);
-    selectColour(rORb, colourLabel(rORb), undefined, true);
     selectLanguage(chosenLang, languageLabel(chosenLang), undefined, true);
+    selectDeck(chosenDeck, deckLabel(chosenDeck), undefined, true);
+    transLang(chosenLang);
+    selectColour(rORb, colourLabel(rORb), undefined, true);
     selectTexture('felt', textureLabel('green'), undefined, true)
     startSolitaire();
 }
@@ -1244,6 +1244,7 @@ function selectDeck(fileValue, labelText, event, readOnly) {
     document.getElementById('dropdown-deck').classList.remove('open');
     
     if(!readOnly)location.hash=labelText + "-" + rORb;
+    if(chosenLang=="eg")chosenLang="";
 }
 
 // Selection Callback: Handle Back Colour Shift
@@ -1258,6 +1259,7 @@ function selectColour(colourValue, labelText, event, readOnly) {
 // Selection Callback: Handle Language
 function selectLanguage(languageValue, labelText, event, readOnly) {
     if(!readOnly) event.stopPropagation();
+    if(chosenLang=="eg")location.hash="Taltech";
     chosenLang = languageValue;
     document.getElementById('current-language-label').textContent = labelText;
     document.getElementById('dropdown-language').classList.remove('open');

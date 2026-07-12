@@ -439,9 +439,10 @@ const translations = {
 
 function transLang(ln) {
     if (!ln) return;
-    const dict = translations[ln] || translations.en;
+    const hasLang = Object.prototype.hasOwnProperty.call(translations, ln);
+    const dict = hasLang ? translations[ln] : translations.en;
     for (const i of ["deck","table","waste","found","basic","classic","elem","back","blue","red","green","wood","leath","ill","why","jigsaw","proj","plzrot"]) {
-        const u = document.querySelector('[data-trans="' + i + '"]');
+        const u = document.querySelector(`[data-trans="${i}"]`);
         if (u) u.textContent = dict[i] || translations.en[i];
     }
 }
@@ -494,7 +495,8 @@ function colourLabel(c) {
     }
 }
 let chosenDeck = location.hash?deckChoice(location.hash.slice(1, 5)):"";
-let chosenLang = location.search.slice(1).toLowerCase();chosenLang = chosenLang=="en"?"":chosenLang;
+let chosenLang = location.search.slice(1).trim().toLowerCase().slice(0,2);
+chosenLang = (!/^(fr|es|it|de|ch)$/.test(chosenLang))?"":chosenLang;
 let rORb = location.hash?(location.hash.slice(-3)=="RED"?"RED":"BLUE"):"BLUE";
 window.onhashchange = () => location.reload();
 let gBackName = chosenDeck + "#BACK-" + rORb;
@@ -2110,7 +2112,7 @@ function init() {
     <!-- Collapsible Options List -->
     <g class="dropdown-options">
       <!-- English -->
-      <g onclick="selectLanguage('en', '🇬🇧', event)">
+      <g onclick="selectLanguage('', '🇬🇧', event)">
         <rect class="dropdown-option-bg" x="440" y="-189" width="70" height="80"/>
         <text class="dropdown-text" x="445" y="-131">🇬🇧</text>
       </g>

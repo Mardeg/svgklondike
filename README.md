@@ -36,7 +36,9 @@ __TODO__:
 
 ☑Add: extra table themes
 
-☐Internationalisation: country flags as a dropdown for translation and different card symbols
+☑Add: image of Hoyle's rules page from 1909 appears when hovering/tapping the timer
+
+☑Internationalisation: country flags as a dropdown for translation (except for rules)
 
 ☐Add: animate waste turning over to become the deck when it's empty, and animate flipping facedown cards
 

@@ -1205,8 +1205,8 @@ function initGame() {
     addDragEventListener("dragdrop", dragStop);
     document.getElementById("undoButton").addEventListener("click", undoButtonClick, false);
     selectLanguage(chosenLang, languageLabel(chosenLang), undefined, true);
-    selectDeck(chosenDeck, deckLabel(chosenDeck), undefined, true);
     transLang(chosenLang);
+    selectDeck(chosenDeck, deckLabel(chosenDeck), undefined, true);
     selectColour(rORb, colourLabel(rORb), undefined, true);
     selectTexture('felt', textureLabel('green'), undefined, true)
     startSolitaire();
@@ -1243,8 +1243,10 @@ function selectDeck(fileValue, labelText, event, readOnly) {
     document.getElementById('current-deck-label').textContent = "🃏: " + labelText;
     document.getElementById('dropdown-deck').classList.remove('open');
     
-    if(!readOnly)location.hash=labelText + "-" + rORb;
-    if(chosenLang=="eg")chosenLang="";
+    if(!readOnly){
+        if(location.search.slice(1).trim().toLowerCase().slice(0,2) == "eg") location.href = location.pathname + "#" + labelText + "-" + rORb;
+	else location.hash=labelText + "-" + rORb;
+    }
 }
 
 // Selection Callback: Handle Back Colour Shift
@@ -1259,7 +1261,7 @@ function selectColour(colourValue, labelText, event, readOnly) {
 // Selection Callback: Handle Language
 function selectLanguage(languageValue, labelText, event, readOnly) {
     if(!readOnly) event.stopPropagation();
-    if(chosenLang=="eg")location.hash="Taltech";
+    if(chosenLang=="eg")location.hash="Taltech" + "-" + rORb;
     chosenLang = languageValue;
     document.getElementById('current-language-label').textContent = labelText;
     document.getElementById('dropdown-language').classList.remove('open');

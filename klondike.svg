@@ -2,7 +2,7 @@
 <svg version="2" viewBox="-.2 -236 2178.99 1216.19"
     onload="init();"
     xmlns="http://www.w3.org/2000/svg"
-    onpointermove="pointerMove(evt)" onpointerup="pointerUp(evt)"
+    onpointermove="pointerMove(evt)" onpointerup="pointerUp(evt)" onpointercancel="pointerCancel(evt)"
 ><title>🂠SVG Klondike solitaire</title>
 <metadata xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
           xmlns:dcterms="http://purl.org/dc/terms/"
@@ -113,6 +113,9 @@ const SVGNS = "http://www.w3.org/2000/svg";
 const DRAGSTART = "dragstart";
 const DRAGMOVE = "dragmove";
 const DRAGDROP = "dragdrop";
+// On touch/pen the finger covers the card, so lift the dragged card up
+// (in user/viewBox units) so it stays visible above the fingertip.
+const TOUCH_DRAG_LIFT = 150;
 
 function DragEvent(_pointerevt, _pointertype, _clientx, _clienty, _userx, _usery, _dragEnt, _mouseoffsetx, _mouseoffsety) {
     this.pointerEvt = _pointerevt;
@@ -168,15 +171,22 @@ function removeDragEventListener(dragEventStr, callbackFunc) {
 }
 
 function pointerDown(evt) {
-    // Check for specific pointer types if needed, 
+    // Check for specific pointer types if needed,
     // though pointerDown covers mouse, touch, and pen by default.
     const target = evt.currentTarget;
+
+    // If a previous drag never cleanly finished (e.g. a pointercancel we
+    // missed), abandon it before starting a new one so state can't wedge.
+    if (draggingElement && draggingElement !== target) {
+        abortDrag();
+    }
     draggingElement = target;
 
     if (target) {
-        // Ensure the element can capture the pointer to prevent losing 
+        // Ensure the element can capture the pointer to prevent losing
         // focus if the movement is faster than the refresh rate.
-        target.setPointerCapture(evt.pointerId);
+        // Guard it: on some touch sequences the pointer may already be gone.
+        try { target.setPointerCapture(evt.pointerId); } catch (e) {}
 
         let p = document.documentElement.createSVGPoint();
         p.x = evt.clientX;
@@ -187,6 +197,16 @@ function pointerDown(evt) {
 
         nMouseOffsetX = p.x - parseFloat(target.getAttribute("x"));
         nMouseOffsetY = p.y - parseFloat(target.getAttribute("y"));
+
+        // Touch/pen: fingertip hides the card. Lift the card above the
+        // finger so the player can see what they are dragging and aim the
+        // drop. We only bias the offset here; the lift is applied by
+        // pointerMove once the drag actually starts. Crucially we do NOT
+        // move the card on touch-down, so a plain tap leaves the card under
+        // the finger and the tap-to-autoplay card identification still works.
+        if (evt.pointerType && evt.pointerType !== "mouse") {
+            nMouseOffsetY += TOUCH_DRAG_LIFT;
+        }
 
         if (dragStartCallbacks.length) {
             const dragEvt = new DragEvent(
@@ -216,7 +236,7 @@ function pointerDown(evt) {
 }
 
 function pointerMove(evt) {
-    if (!draggingElement) return;
+    if (!draggingElement || !screenCTMInv) return;
     let p = document.documentElement.createSVGPoint();
     p.x = evt.clientX;
     p.y = evt.clientY;
@@ -257,27 +277,31 @@ function pointerUp(evt) {
     if (window.getSelection) window.getSelection().removeAllRanges();
     if (!draggingElement) return;
 
-    const targetElement = evt.target; 
-    if (!targetElement || targetElement.tagName === "svg") return;
-
-    const currentHref = targetElement.getAttribute("href");
-    if (!currentHref) return;
+    // The tap-to-autoplay shortcut needs to identify the released card by its
+    // href. On some (mostly mobile) browsers the pointerup can land on the
+    // felt or a <g> with no href instead of the card; in that case we skip the
+    // tap logic but STILL resolve the drag below, so a drag can never strand
+    // the engine with a floating card.
+    const targetElement = evt.target;
+    const currentHref = (targetElement && targetElement.tagName !== "svg")
+        ? targetElement.getAttribute("href")
+        : null;
 
     // Second click: If this href matches the one we primed on click one
-    if (gPrimedCardHref === currentHref) {
+    if (currentHref && gPrimedCardHref === currentHref) {
         // Run autoplay and catch whether it successfully relocated a card
         const moveSucceeded = singleAutoplayCard();
         gPrimedCardHref = ""; // Clear state immediately
-        
+
         if (moveSucceeded) {
-            // CRITICAL SYSTEM CLEANUP: Shut down the drag engine variables 
+            // CRITICAL SYSTEM CLEANUP: Shut down the drag engine variables
             // so dragStop/dragDropCallbacks are completely bypassed!
             if (draggingElement) {
-                draggingElement.releasePointerCapture(evt.pointerId);
+                try { draggingElement.releasePointerCapture(evt.pointerId); } catch (e) {}
             }
             const title = document.querySelector("title");
             title.textContent = title.textContent.replace(/^./u, "🂠");
-            
+
             draggingElement = null;
             nMouseOffsetX = 0;
             nMouseOffsetY = 0;
@@ -285,10 +309,10 @@ function pointerUp(evt) {
         }
     }
 
-    // First click: Save this card's identity string
-    gPrimedCardHref = currentHref;
-    
-    draggingElement.releasePointerCapture(evt.pointerId);
+    // First click: Save this card's identity string (only if we can identify it)
+    if (currentHref) gPrimedCardHref = currentHref;
+
+    try { draggingElement.releasePointerCapture(evt.pointerId); } catch (e) {}
     if (dragDropCallbacks.length) {
         let p = document.documentElement.createSVGPoint();
         p.x = evt.clientX;
@@ -331,6 +355,56 @@ function pointerUp(evt) {
     nMouseOffsetY = 0;
 }
 
+// Return the card being dragged to its home pile and fully reset drag state.
+// Routes through the normal drop callbacks with a zeroed position, which is
+// exactly the "dropped on nothing" path, so the pile DOM/model and the
+// z-order re-parent from dragStart are reconciled the same way as a bad drop.
+function abortDrag(evt) {
+    if (!draggingElement) return;
+    const ele = draggingElement;
+    try {
+        if (evt && evt.pointerId != null) ele.releasePointerCapture(evt.pointerId);
+    } catch (e) {}
+
+    // Zero the displacement so the drop maps back to the source pile (home),
+    // guaranteeing a snap-back rather than an accidental drop on a target.
+    ele.setAttribute("x", 0);
+    ele.setAttribute("y", 0);
+    ele.removeAttribute("transform");
+
+    if (dragDropCallbacks.length) {
+        const dragEvt = new DragEvent(
+            evt || null,
+            evt ? evt.pointerType : "",
+            0, 0, 0, 0,
+            ele, 0, 0
+        );
+        for (let func = 0; func < dragDropCallbacks.length; ++func) {
+            if (dragDropCallbacks[func]) {
+                dragDropCallbacks[func](dragEvt);
+                break;
+            }
+        }
+    }
+
+    const title = document.querySelector("title");
+    if (title) title.textContent = title.textContent.replace(/^./u, "🂠");
+
+    draggingElement = null;
+    nMouseOffsetX = 0;
+    nMouseOffsetY = 0;
+    gPrimedCardHref = "";
+}
+
+// Mobile browsers fire pointercancel whenever the OS/browser reclaims a
+// gesture (over-scroll, a second finger, address-bar show/hide, etc.).
+// Without this the in-flight card would freeze to the finger and wedge the
+// whole drag engine. Treat it as "return the card home".
+function pointerCancel(evt) {
+    if (window.getSelection) window.getSelection().removeAllRanges();
+    abortDrag(evt);
+}
+
 let bEnableSVGListeners = true;
 
 function enableDrag(ele) {
@@ -338,6 +412,7 @@ function enableDrag(ele) {
     if (bEnableSVGListeners) {
         document.documentElement.addEventListener("pointerup", pointerUp, false);
         document.documentElement.addEventListener("pointermove", pointerMove, false);
+        document.documentElement.addEventListener("pointercancel", pointerCancel, false);
         bEnableSVGListeners = false;
     }
     ele.setAttribute("enable", true);

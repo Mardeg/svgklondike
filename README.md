@@ -69,3 +69,4 @@ Other places this game is at:
 * [newgrounds](https://www.newgrounds.com/portal/view/1039859)
 * [spreadmygame](https://www.spreadmygame.com/?p=games&g=383)
 * [slagdock](https://slagdock.com/?play=6a470f131d9372e055858af0)
+* [lovable](https://html-lol.lovable.app/api/files/gh/70e8011b-80e0-4735-af61-9acb07969c72)

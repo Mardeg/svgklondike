@@ -1470,6 +1470,9 @@ function autoFinish() {
 }
 
 function processNextAutoFinishCard() {
+    const startTime = performance.now();
+    let cardMoved = false;
+    
     // Check waste pile first
     if(gWaste.top()) {
         const card = gWaste.top();
@@ -1478,37 +1481,50 @@ function processNextAutoFinishCard() {
             gFoundation[card.getSuit()].push(card, false);
             gCount++;
             document.getElementById("flipcard").play();
+            cardMoved = true;
             
             if (gCount > 52) {
                 triggerCelebration();
                 gAutoFinishInProgress = false;
-            } else {
-                setTimeout(processNextAutoFinishCard, 300);
+                return;
             }
-            return;
         }
     }
     
-    // Check tableau piles
-    for(let t = 0; t < 7; ++t) {
-        const card = gTableau[t].top();
-        if(card && moveCardToFoundation(card, card.getSuit(), true)) {
-            gTableau[t].pop();
-            gFoundation[card.getSuit()].push(card, false);
-            gCount++;
-            document.getElementById("flipcard").play();
-            if (gCount > 52) {
-                triggerCelebration();
-                gAutoFinishInProgress = false;
-            } else {
-                setTimeout(processNextAutoFinishCard, 300);
+    // Check tableau piles (only if waste pile didn't move a card)
+    if (!cardMoved) {
+        for(let t = 0; t < 7; ++t) {
+            const card = gTableau[t].top();
+            if(card && moveCardToFoundation(card, card.getSuit(), true)) {
+                gTableau[t].pop();
+                gFoundation[card.getSuit()].push(card, false);
+                gCount++;
+                document.getElementById("flipcard").play();
+                cardMoved = true;
+                
+                if (gCount > 52) {
+                    triggerCelebration();
+                    gAutoFinishInProgress = false;
+                    return;
+                }
+                break; // Important: stop after finding the first card in tableau
             }
-            return;
         }
     }
     
-    // No more cards to move
-    gAutoFinishInProgress = false;
+    // If no card was moved, we're done
+    if (!cardMoved) {
+        gAutoFinishInProgress = false;
+        return;
+    }
+    
+    // Schedule next iteration with adaptive delay
+    requestAnimationFrame(() => {
+        const renderTime = performance.now() - startTime;
+        // Add a safety margin (1.5x actual render time, min 300ms, max 900ms)
+        const delay = Math.max(300, Math.min(900, Math.ceil(renderTime * 1.5)));
+        setTimeout(processNextAutoFinishCard, delay);
+    });
 }
 // END SOLITAIRE MODEL
 

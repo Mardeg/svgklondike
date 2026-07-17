@@ -498,6 +498,9 @@ const translations = {
     en: { deck:"Deck", table:"Tableau", waste:"Waste", found:"Foundation", basic:"Basic", classic:"Classic", elem:"Elemental", back:"Back", blue:"Blue", red:"Red", green:"Green Felt", wood:"Woodgrain", leath:"Leather", ill:"Illusion", why:"These can only be set before play starts", jigsaw:"Do a jigsaw puzzle instead", proj:"Github Project", plzrot:"Please rotate your device 🔄" }
 };
 
+let chosenLang = location.search.slice(1).trim().toLowerCase().slice(0,2);
+chosenLang = (!/^(fr|es|it|de|ch|eg)$/.test(chosenLang))?"":chosenLang;
+
 function transLang(ln) {
     if (!ln) return;
     const hasLang = Object.prototype.hasOwnProperty.call(translations, ln);
@@ -515,6 +518,16 @@ function languageLabel(t) {
         case "de":    return "🇩🇪";
         case "ch":    return "🇨🇭";
         default:      return "🇬🇧";
+    }
+}
+function transPips(p) {
+    switch(p) {
+        case "fr":    return "";
+        case "es":    return "latin";
+        case "it":    return "latin";
+        case "de":    return "";
+        case "ch":    return "";
+        default:      return "";
     }
 }
 function textureChoice(t) {
@@ -535,18 +548,18 @@ function textureLabel(t) {
 }
 function deckChoice(s) {
     switch(s) {
-        case "Clas": return "deckspritesheet.svg"
-        case "Astr": return "AstronomiaDeck.svg"
-        case "Elem": return "ElementalDeck.svg"
-        case "Talt": return "TaltechDeck.svg"
+        case "Clas": return transPips(chosenLang) + "deckspritesheet.svg"
+        case "Astr": return transPips(chosenLang) + "AstronomiaDeck.svg"
+        case "Elem": return transPips(chosenLang) + "ElementalDeck.svg"
+        case "Talt": return transPips(chosenLang) + "TaltechDeck.svg"
         default: return "";
     }
 }
 function deckLabel(d) {
     switch(d) {
-        case "deckspritesheet.svg": return translations[chosenLang]?.classic || translations.en.classic;
-        case "ElementalDeck.svg":   return translations[chosenLang]?.elem || translations.en.elem;
-        case "AstronomiaDeck.svg":  return "Astronomia";
+        case transPips(chosenLang) + "deckspritesheet.svg": return translations[chosenLang]?.classic || translations.en.classic;
+        case transPips(chosenLang) + "ElementalDeck.svg":   return translations[chosenLang]?.elem || translations.en.elem;
+        case transPips(chosenLang) + "AstronomiaDeck.svg":  return "Astronomia";
 	case "TaltechDeck.svg": return "Taltech"
         default:                    return translations[chosenLang]?.basic || translations.en.basic;
     }
@@ -558,8 +571,6 @@ function colourLabel(c) {
     }
 }
 let chosenDeck = location.hash?deckChoice(location.hash.slice(1, 5)):"";
-let chosenLang = location.search.slice(1).trim().toLowerCase().slice(0,2);
-chosenLang = (!/^(fr|es|it|de|ch|eg)$/.test(chosenLang))?"":chosenLang;
 let rORb = location.hash?(location.hash.slice(-3)=="RED"?"RED":"BLUE"):"BLUE";
 window.onhashchange = () => location.reload();
 let gBackName = chosenDeck + "#BACK-" + rORb;

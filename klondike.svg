@@ -1292,14 +1292,16 @@ function toggleDropdown(id) {
     if (!wasOpen) el.classList.add('open');
 }
 
-// Global window listener to close menus if player clicks outside them on the green felt
+// Global window listener to close menus if player clicks outside them
 window.addEventListener('click', function(e) {
     if (!e.target.closest('.svg-dropdown')) {
         document.querySelectorAll('.svg-dropdown').forEach(d => d.classList.remove('open'));
 	const menu = document.getElementById('ui-controls');
 	menu.setAttribute("style","opacity:0.5");
 	menu.querySelectorAll(".dropdown-arrow").forEach(el => {el.setAttribute("opacity", "0");});
-	document.getElementById("giveUp").setAttribute("style","visibility:hidden");
+	const rstt=document.getElementById("giveUp");
+	if(document.getElementById("tabletop").getAttribute("stroke") != "brown") rstt.setAttribute("style","visibility:visible");
+	else rstt.setAttribute("style","visibility:hidden");
 	document.getElementById("whyDisabled").setAttribute("style","visibility:visible");
     }
 });

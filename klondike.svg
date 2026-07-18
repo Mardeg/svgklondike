@@ -195,29 +195,35 @@ function pointerDown(evt) {
         if (evt.pointerType && evt.pointerType !== "mouse") {
             nMouseOffsetY += TOUCH_DRAG_LIFT;
         }
-        if (dragStartCallbacks.length) {
-            const dragEvt = new DragEvent(
-                evt, 
-                evt.pointerType,
-                evt.clientX, 
-                evt.clientY, 
-                p.x, 
-                p.y, 
-                draggingElement, 
-                nMouseOffsetX, 
-                nMouseOffsetY
-            );
+	if (dragStartCallbacks.length) {
+	    const dragEvt = new DragEvent(
+		evt, 
+		evt.pointerType,
+		evt.clientX, 
+		evt.clientY, 
+		p.x, 
+		p.y, 
+		draggingElement, 
+		nMouseOffsetX, 
+		nMouseOffsetY
+	    );
 
-            for (let func = 0; func < dragStartCallbacks.length; ++func) {
-                if (dragStartCallbacks[func]) {
-                    dragStartCallbacks[func](dragEvt);
-                    break;
-                }
-            }
+	    for (let func = 0; func < dragStartCallbacks.length; ++func) {
+		if (dragStartCallbacks[func]) {
+		    dragStartCallbacks[func](dragEvt);
+		    break;
+		}
+	    }
 	    const title = document.querySelector("title");
 	    const dc = draggingElement.firstChild?draggingElement.firstChild:draggingElement;
 	    title.textContent = title.textContent.replace(/^./u, tca[dc.getAttribute("href").split('#')[1]]);
-        }
+	    
+	    // NEW: Store the pointerdown coordinates if this is a primed card
+	    if (gPrimedCardHref) {
+		gPrimedPointerX = p.x;
+		gPrimedPointerY = p.y;
+	    }
+	}
     }
     evt.stopPropagation();
 }
@@ -260,6 +266,10 @@ function pointerMove(evt) {
     }
 }
 let gPrimedCardHref = "";
+let gPrimedPointerX = 0;  // Track initial pointerdown X coordinate
+let gPrimedPointerY = 0;  // Track initial pointerdown Y coordinate
+const AUTOPLAY_MOVE_THRESHOLD = 85;
+
 function pointerUp(evt) {
     if (window.getSelection) window.getSelection().removeAllRanges();
     if (!draggingElement) return;
@@ -269,31 +279,51 @@ function pointerUp(evt) {
         ? targetElement.getAttribute("href")
         : null;
 
-    // Second click: If this href matches the one we primed on click one
-    if (currentHref && gPrimedCardHref === currentHref) {
-        // Run autoplay and catch whether it successfully relocated a card
-        const moveSucceeded = singleAutoplayCard();
-        gPrimedCardHref = ""; // Clear state immediately
-        
-        if (moveSucceeded) {
-            // CRITICAL SYSTEM CLEANUP: Shut down the drag engine variables 
-            // so dragStop/dragDropCallbacks are completely bypassed!
-            if (draggingElement) {
-                try { draggingElement.releasePointerCapture(evt.pointerId); } catch (e) {}
-            }
-            const title = document.querySelector("title");
-            title.textContent = title.textContent.replace(/^./u, "🂠");
-            
-            draggingElement = null;
-            nMouseOffsetX = 0;
-            nMouseOffsetY = 0;
-            return; // Safe exit. Stops out-of-order dragStop execution dead.
-        }
-    }
+	// Second click: If this href matches the one we primed on click one
+	if (currentHref && gPrimedCardHref === currentHref) {
+	    // Get current SVG coordinates
+	    let p = document.documentElement.createSVGPoint();
+	    p.x = evt.clientX;
+	    p.y = evt.clientY;
+	    screenCTMInv = getScreenCTM().inverse();
+	    p = p.matrixTransform(screenCTMInv);
+	    
+	    // Check if the card has moved more than the threshold (indicating a drag)
+	    const deltaX = Math.abs(p.x - gPrimedPointerX);
+	    const deltaY = Math.abs(p.y - gPrimedPointerY);
+	    
+	    // Only allow autoplay if movement is minimal (a true double-click, not a drag)
+	    if (deltaX < AUTOPLAY_MOVE_THRESHOLD && deltaY < AUTOPLAY_MOVE_THRESHOLD) {
+		// Run autoplay and catch whether it successfully relocated a card
+		const moveSucceeded = singleAutoplayCard();
+		gPrimedCardHref = ""; // Clear state immediately
+		gPrimedPointerX = 0;
+		gPrimedPointerY = 0;
+		
+		if (moveSucceeded) {
+		    // CRITICAL SYSTEM CLEANUP: Shut down the drag engine variables 
+		    // so dragStop/dragDropCallbacks are completely bypassed!
+		    if (draggingElement) {
+			try { draggingElement.releasePointerCapture(evt.pointerId); } catch (e) {}
+		    }
+		    const title = document.querySelector("title");
+		    title.textContent = title.textContent.replace(/^./u, "🂠");
+		    
+		    draggingElement = null;
+		    nMouseOffsetX = 0;
+		    nMouseOffsetY = 0;
+		    return; // Safe exit. Stops out-of-order dragStop execution dead.
+		}
+	    } else {
+		// Movement exceeded threshold: clear the prime and let normal drop handling occur
+		gPrimedCardHref = "";
+		gPrimedPointerX = 0;
+		gPrimedPointerY = 0;
+	    }
+	}
 
-    // First click: Save this card's identity string (only if we can identify it)
-    if (currentHref) gPrimedCardHref = currentHref;
-
+	// First click: Save this card's identity string (only if we can identify it)
+	if (currentHref) gPrimedCardHref = currentHref;
     try { draggingElement.releasePointerCapture(evt.pointerId); } catch (e) {}
     
     draggingElement.releasePointerCapture(evt.pointerId);
@@ -377,6 +407,8 @@ function abortDrag(evt) {
     nMouseOffsetX = 0;
     nMouseOffsetY = 0;
     gPrimedCardHref = "";
+    gPrimedPointerX = 0;  
+    gPrimedPointerY = 0;  
 }
 
 // Mobile browsers fire pointercancel whenever the OS/browser reclaims a
@@ -499,7 +531,7 @@ const translations = {
 };
 
 let chosenLang = location.search.slice(1).trim().toLowerCase().slice(0,2);
-chosenLang = (!/^(fr|es|it|de|ch|eg)$/.test(chosenLang))?"":chosenLang;
+chosenLang = (!/^(fr|es|it|de|ch)$/.test(chosenLang))?"":chosenLang;
 
 function transLang(ln) {
     if (!ln) return;
@@ -557,10 +589,9 @@ function textureLabel(t) {
 }
 function deckChoice(s) {
     switch(s) {
-        case "Clas": return transPips(chosenLang) + "deckspritesheet.svg"
-        case "Astr": return transPips(chosenLang) + "AstronomiaDeck.svg"
-        case "Elem": return transPips(chosenLang) + "ElementalDeck.svg"
-        case "Talt": return transPips(chosenLang) + "TaltechDeck.svg"
+        case "Clas": return transPips(chosenLang) + "deckspritesheet.svg";
+        case "Astr": return transPips(chosenLang) + "AstronomiaDeck.svg";
+        case "Elem": return transPips(chosenLang) + "ElementalDeck.svg";
         default: return "";
     }
 }
@@ -569,7 +600,6 @@ function deckLabel(d) {
         case transPips(chosenLang) + "deckspritesheet.svg": return translations[chosenLang]?.classic || translations.en.classic;
         case transPips(chosenLang) + "ElementalDeck.svg":   return translations[chosenLang]?.elem || translations.en.elem;
         case transPips(chosenLang) + "AstronomiaDeck.svg":  return "Astronomia";
-	case "TaltechDeck.svg": return "Taltech"
         default:                    return translations[chosenLang]?.basic || translations.en.basic;
     }
 }
@@ -1323,10 +1353,7 @@ function selectDeck(fileValue, labelText, event, readOnly) {
     document.getElementById('current-deck-label').textContent = "🃏: " + labelText;
     document.getElementById('dropdown-deck').classList.remove('open');
     
-    if(!readOnly){
-        if(location.search.slice(1).trim().toLowerCase().slice(0,2) == "eg") location.href = location.pathname + "#" + labelText + "-" + rORb;
-	else location.hash=labelText + "-" + rORb;
-    }
+    if(!readOnly)location.hash=labelText + "-" + rORb;
 }
 
 // Selection Callback: Handle Back Colour Shift
@@ -1341,7 +1368,6 @@ function selectColour(colourValue, labelText, event, readOnly) {
 // Selection Callback: Handle Language
 function selectLanguage(languageValue, labelText, event, readOnly) {
     if(!readOnly) event.stopPropagation();
-    if(chosenLang=="eg")location.hash="Taltech" + "-" + rORb;
     chosenLang = languageValue;
     document.getElementById('current-language-label').textContent = labelText;
     document.getElementById('dropdown-language').classList.remove('open');

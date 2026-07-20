@@ -4,7 +4,7 @@ Initial code by Jeff Schiller, salvaged from https://web.archive.org/web/2006020
 
 __TODO__:
 
-☑Add: sound FX
+☑Add: sound FX with volume controls
 
 ☑Modernise code: remove unecessary namespaces (upgrade SVG to version 2)
 
@@ -39,8 +39,6 @@ __TODO__:
 ☑Add: image of Hoyle's rules page from 1909 appears when hovering/tapping the timer
 
 ☑Internationalisation: country flags as a dropdown for translation (except for rules)
-
-☑Add: volume controls
 
 ☐Add: animate waste turning over to become the deck when it's empty, and animate flipping facedown cards
 

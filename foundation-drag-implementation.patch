@@ -1,0 +1,146 @@
+diff --git a/klondike.txt b/klondike.txt
+index 0687c32..1234567 100644
+--- a/klondike.txt
++++ b/klondike.txt
+@@ -143,6 +143,7 @@ let svolume,vhitArea,vfill,vhandle,svgSlider,visDragging = false,muted = false
+ const volWidth = 200;
+ 
+ function addDragEventListener(dragEventStr, callbackFunc) {
+     if (!callbackFunc) return;
+     let arr = null;
+@@ -821,10 +822,11 @@ CardStack.prototype.pop = function() {
+     return card;
+ }
+ 
+-CardStack.prototype.push = function(card,allowDrag) { 
++CardStack.prototype.push = function(card,allowDrag,isFoundation) { 
+     const oldLength = this.cards.length;
+     
+-    // if we had a face-up card, disable drag on it and make it the second card
+-    if(this.cards.length > 0 && this.top().isFaceUp()) {
++    // if we had a face-up card, disable drag on it and make it the second card (UNLESS this is a foundation pile)
++    // Foundation top cards must remain draggable to allow moving back to tableau
++    if(!isFoundation && this.cards.length > 0 && this.top().isFaceUp()) {
+         disableDrag(this.elem.lastChild);
+     }
+     this.cards.push(card); 
+@@ -844,7 +846,7 @@ CardStack.prototype.push = function(card,allowDrag,isFoundation) {
+             }
+         }else {
+             use.setAttribute("href", gBackName);
+         }
+         this.elem.appendChild(use);
+         if(card.isFaceUp() && allowDrag) {
+@@ -958,7 +960,7 @@ function startSolitaire() {
+     
+     // enable draw action on the deck
+     gDeck.elem.addEventListener("click", drawCard, false);
+     if(chosenDeck!="")document.getElementById("waste").setAttribute("transform","translate(1850,-115)");
+     vhitArea.addEventListener('pointerdown', (e) => {
+ 	visDragging = true;
+ 	vhitArea.setPointerCapture(e.pointerId); // Locks tracking to this element even if mouse leaves bounds
+@@ -1023,6 +1025,81 @@ function singleAutoplayCard() {
+ }
+ 
+ function dragStart(dragEvt) {
++    // Mark whether the dragged card came from a foundation pile
++    // We'll check the parent's id to see if it's a foundation
++    const draggedElement = dragEvt.dragEnt;
++    const parent = draggedElement.parentNode;
++    while (parent && !parent.id.includes("foundation")) {
++        parent = parent.parentNode;
++    }
++    draggedElement.setAttribute("data-from-foundation", parent ? "true" : "false");
+ }
+ 
+ function dragStop(dragEvt) {
++    // Handle foundation-to-tableau moves with special logic
++    const draggedElement = dragEvt.dragEnt;
++    const isFromFoundation = draggedElement.getAttribute("data-from-foundation") === "true";
++    
++    if (isFromFoundation) {
++        // Try to move the card from foundation to tableau
++        const moveSucceeded = handleFoundationToTableauMove(draggedElement, dragEvt);
++        if (moveSucceeded) {
++            // Set button to HINT mode (no undo for foundation moves)
++            setUndo(false);
++            return;
++        }
++    }
+ }
+ 
++function handleFoundationToTableauMove(draggedElement, dragEvt) {
++    // Identify which foundation pile this card came from
++    let foundationStack = null;
++    let foundationIndex = -1;
++    
++    for (let i = eSUITMIN; i <= eSUITMAX; ++i) {
++        if (gFoundation[i].elem && gFoundation[i].elem.contains(draggedElement)) {
++            foundationStack = gFoundation[i];
++            foundationIndex = i;
++            break;
++        }
++    }
++    
++    if (!foundationStack || foundationStack.size() < 1) {
++        return false; // Not a valid foundation move
++    }
++    
++    const cardToMove = foundationStack.top();
++    if (!cardToMove) return false;
++    
++    // Check if card should be moved to a tableau pile
++    // Card can go on a tableau if it's placed on a higher-ranked card of opposite color
++    // OR on an empty tableau pile if it's a King
++    
++    for (let t = 0; t < 7; ++t) {
++        if (canAcceptCardInTableau(gTableau[t], cardToMove)) {
++            // Move the card from foundation to tableau
++            foundationStack.pop();
++            gTableau[t].push(cardToMove);
++            
++            // Display the previous card in foundation (if any)
++            if (foundationStack.size() > 0) {
++                const prevCard = foundationStack.top();
++                // The visual update happens automatically via CardStack.push()
++            }
++            
++            // Decrement gCount
++            if (gCount > 1) {
++                gCount--;
++            }
++            
++            document.getElementById("flipcard").play();
++            return true;
++        }
++    }
++    
++    return false; // Card could not be placed on any tableau
++}
++
++function canAcceptCardInTableau(tableauPile, card) {
++    const topCard = tableauPile.top();
++    
++    // Empty tableau can only accept a King
++    if (!topCard) {
++        return card.getValue() === eKING;
++    }
++    
++    // Tableau must be face-up and one rank higher with opposite color
++    if (!topCard.isFaceUp()) {
++        return false;
++    }
++    
++    const cardValue = card.getValue();
++    const topValue = topCard.getValue();
++    
++    // Card must be exactly one less in rank
++    if (cardValue !== topValue - 1) {
++        return false;
++    }
++    
++    // Card must be opposite color
++    return card.isRed() !== topCard.isRed();
++}
+ 
+ function dragDrop(dragEvt) {

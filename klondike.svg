@@ -887,22 +887,192 @@ CardStack.prototype.at = function(ind) {
 }
 
 CardStack.prototype.shuffle = function() {
-    if(this.cards.length < 1) { return; }
+    if (this.cards.length < 1) { return; }
     
-    // shuffle 10 times arbitrarily
-    for(let iter = 0; iter < 10; ++iter) {
-        for(let cardNum = 0; cardNum < this.cards.length; ++cardNum) {
-            const swapper = Math.floor(Math.random()*this.cards.length);
-            const tempCard = this.cards[cardNum];
-            this.cards[cardNum] = this.cards[swapper];
-            this.cards[swapper] = tempCard;
+    let attempts = 0;
+    const maxAttempts = 100; 
+    let isSolvable = false;
+
+    // Time-capped generation loop
+    while (!isSolvable && attempts < maxAttempts) {
+        attempts++;
+
+        for (let iter = 0; iter < 10; ++iter) {
+            for (let cardNum = 0; cardNum < this.cards.length; ++cardNum) {
+                const swapper = Math.floor(Math.random() * this.cards.length);
+                const tempCard = this.cards[cardNum];
+                this.cards[cardNum] = this.cards[swapper];
+                this.cards[swapper] = tempCard;
+            }
         }
-    }
-    if(this.top().isFaceUp()) {
-        // TO DO: update DOM 
-        alert("Fatal Error!  Tried to shuffle a face up deck");
+
+        // --- Fast Heuristic Check ---
+        isSolvable = checkDraw1SolvabilityFast(this.cards);
     }
 
+    if (this.top() && this.top().isFaceUp()) {
+        console.warn("Fatal Error! Tried to shuffle a face up deck");
+    }
+};
+
+function getCardProperties(cardObj) {
+    const suits = ["UNKNOWN", "H", "D", "C", "S"];
+    const suitIndex = cardObj.getSuit();
+    
+    return {
+        rank: cardObj.getValue(),
+        suit: suits[suitIndex] || "UNKNOWN",
+        isRed: cardObj.isRed()
+    };
+}
+
+function checkDraw1SolvabilityFast(cardsArray) {
+    // 1. Setup simulated board geometry
+    let simulatedDeck = cardsArray.map(c => getCardProperties(c));
+    let tableau = Array.from({ length: 7 }, () => []);
+    
+    for (let i = 0; i < 7; i++) {
+        for (let j = i; j < 7; j++) {
+            let card = simulatedDeck.pop();
+            card.faceUp = (i === j); 
+            tableau[j].push(card);
+        }
+    }
+
+    let state = {
+        tableau: tableau,
+        stock: simulatedDeck, 
+        waste: [],
+        foundations: { H: 0, D: 0, C: 0, S: 0 }
+    };
+
+    let visited = new Set();
+    let moveCount = 0;
+    const MAX_MOVES = 800; // Hard cutoff to protect CPU and force a re-shuffle
+
+    // 2. High-speed evaluation loop
+    while (moveCount < MAX_MOVES) {
+        moveCount++;
+
+        // Win Condition Checked Instantly
+        if (state.foundations.H + state.foundations.D + state.foundations.C + state.foundations.S === 52) {
+            return true; 
+        }
+
+        // Auto-flip face-down top cards
+        for (let i = 0; i < 7; i++) {
+            let col = state.tableau[i];
+            if (col.length > 0 && !col[col.length - 1].faceUp) {
+                col[col.length - 1].faceUp = true;
+            }
+        }
+
+        // Hash layout to track and dodge infinite loop cycles
+        let stateKey = state.tableau.map(col => col.map(c => `${c.rank}${c.suit}${c.faceUp ? 'U' : 'D'}`).join(',')).join('|') + 
+                       '#' + state.stock.map(c => `${c.rank}${c.suit}`).join(',') + 
+                       '#' + state.waste.map(c => `${c.rank}${c.suit}`).join(',') + 
+                       '#' + `${state.foundations.H}-${state.foundations.D}-${state.foundations.C}-${state.foundations.S}`;
+        
+        if (visited.has(stateKey)) {
+            // We hit a duplicate state. Try pulling a card to break the cycle; if stuck, fail fast.
+            if (state.stock.length > 0) {
+                let drawn = state.stock.pop(); drawn.faceUp = true; state.waste.push(drawn); continue;
+            } else if (state.waste.length > 0) {
+                state.stock = [...state.waste].reverse(); state.waste = []; continue;
+            }
+            return false; 
+        }
+        visited.add(stateKey);
+
+        // Define Rules
+        const canFoundation = (c, f) => f[c.suit] === c.rank - 1;
+        const canTableau = (c, t) => !t ? c.rank === 13 : c.isRed !== t.isRed && c.rank === t.rank - 1;
+
+        let moved = false;
+
+        // PRIORITISED MOVE 1: Tableau Card immediately up to Foundation
+        for (let i = 0; i < 7; i++) {
+            if (state.tableau[i].length === 0) continue;
+            let card = state.tableau[i][state.tableau[i].length - 1];
+            if (canFoundation(card, state.foundations)) {
+                state.tableau[i].pop();
+                state.foundations[card.suit]++;
+                moved = true; break;
+            }
+        }
+        if (moved) continue;
+
+        // PRIORITISED MOVE 2: Waste Card immediately up to Foundation
+        if (state.waste.length > 0) {
+            let card = state.waste[state.waste.length - 1];
+            if (canFoundation(card, state.foundations)) {
+                state.waste.pop();
+                state.foundations[card.suit]++;
+                moved = true;
+            }
+        }
+        if (moved) continue;
+
+        // PRIORITISED MOVE 3: Tableau structural movement (prioritise revealing facedown cards)
+        for (let i = 0; i < 7; i++) {
+            let src = state.tableau[i];
+            let firstFaceUp = src.findIndex(c => c.faceUp);
+            if (firstFaceUp === -1) continue;
+
+            // Only move an entire stack if it actually uncovers a face-down card or clears an empty column for a King
+            let uncoversFaceDown = (firstFaceUp > 0);
+            let moving = src[firstFaceUp];
+
+            for (let j = 0; j < 7; j++) {
+                if (i === j) continue;
+                let tgt = state.tableau[j];
+                
+                if (canTableau(moving, tgt[tgt.length - 1])) {
+                    // Avoid pointless shifting back and forth into empty spaces unless uncovering cards
+                    if (tgt.length === 0 && !uncoversFaceDown) continue; 
+
+                    let pile = src.splice(firstFaceUp);
+                    tgt.push(...pile);
+                    moved = true; break;
+                }
+            }
+            if (moved) break;
+        }
+        if (moved) continue;
+
+        // PRIORITISED MOVE 4: Waste Card out down onto a Tableau column
+        if (state.waste.length > 0) {
+            let card = state.waste[state.waste.length - 1];
+            for (let j = 0; j < 7; j++) {
+                if (canTableau(card, state.tableau[j][state.tableau[j].length - 1])) {
+                    state.waste.pop();
+                    card.faceUp = true;
+                    state.tableau[j].push(card);
+                    moved = true; break;
+                }
+            }
+        }
+        if (moved) continue;
+
+        // PRIORITISED MOVE 5: Draw 1 Card from Stock into the Waste
+        if (state.stock.length > 0) {
+            let drawn = state.stock.pop();
+            drawn.faceUp = true;
+            state.waste.push(drawn);
+            moved = true;
+        } 
+        // PRIORITISED MOVE 6: Cycle/Recycle Waste back into Stock
+        else if (state.waste.length > 0) {
+            state.stock = [...state.waste].reverse();
+            state.waste = [];
+            moved = true;
+        }
+
+        // If no legal card adjustments remain, this layout is completely dead
+        if (!moved) return false; 
+    }
+
+    return false; // Iteration cap reached without definitive win
 }
 
 // Solitaire Game Logic begins here

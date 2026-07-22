@@ -71,5 +71,5 @@ Other places this game is at:
 * [spreadmygame](https://www.spreadmygame.com/?p=games&g=383)
 * [slagdock](https://slagdock.com/?play=6a470f131d9372e055858af0)
 * [funinbrowser](https://www.funinbrowser.com/?g=383)
-* [galaxy](https://galaxy.click/play/-4853594489591754)
+<!--* [galaxy](https://galaxy.click/play/-4853594489591754) -->
 * [html-lol](https://html-lol.lovable.app/p/svg-klondike-nb6p8)

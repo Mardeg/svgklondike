@@ -40,8 +40,6 @@ __TODO__:
 
 ☑Internationalisation: country flags as a dropdown for translation (except for rules)
 
-☐Bug: enable moving cards from the foundation to the tableau
-
 ☐Add: animate waste turning over to become the deck when it's empty, and animate flipping facedown cards
 
 ☐Accessibility: Left and Right handed modes

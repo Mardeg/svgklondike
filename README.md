@@ -72,4 +72,5 @@ Other places this game is at:
 * [slagdock](https://slagdock.com/?play=6a470f131d9372e055858af0)
 * [funinbrowser](https://www.funinbrowser.com/?g=383)
 * [bonto](https://svgklondike.bonto.run)
+* [tiiny](https://svgklondike.tiiny.site)
 * [html-lol](https://html-lol.lovable.app/p/svg-klondike-nb6p8)

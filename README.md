@@ -74,5 +74,6 @@ Other places this game is at:
 * [slagdock](https://slagdock.com/?play=6a470f131d9372e055858af0)
 * [funinbrowser](https://www.funinbrowser.com/?g=383)
 * [browsergamestop](https://browsergamestop.com/games/svg-klondike)
+* [twelve](https://www.twelve.games/categories?platform=browser&genre=card&pricing=Free)
 * [wayback](https://web.archive.org/web/20260725205713id_/https://svgklondike.pages.dev/)
 * [html-lol](https://html-lol.lovable.app/p/svg-klondike-nb6p8)

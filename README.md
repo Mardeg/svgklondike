@@ -75,5 +75,6 @@ Other places this game is at:
 * [funinbrowser](https://www.funinbrowser.com/?g=383)
 * [browsergamestop](https://browsergamestop.com/games/svg-klondike)
 * [twelve](https://www.twelve.games/categories?platform=browser&genre=card&pricing=Free)
+* [votekicker](https://votekicker.com/projects/svg-klondike)
 * [wayback](https://web.archive.org/web/20260725205713id_/https://svgklondike.pages.dev/)
 * [html-lol](https://html-lol.lovable.app/p/svg-klondike-nb6p8)

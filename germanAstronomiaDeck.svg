@@ -50,7 +50,7 @@ view:target[id$="N"] ~ a:not(:has(g)) {
   opacity: 1;
   pointer-events: auto;
 }
-
+view:target[id$="N"] ~ a > g > image + g {opacity:0.1}
 /* ]]> */
 </style>
   <defs>

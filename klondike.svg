@@ -82,6 +82,7 @@ image[width="767"] {
 .dropdown-text,.dropdown-label { fill: #ffffff; font-family: sans-serif; font-size: 16px; user-select: none; }
 .dropdown-text {font-size:48px}
 .dropdown-arrow { fill: #ffffff; }
+g[id^="foundation_"] image[enable="false"]{opacity:0}
 #rotateOverlay rect {fill: rgba(0, 0, 0, 0.8);}
 #rotateOverlay text {
             font-size: 48px;
@@ -590,6 +591,7 @@ function deckChoice(s) {
     switch(s) {
         case "Clas": return transPips(chosenLang) + "deckspritesheet.svg";
         case "Astr": return transPips(chosenLang) + "AstronomiaDeck.svg";
+        case "Cloi": return transPips(chosenLang) + "CloistersDeck.svg";
         case "Elem": return transPips(chosenLang) + "ElementalDeck.svg";
         default: return "";
     }
@@ -599,6 +601,7 @@ function deckLabel(d) {
         case transPips(chosenLang) + "deckspritesheet.svg": return translations[chosenLang]?.classic || translations.en.classic;
         case transPips(chosenLang) + "ElementalDeck.svg":   return translations[chosenLang]?.elem || translations.en.elem;
         case transPips(chosenLang) + "AstronomiaDeck.svg":  return "Astronomia";
+        case transPips(chosenLang) + "CloistersDeck.svg":  return "Cloisters";
         default:                    return translations[chosenLang]?.basic || translations.en.basic;
     }
 }
@@ -1173,6 +1176,7 @@ function undo() {
     if(gUndoFrom.charAt() == "F") {
         let wf = gFoundation[parseInt(gUndoFrom.slice(1), 10)];
         wf.pop();
+	if(wf.elem.lastChild)wf.elem.lastChild.style.opacity = "1";
 	if(chosenDeck != "" && wf.elem.lastChild) {
 	wf.elem.lastChild.setAttribute("y", "-235.27");
 	}
@@ -1349,7 +1353,10 @@ function moveCardToFoundation(card, foundationNum, showhint) {
             (gFoundation[foundNum].size() > 0 && 
              gFoundation[foundNum].top().getValue() == (card.getValue()-1) ) )
         {
-            if(!showhint)gFoundation[foundNum].push(card,false);
+            if(!showhint){
+	        if(gFoundation[foundNum].elem.lastChild)gFoundation[foundNum].elem.lastChild.style.opacity = "0";
+		gFoundation[foundNum].push(card,false);
+	    }
             bResult = true;
         }
     }
@@ -2732,10 +2739,15 @@ function init() {
         <rect class="dropdown-option-bg" x="50" y="-29" width="360" height="80"/>
         <text class="dropdown-text" x="65" y="29">Astronomia</text>
       </g>
+      <!-- Cloisters -->
+      <g onclick="selectDeck('CloistersDeck.svg', 'Cloisters', event)">
+        <rect class="dropdown-option-bg" x="50" y="51" width="360" height="80"/>
+        <text class="dropdown-text" x="65" y="109">Cloisters</text>
+      </g>
       <!-- Elemental -->
       <g onclick="selectDeck('ElementalDeck.svg', 'Elemental', event)">
-        <rect class="dropdown-option-bg" x="50" y="51" width="360" height="80"/>
-        <text class="dropdown-text" x="65" y="109" data-trans="elem">Elemental</text>
+        <rect class="dropdown-option-bg" x="50" y="131" width="360" height="80"/>
+        <text class="dropdown-text" x="65" y="189" data-trans="elem">Elemental</text>
       </g>
     </g>
   </g>

@@ -3,12 +3,12 @@
 <title id="deck-title">Cloisters Playing Cards</title>
 <metadata xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
           xmlns:dcterms="http://purl.org/dc/terms/"
-          xmlns:dc11="http://purl.org/dc/elements/1.1/"
+          xmlns:dc="http://purl.org/dc/elements/1.1/"
           xmlns:cc="http://creativecommons.org/ns#" >
   <rdf:RDF>
     <cc:Work rdf:about="c1475–80. Hunting Horns = Hearts, Dog Collars = Diamonds, Hound Tethers = Spades, Game Nooses = Clubs">
-     <dc11:format>image/svg+xml</dc11:format>
-      <dc11:type  rdf:resource="http://purl.org/dc/dcmitype/InteractiveResource" />
+     <dc:format>image/svg+xml</dc:format>
+      <dc:type  rdf:resource="http://purl.org/dc/dcmitype/InteractiveResource" />
       <cc:license rdf:resource="https://creativecommons.org/publicdomain/zero/1.0/" />
       <cc:license rdf:resource="https://opendatacommons.org/licenses/pddl/1-0/"  />
       <cc:attributionName>Mardeg</cc:attributionName>
@@ -310,8 +310,8 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣A" />
     </g>
   </g></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="314">📇</text></a>
-  <a href="#C2N" role="button" aria-label="Go to TWO OF CLUBS"><text x="150" y="314">⏭️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="314">📇</text></a>
+  <a href="#C2N" aria-label="Go to TWO OF CLUBS"><text x="150" y="314">⏭️</text></a>
 
   <!-- CARD C2: TWO OF CLUBS                      -->
   <a href="#C2N">
@@ -322,9 +322,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣2" />
     </g>
   </g></a>
-  <a href="#CAN" role="button" aria-label="Go to ACE OF CLUBS"><text x="50" y="649">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="649">📇</text></a>
-  <a href="#C3N" role="button" aria-label="Go to THREE OF CLUBS"><text x="150" y="649">⏭️</text></a>
+  <a href="#CAN" aria-label="Go to ACE OF CLUBS"><text x="50" y="649">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="649">📇</text></a>
+  <a href="#C3N" aria-label="Go to THREE OF CLUBS"><text x="150" y="649">⏭️</text></a>
 
   <!-- CARD C3: THREE OF CLUBS                      -->
   <a href="#C3N">
@@ -335,9 +335,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣3" />
     </g>
   </g></a>
-  <a href="#C2N" role="button" aria-label="Go to TWO OF CLUBS"><text x="50" y="984">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="984">📇</text></a>
-  <a href="#C4N" role="button" aria-label="Go to FOUR OF CLUBS"><text x="150" y="984">⏭️</text></a>
+  <a href="#C2N" aria-label="Go to TWO OF CLUBS"><text x="50" y="984">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="984">📇</text></a>
+  <a href="#C4N" aria-label="Go to FOUR OF CLUBS"><text x="150" y="984">⏭️</text></a>
 
   <!-- CARD C4: FOUR OF CLUBS                      -->
   <a href="#C4N" >
@@ -348,9 +348,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣4" />
     </g>
   </g></a>
-  <a href="#C3N" role="button" aria-label="Go to THREE OF CLUBS"><text x="50" y="1319">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="1319">📇</text></a>
-  <a href="#C5N" role="button" aria-label="Go to FIVE OF CLUBS"><text x="150" y="1319">⏭️</text></a>
+  <a href="#C3N" aria-label="Go to THREE OF CLUBS"><text x="50" y="1319">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="1319">📇</text></a>
+  <a href="#C5N" aria-label="Go to FIVE OF CLUBS"><text x="150" y="1319">⏭️</text></a>
 
   <!-- CARD C5: FIVE OF CLUBS                      -->
   <a href="#C5N">
@@ -361,9 +361,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣5" />
     </g>
   </g></a>
-  <a href="#C4N" role="button" aria-label="Go to FOUR OF CLUBS"><text x="50" y="1654">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="1654">📇</text></a>
-  <a href="#C6N" role="button" aria-label="Go to SIX OF CLUBS"><text x="150" y="1654">⏭️</text></a>
+  <a href="#C4N" aria-label="Go to FOUR OF CLUBS"><text x="50" y="1654">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="1654">📇</text></a>
+  <a href="#C6N" aria-label="Go to SIX OF CLUBS"><text x="150" y="1654">⏭️</text></a>
 
   <!-- CARD C6: SIX OF CLUBS                       -->
   <a href="#C6N">
@@ -374,9 +374,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣6" />
     </g>
   </g></a>
-  <a href="#C5N" role="button" aria-label="Go to FIVE OF CLUBS"><text x="50" y="1989">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="1989">📇</text></a>
-  <a href="#C7N" role="button" aria-label="Go to SEVEN OF CLUBS"><text x="150" y="1989">⏭️</text></a>
+  <a href="#C5N" aria-label="Go to FIVE OF CLUBS"><text x="50" y="1989">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="1989">📇</text></a>
+  <a href="#C7N" aria-label="Go to SEVEN OF CLUBS"><text x="150" y="1989">⏭️</text></a>
 
   <!-- CARD C7: SEVEN OF CLUBS                       -->
   <a href="#C7N">
@@ -387,9 +387,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣7" />
     </g>
   </g></a>
-  <a href="#C6N" role="button" aria-label="Go to SIX OF CLUBS"><text x="50" y="2324">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="2324">📇</text></a>
-  <a href="#C8N" role="button" aria-label="Go to EIGHT OF CLUBS"><text x="150" y="2324">⏭️</text></a>
+  <a href="#C6N" aria-label="Go to SIX OF CLUBS"><text x="50" y="2324">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="2324">📇</text></a>
+  <a href="#C8N" aria-label="Go to EIGHT OF CLUBS"><text x="150" y="2324">⏭️</text></a>
 
   <!-- CARD C8: EIGHT OF CLUBS                       -->
   <a href="#C8N">
@@ -400,9 +400,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣8" />
     </g>
   </g></a>
-  <a href="#C7N" role="button" aria-label="Go to SEVEN OF CLUBS"><text x="50" y="2659">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="2659">📇</text></a>
-  <a href="#C9N" role="button" aria-label="Go to NINE OF CLUBS"><text x="150" y="2659">⏭️</text></a>
+  <a href="#C7N" aria-label="Go to SEVEN OF CLUBS"><text x="50" y="2659">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="2659">📇</text></a>
+  <a href="#C9N" aria-label="Go to NINE OF CLUBS"><text x="150" y="2659">⏭️</text></a>
 
   <!-- CARD C9: NINE OF CLUBS                       -->
   <a href="#C9N"><g id="card-09" transform="translate(0, 2680)">
@@ -412,9 +412,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣9" />
     </g>
   </g></a>
-  <a href="#C8N" role="button" aria-label="Go to EIGHT OF CLUBS"><text x="50" y="2994">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="2994">📇</text></a>
-  <a href="#C10N" role="button" aria-label="Go to TEN OF CLUBS"><text x="150" y="2994">⏭️</text></a>
+  <a href="#C8N" aria-label="Go to EIGHT OF CLUBS"><text x="50" y="2994">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="2994">📇</text></a>
+  <a href="#C10N" aria-label="Go to TEN OF CLUBS"><text x="150" y="2994">⏭️</text></a>
 
   <!-- CARD C10: TEN OF CLUBS                       -->
   <a href="#C10N">
@@ -425,9 +425,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♣10" />
     </g>
   </g></a>
-  <a href="#C9N" role="button" aria-label="Go to NINE OF CLUBS"><text x="50" y="3329">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="3329">📇</text></a>
-  <a href="#CJN" role="button" aria-label="Go to JACK OF CLUBS"><text x="150" y="3329">⏭️</text></a>
+  <a href="#C9N" aria-label="Go to NINE OF CLUBS"><text x="50" y="3329">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="3329">📇</text></a>
+  <a href="#CJN" aria-label="Go to JACK OF CLUBS"><text x="150" y="3329">⏭️</text></a>
 
   <!-- CARD DA: ACE OF DIAMONDS                   -->
   <a href="#DAN">
@@ -437,9 +437,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦A" />
     </g>
   </g></a>
-  <a href="#CKN" role="button" aria-label="Go to KING OF CLUBS"><text x="550" y="314">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="314">📇</text></a>
-  <a href="#D2N" role="button" aria-label="Go to TWO OF DIAMONDS"><text x="650" y="314">⏭️</text></a>
+  <a href="#CKN" aria-label="Go to KING OF CLUBS"><text x="550" y="314">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="314">📇</text></a>
+  <a href="#D2N" aria-label="Go to TWO OF DIAMONDS"><text x="650" y="314">⏭️</text></a>
 
   <!-- CARD D2: TWO OF DIAMONDS                   -->
   <a href="#D2N">
@@ -449,9 +449,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦2" />
     </g>
   </g></a>
-  <a href="#DAN" role="button" aria-label="Go to ACE OF DIAMONDS"><text x="550" y="649">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="649">📇</text></a>
-  <a href="#D3N" role="button" aria-label="Go to THREE OF DIAMONDS"><text x="650" y="649">⏭️</text></a>
+  <a href="#DAN" aria-label="Go to ACE OF DIAMONDS"><text x="550" y="649">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="649">📇</text></a>
+  <a href="#D3N" aria-label="Go to THREE OF DIAMONDS"><text x="650" y="649">⏭️</text></a>
 
   <!-- CARD D3: THREE OF DIAMONDS                 -->
   <a href="#D3N">
@@ -461,9 +461,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦3" />
     </g>
   </g></a>
-  <a href="#D2N" role="button" aria-label="Go to TWO OF DIAMONDS"><text x="550" y="984">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="984">📇</text></a>
-  <a href="#D4N" role="button" aria-label="Go to FOUR OF DIAMONDS"><text x="650" y="984">⏭️</text></a>
+  <a href="#D2N" aria-label="Go to TWO OF DIAMONDS"><text x="550" y="984">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="984">📇</text></a>
+  <a href="#D4N" aria-label="Go to FOUR OF DIAMONDS"><text x="650" y="984">⏭️</text></a>
 
   <!-- CARD D4: FOUR OF DIAMONDS                  -->
   <a href="#D4N"><g id="card-D4" transform="translate(500, 1005)">
@@ -472,9 +472,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦4" />
     </g>
   </g></a>
-  <a href="#D3N" role="button" aria-label="Go to THREE OF DIAMONDS"><text x="550" y="1319">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="1319">📇</text></a>
-  <a href="#D5N" role="button" aria-label="Go to FIVE OF DIAMONDS"><text x="650" y="1319">⏭️</text></a>
+  <a href="#D3N" aria-label="Go to THREE OF DIAMONDS"><text x="550" y="1319">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="1319">📇</text></a>
+  <a href="#D5N" aria-label="Go to FIVE OF DIAMONDS"><text x="650" y="1319">⏭️</text></a>
 
   <!-- CARD D5: FIVE OF DIAMONDS                  -->
   <a href="#D5N">
@@ -484,9 +484,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦5" />
     </g>
   </g></a>
-  <a href="#D4N" role="button" aria-label="Go to FOUR OF DIAMONDS"><text x="550" y="1654">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="1654">📇</text></a>
-  <a href="#D6N" role="button" aria-label="Go to SIX OF DIAMONDS"><text x="650" y="1654">⏭️</text></a>
+  <a href="#D4N" aria-label="Go to FOUR OF DIAMONDS"><text x="550" y="1654">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="1654">📇</text></a>
+  <a href="#D6N" aria-label="Go to SIX OF DIAMONDS"><text x="650" y="1654">⏭️</text></a>
 
   <!-- CARD D6: SIX OF DIAMONDS                   -->
   <a href="#D6N">
@@ -496,9 +496,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦6" />
     </g>
   </g></a>
-  <a href="#D5N" role="button" aria-label="Go to FIVE OF DIAMONDS"><text x="550" y="1989">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="1989">📇</text></a>
-  <a href="#D7N" role="button" aria-label="Go to SEVEN OF DIAMONDS"><text x="650" y="1989">⏭️</text></a>
+  <a href="#D5N" aria-label="Go to FIVE OF DIAMONDS"><text x="550" y="1989">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="1989">📇</text></a>
+  <a href="#D7N" aria-label="Go to SEVEN OF DIAMONDS"><text x="650" y="1989">⏭️</text></a>
 
   <!-- CARD D7: SEVEN OF DIAMONDS                 -->
   <a href="#D7N">
@@ -508,9 +508,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦7" />
     </g>
   </g></a>
-  <a href="#D6N" role="button" aria-label="Go to SIX OF DIAMONDS"><text x="550" y="2324">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="2324">📇</text></a>
-  <a href="#D8N" role="button" aria-label="Go to EIGHT OF DIAMONDS"><text x="650" y="2324">⏭️</text></a>
+  <a href="#D6N" aria-label="Go to SIX OF DIAMONDS"><text x="550" y="2324">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="2324">📇</text></a>
+  <a href="#D8N" aria-label="Go to EIGHT OF DIAMONDS"><text x="650" y="2324">⏭️</text></a>
 
   <!-- CARD D8: EIGHT OF DIAMONDS                 -->
   <a href="#D8N">
@@ -520,9 +520,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦8" />
     </g>
   </g></a>
-  <a href="#D7N" role="button" aria-label="Go to SEVEN OF DIAMONDS"><text x="550" y="2659">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="2659">📇</text></a>
-  <a href="#D9N" role="button" aria-label="Go to NINE OF DIAMONDS"><text x="650" y="2659">⏭️</text></a>
+  <a href="#D7N" aria-label="Go to SEVEN OF DIAMONDS"><text x="550" y="2659">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="2659">📇</text></a>
+  <a href="#D9N" aria-label="Go to NINE OF DIAMONDS"><text x="650" y="2659">⏭️</text></a>
 
   <!-- CARD D9: NINE OF DIAMONDS                  -->
   <a href="#D9N"><g id="card-D9" transform="translate(500, 2680)">
@@ -531,9 +531,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦9" />
     </g>
   </g></a>
-  <a href="#D8N" role="button" aria-label="Go to EIGHT OF DIAMONDS"><text x="550" y="2994">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="2994">📇</text></a>
-  <a href="#D10N" role="button" aria-label="Go to TEN OF DIAMONDS"><text x="650" y="2994">⏭️</text></a>
+  <a href="#D8N" aria-label="Go to EIGHT OF DIAMONDS"><text x="550" y="2994">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="2994">📇</text></a>
+  <a href="#D10N" aria-label="Go to TEN OF DIAMONDS"><text x="650" y="2994">⏭️</text></a>
 
   <!-- CARD D10: TEN OF DIAMONDS                  -->
   <a href="#D10N">
@@ -543,9 +543,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♦10" />
     </g>
   </g></a>
-  <a href="#D9N" role="button" aria-label="Go to NINE OF DIAMONDS"><text x="550" y="3329">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="3329">📇</text></a>
-  <a href="#DJN" role="button" aria-label="Go to JACK OF DIAMONDS"><text x="650" y="3329">⏭️</text></a>
+  <a href="#D9N" aria-label="Go to NINE OF DIAMONDS"><text x="550" y="3329">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="3329">📇</text></a>
+  <a href="#DJN" aria-label="Go to JACK OF DIAMONDS"><text x="650" y="3329">⏭️</text></a>
 
   <!-- CARD SA: ACE OF SPADES                     -->
   <a href="#SAN">
@@ -555,9 +555,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠A" />
     </g>
   </g></a>
-  <a href="#DKN" role="button" aria-label="Go to KING OF DIAMONDS"><text x="1050" y="314">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="314">📇</text></a>
-  <a href="#S2N" role="button" aria-label="Go to TWO OF SPADES"><text x="1150" y="314">⏭️</text></a>
+  <a href="#DKN" aria-label="Go to KING OF DIAMONDS"><text x="1050" y="314">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="314">📇</text></a>
+  <a href="#S2N" aria-label="Go to TWO OF SPADES"><text x="1150" y="314">⏭️</text></a>
 
   <!-- CARD S2: TWO OF SPADES                     -->
   <a href="#S2N">
@@ -567,9 +567,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠2" />
     </g>
   </g></a>
-  <a href="#SAN" role="button" aria-label="Go to ACE OF SPADES"><text x="1050" y="649">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="649">📇</text></a>
-  <a href="#S3N" role="button" aria-label="Go to THREE OF SPADES"><text x="1150" y="649">⏭️</text></a>
+  <a href="#SAN" aria-label="Go to ACE OF SPADES"><text x="1050" y="649">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="649">📇</text></a>
+  <a href="#S3N" aria-label="Go to THREE OF SPADES"><text x="1150" y="649">⏭️</text></a>
 
   <!-- CARD S3: THREE OF SPADES                 -->
   <a href="#S3N">
@@ -579,9 +579,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠3" />
     </g>
   </g></a>
-  <a href="#S2N" role="button" aria-label="Go to TWO OF SPADES"><text x="1050" y="984">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="984">📇</text></a>
-  <a href="#S4N" role="button" aria-label="Go to FOUR OF SPADES"><text x="1150" y="984">⏭️</text></a>
+  <a href="#S2N" aria-label="Go to TWO OF SPADES"><text x="1050" y="984">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="984">📇</text></a>
+  <a href="#S4N" aria-label="Go to FOUR OF SPADES"><text x="1150" y="984">⏭️</text></a>
 
   <!-- CARD S4: FOUR OF SPADES                  -->
   <a href="#S4N">
@@ -591,9 +591,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠4" />
     </g>
   </g></a>
-  <a href="#S3N" role="button" aria-label="Go to THREE OF SPADES"><text x="1050" y="1319">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="1319">📇</text></a>
-  <a href="#S5N" role="button" aria-label="Go to FIVE OF SPADES"><text x="1150" y="1319">⏭️</text></a>
+  <a href="#S3N" aria-label="Go to THREE OF SPADES"><text x="1050" y="1319">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="1319">📇</text></a>
+  <a href="#S5N" aria-label="Go to FIVE OF SPADES"><text x="1150" y="1319">⏭️</text></a>
 
   <!-- CARD S5: FIVE OF SPADES                  -->
   <a href="#S5N">
@@ -603,9 +603,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠5" />
     </g>
   </g></a>
-  <a href="#S4N" role="button" aria-label="Go to FOUR OF SPADES"><text x="1050" y="1654">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="1654">📇</text></a>
-  <a href="#S6N" role="button" aria-label="Go to SIX OF SPADES"><text x="1150" y="1654">⏭️</text></a>
+  <a href="#S4N" aria-label="Go to FOUR OF SPADES"><text x="1050" y="1654">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="1654">📇</text></a>
+  <a href="#S6N" aria-label="Go to SIX OF SPADES"><text x="1150" y="1654">⏭️</text></a>
 
   <!-- CARD S6: SIX OF SPADES                   -->
   <a href="#S6N">
@@ -615,9 +615,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠6" />
     </g>
   </g></a>
-  <a href="#S5N" role="button" aria-label="Go to FIVE OF SPADES"><text x="1050" y="1989">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="1989">📇</text></a>
-  <a href="#S7N" role="button" aria-label="Go to SEVEN OF SPADES"><text x="1150" y="1989">⏭️</text></a>
+  <a href="#S5N" aria-label="Go to FIVE OF SPADES"><text x="1050" y="1989">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="1989">📇</text></a>
+  <a href="#S7N" aria-label="Go to SEVEN OF SPADES"><text x="1150" y="1989">⏭️</text></a>
 
   <!-- CARD S7: SEVEN OF SPADES                 -->
   <a href="#S7N">
@@ -627,9 +627,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠7" />
     </g>
   </g></a>
-  <a href="#S6N" role="button" aria-label="Go to SIX OF SPADES"><text x="1050" y="2324">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="2324">📇</text></a>
-  <a href="#S8N" role="button" aria-label="Go to EIGHT OF SPADES"><text x="1150" y="2324">⏭️</text></a>
+  <a href="#S6N" aria-label="Go to SIX OF SPADES"><text x="1050" y="2324">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="2324">📇</text></a>
+  <a href="#S8N" aria-label="Go to EIGHT OF SPADES"><text x="1150" y="2324">⏭️</text></a>
 
   <!-- CARD S8: EIGHT OF SPADES                 -->
   <a href="#S8N">
@@ -639,9 +639,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠8" />
     </g>
   </g></a>
-  <a href="#S7N" role="button" aria-label="Go to SEVEN OF SPADES"><text x="1050" y="2659">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="2659">📇</text></a>
-  <a href="#S9N" role="button" aria-label="Go to NINE OF SPADES"><text x="1150" y="2659">⏭️</text></a>
+  <a href="#S7N" aria-label="Go to SEVEN OF SPADES"><text x="1050" y="2659">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="2659">📇</text></a>
+  <a href="#S9N" aria-label="Go to NINE OF SPADES"><text x="1150" y="2659">⏭️</text></a>
 
   <!-- CARD S9: NINE OF SPADES                  -->
   <a href="#S9N">
@@ -651,9 +651,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠9" />
     </g>
   </g></a>
-  <a href="#S8N" role="button" aria-label="Go to EIGHT OF SPADES"><text x="1050" y="2994">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="2994">📇</text></a>
-  <a href="#S10N" role="button" aria-label="Go to TEN OF SPADES"><text x="1150" y="2994">⏭️</text></a>
+  <a href="#S8N" aria-label="Go to EIGHT OF SPADES"><text x="1050" y="2994">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="2994">📇</text></a>
+  <a href="#S10N" aria-label="Go to TEN OF SPADES"><text x="1150" y="2994">⏭️</text></a>
 
   <!-- CARD S10: TEN OF SPADES                  -->
   <a href="#S10N"><g id="card-S10" transform="translate(1000, 3015)">
@@ -662,9 +662,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♠10" />
     </g>
   </g></a>
-  <a href="#S9N" role="button" aria-label="Go to NINE OF SPADES"><text x="1050" y="3329">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="3329">📇</text></a>
-  <a href="#SJN" role="button" aria-label="Go to JACK OF SPADES"><text x="1150" y="3329">⏭️</text></a>
+  <a href="#S9N" aria-label="Go to NINE OF SPADES"><text x="1050" y="3329">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="3329">📇</text></a>
+  <a href="#SJN" aria-label="Go to JACK OF SPADES"><text x="1150" y="3329">⏭️</text></a>
 
   <!-- CARD HA: ACE OF HEARTS                     -->
   <a href="#HAN">
@@ -674,9 +674,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥A" />
     </g>
   </g></a>
-  <a href="#SKN" role="button" aria-label="Go to KING OF SPADES"><text x="1550" y="314">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="314">📇</text></a>
-  <a href="#H2N" role="button" aria-label="Go to TWO OF HEARTS"><text x="1650" y="314">⏭️</text></a>
+  <a href="#SKN" aria-label="Go to KING OF SPADES"><text x="1550" y="314">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="314">📇</text></a>
+  <a href="#H2N" aria-label="Go to TWO OF HEARTS"><text x="1650" y="314">⏭️</text></a>
 
   <!-- CARD H2: TWO OF HEARTS                     -->
   <a href="#H2N">
@@ -686,9 +686,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥2" />
     </g>
   </g></a>
-  <a href="#HAN" role="button" aria-label="Go to ACE OF HEARTS"><text x="1550" y="649">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="649">📇</text></a>
-  <a href="#H3N" role="button" aria-label="Go to THREE OF HEARTS"><text x="1650" y="649">⏭️</text></a>
+  <a href="#HAN" aria-label="Go to ACE OF HEARTS"><text x="1550" y="649">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="649">📇</text></a>
+  <a href="#H3N" aria-label="Go to THREE OF HEARTS"><text x="1650" y="649">⏭️</text></a>
 
   <!-- CARD H3: THREE OF HEARTS                   -->
   <a href="#H3N"><g id="card-H3" transform="translate(1500, 670)">
@@ -697,9 +697,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥3" />
     </g>
   </g></a>
-  <a href="#H2N" role="button" aria-label="Go to TWO OF HEARTS"><text x="1550" y="984">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="984">📇</text></a>
-  <a href="#H4N" role="button" aria-label="Go to FOUR OF HEARTS"><text x="1650" y="984">⏭️</text></a>
+  <a href="#H2N" aria-label="Go to TWO OF HEARTS"><text x="1550" y="984">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="984">📇</text></a>
+  <a href="#H4N" aria-label="Go to FOUR OF HEARTS"><text x="1650" y="984">⏭️</text></a>
 
   <!-- CARD H4: FOUR OF HEARTS                    -->
   <a href="#H4N">
@@ -709,9 +709,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥4" />
     </g>
   </g></a>
-  <a href="#H3N" role="button" aria-label="Go to THREE OF HEARTS"><text x="1550" y="1319">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="1319">📇</text></a>
-  <a href="#H5N" role="button" aria-label="Go to FIVE OF HEARTS"><text x="1650" y="1319">⏭️</text></a>
+  <a href="#H3N" aria-label="Go to THREE OF HEARTS"><text x="1550" y="1319">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="1319">📇</text></a>
+  <a href="#H5N" aria-label="Go to FIVE OF HEARTS"><text x="1650" y="1319">⏭️</text></a>
 
   <!-- CARD H5: FIVE OF HEARTS                    -->
   <a href="#H5N">
@@ -721,9 +721,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥5" />
     </g>
   </g></a>
-  <a href="#H4N" role="button" aria-label="Go to FOUR OF HEARTS"><text x="1550" y="1654">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="1654">📇</text></a>
-  <a href="#H6N" role="button" aria-label="Go to SIX OF HEARTS"><text x="1650" y="1654">⏭️</text></a>
+  <a href="#H4N" aria-label="Go to FOUR OF HEARTS"><text x="1550" y="1654">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="1654">📇</text></a>
+  <a href="#H6N" aria-label="Go to SIX OF HEARTS"><text x="1650" y="1654">⏭️</text></a>
 
   <!-- CARD H6: SIX OF HEARTS                     -->
   <a href="#H6N">
@@ -733,9 +733,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥6" />
     </g>
   </g></a>
-  <a href="#H5N" role="button" aria-label="Go to FIVE OF HEARTS"><text x="1550" y="1989">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="1989">📇</text></a>
-  <a href="#H7N" role="button" aria-label="Go to SEVEN OF HEARTS"><text x="1650" y="1989">⏭️</text></a>
+  <a href="#H5N" aria-label="Go to FIVE OF HEARTS"><text x="1550" y="1989">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="1989">📇</text></a>
+  <a href="#H7N" aria-label="Go to SEVEN OF HEARTS"><text x="1650" y="1989">⏭️</text></a>
 
   <!-- CARD H7: SEVEN OF HEARTS                   -->
   <a href="#H7N">
@@ -745,9 +745,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥7" />
     </g>
   </g></a>
-  <a href="#H6N" role="button" aria-label="Go to SIX OF HEARTS"><text x="1550" y="2324">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="2324">📇</text></a>
-  <a href="#H8N" role="button" aria-label="Go to EIGHT OF HEARTS"><text x="1650" y="2324">⏭️</text></a>
+  <a href="#H6N" aria-label="Go to SIX OF HEARTS"><text x="1550" y="2324">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="2324">📇</text></a>
+  <a href="#H8N" aria-label="Go to EIGHT OF HEARTS"><text x="1650" y="2324">⏭️</text></a>
 
   <!-- CARD H8: EIGHT OF HEARTS                   -->
   <a href="#H8N">
@@ -757,9 +757,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥8" />
     </g>
   </g></a>
-  <a href="#H7N" role="button" aria-label="Go to SEVEN OF HEARTS"><text x="1550" y="2659">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="2659">📇</text></a>
-  <a href="#H9N" role="button" aria-label="Go to NINE OF HEARTS"><text x="1650" y="2659">⏭️</text></a>
+  <a href="#H7N" aria-label="Go to SEVEN OF HEARTS"><text x="1550" y="2659">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="2659">📇</text></a>
+  <a href="#H9N" aria-label="Go to NINE OF HEARTS"><text x="1650" y="2659">⏭️</text></a>
 
   <!-- CARD H9: NINE OF HEARTS                    -->
   <a href="#H9N">
@@ -769,9 +769,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥9" />
     </g>
   </g></a>
-  <a href="#H8N" role="button" aria-label="Go to EIGHT OF HEARTS"><text x="1550" y="2994">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="2994">📇</text></a>
-  <a href="#H10N" role="button" aria-label="Go to TEN OF HEARTS"><text x="1650" y="2994">⏭️</text></a>
+  <a href="#H8N" aria-label="Go to EIGHT OF HEARTS"><text x="1550" y="2994">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="2994">📇</text></a>
+  <a href="#H10N" aria-label="Go to TEN OF HEARTS"><text x="1650" y="2994">⏭️</text></a>
 
   <!-- CARD H10: TEN OF HEARTS                    -->
   <a href="#H10N"><g id="card-H10" transform="translate(1500, 3015)">
@@ -780,9 +780,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#♥10" />
     </g>
   </g></a>
-  <a href="#H9N" role="button" aria-label="Go to NINE OF HEARTS"><text x="1550" y="3329">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="3329">📇</text></a>
-  <a href="#HJN" role="button" aria-label="Go to JACK OF HEARTS"><text x="1650" y="3329">⏭️</text></a>
+  <a href="#H9N" aria-label="Go to NINE OF HEARTS"><text x="1550" y="3329">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="3329">📇</text></a>
+  <a href="#HJN" aria-label="Go to JACK OF HEARTS"><text x="1650" y="3329">⏭️</text></a>
 
   <!-- ========================================== -->
   <!-- ROW 11: JACKS (Y = 3350)                    -->
@@ -878,53 +878,53 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     </g>
   </g></a>
   <!-- Noble navigation -->
-  <a href="#C10N" role="button" aria-label="Go to TEN OF CLUBS"><text x="50" y="3664">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="3664">📇</text></a>
-  <a href="#CQN" role="button" aria-label="Go to QUEEN OF CLUBS"><text x="150" y="3664">⏭️</text></a>
+  <a href="#C10N" aria-label="Go to TEN OF CLUBS"><text x="50" y="3664">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="3664">📇</text></a>
+  <a href="#CQN" aria-label="Go to QUEEN OF CLUBS"><text x="150" y="3664">⏭️</text></a>
 
-  <a href="#CJN" role="button" aria-label="Go to JACK OF CLUBS"><text x="50" y="3999">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="3999">📇</text></a>
-  <a href="#CKN" role="button" aria-label="Go to KING OF CLUBS"><text x="150" y="3999">⏭️</text></a>
+  <a href="#CJN" aria-label="Go to JACK OF CLUBS"><text x="50" y="3999">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="3999">📇</text></a>
+  <a href="#CKN" aria-label="Go to KING OF CLUBS"><text x="150" y="3999">⏭️</text></a>
 
-  <a href="#CQN" role="button" aria-label="Go to QUEEN OF CLUBS"><text x="50" y="4334">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="4334">📇</text></a>
-  <a href="#DAN" role="button" aria-label="Go to ACE OF DIAMONDS"><text x="150" y="4334">⏭️</text></a>
+  <a href="#CQN" aria-label="Go to QUEEN OF CLUBS"><text x="50" y="4334">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="4334">📇</text></a>
+  <a href="#DAN" aria-label="Go to ACE OF DIAMONDS"><text x="150" y="4334">⏭️</text></a>
 
-  <a href="#D10N" role="button" aria-label="Go to TEN OF DIAMONDS"><text x="550" y="3664">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="3664">📇</text></a>
-  <a href="#DQN" role="button" aria-label="Go to QUEEN OF DIAMONDS"><text x="650" y="3664">⏭️</text></a>
+  <a href="#D10N" aria-label="Go to TEN OF DIAMONDS"><text x="550" y="3664">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="3664">📇</text></a>
+  <a href="#DQN" aria-label="Go to QUEEN OF DIAMONDS"><text x="650" y="3664">⏭️</text></a>
 
-  <a href="#DJN" role="button" aria-label="Go to JACK OF DIAMONDS"><text x="550" y="3999">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="3999">📇</text></a>
-  <a href="#DKN" role="button" aria-label="Go to KING OF DIAMONDS"><text x="650" y="3999">⏭️</text></a>
+  <a href="#DJN" aria-label="Go to JACK OF DIAMONDS"><text x="550" y="3999">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="3999">📇</text></a>
+  <a href="#DKN" aria-label="Go to KING OF DIAMONDS"><text x="650" y="3999">⏭️</text></a>
 
-  <a href="#DQN" role="button" aria-label="Go to QUEEN OF DIAMONDS"><text x="550" y="4334">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="4334">📇</text></a>
-  <a href="#SAN" role="button" aria-label="Go to ACE OF SPADES"><text x="650" y="4334">⏭️</text></a>
+  <a href="#DQN" aria-label="Go to QUEEN OF DIAMONDS"><text x="550" y="4334">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="4334">📇</text></a>
+  <a href="#SAN" aria-label="Go to ACE OF SPADES"><text x="650" y="4334">⏭️</text></a>
 
-  <a href="#S10N" role="button" aria-label="Go to TEN OF SPADES"><text x="1050" y="3664">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="3664">📇</text></a>
-  <a href="#SQN" role="button" aria-label="Go to QUEEN OF SPADES"><text x="1150" y="3664">⏭️</text></a>
+  <a href="#S10N" aria-label="Go to TEN OF SPADES"><text x="1050" y="3664">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="3664">📇</text></a>
+  <a href="#SQN" aria-label="Go to QUEEN OF SPADES"><text x="1150" y="3664">⏭️</text></a>
 
-  <a href="#SJN" role="button" aria-label="Go to JACK OF SPADES"><text x="1050" y="3999">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="3999">📇</text></a>
-  <a href="#SKN" role="button" aria-label="Go to KING OF SPADES"><text x="1150" y="3999">⏭️</text></a>
+  <a href="#SJN" aria-label="Go to JACK OF SPADES"><text x="1050" y="3999">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="3999">📇</text></a>
+  <a href="#SKN" aria-label="Go to KING OF SPADES"><text x="1150" y="3999">⏭️</text></a>
 
-  <a href="#SQN" role="button" aria-label="Go to QUEEN OF SPADES"><text x="1050" y="4334">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="4334">📇</text></a>
-  <a href="#HAN" role="button" aria-label="Go to ACE OF HEARTS"><text x="1150" y="4334">⏭️</text></a>
+  <a href="#SQN" aria-label="Go to QUEEN OF SPADES"><text x="1050" y="4334">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="4334">📇</text></a>
+  <a href="#HAN" aria-label="Go to ACE OF HEARTS"><text x="1150" y="4334">⏭️</text></a>
 
-  <a href="#H10N" role="button" aria-label="Go to TEN OF HEARTS"><text x="1550" y="3664">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="3664">📇</text></a>
-  <a href="#HQN" role="button" aria-label="Go to QUEEN OF HEARTS"><text x="1650" y="3664">⏭️</text></a>
+  <a href="#H10N" aria-label="Go to TEN OF HEARTS"><text x="1550" y="3664">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="3664">📇</text></a>
+  <a href="#HQN" aria-label="Go to QUEEN OF HEARTS"><text x="1650" y="3664">⏭️</text></a>
 
-  <a href="#HJN" role="button" aria-label="Go to JACK OF HEARTS"><text x="1550" y="3999">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="3999">📇</text></a>
-  <a href="#HKN" role="button" aria-label="Go to KING OF HEARTS"><text x="1650" y="3999">⏭️</text></a>
+  <a href="#HJN" aria-label="Go to JACK OF HEARTS"><text x="1550" y="3999">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="3999">📇</text></a>
+  <a href="#HKN" aria-label="Go to KING OF HEARTS"><text x="1650" y="3999">⏭️</text></a>
 
-  <a href="#HQN" role="button" aria-label="Go to QUEEN OF HEARTS"><text x="1550" y="4334">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="4334">📇</text></a>
-  <a href="#CAN" role="button" aria-label="Go to ACE OF CLUBS"><text x="1650" y="4334">⏭️</text></a>
+  <a href="#HQN" aria-label="Go to QUEEN OF HEARTS"><text x="1550" y="4334">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="4334">📇</text></a>
+  <a href="#CAN" aria-label="Go to ACE OF CLUBS"><text x="1650" y="4334">⏭️</text></a>
 
 <!-- CARD JR: BLACK JOKER (Slot: X=500, Y=4355) -->
   <a href="#JBN">
@@ -932,9 +932,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#card-base" />
     <use href="#image-joker" style="fill:#000000; stroke:#000000;" />
   </g></a>
-  <a href="#BACK-REDN" role="button" aria-label="Go to RED CARD BACK"><text x="50" y="4669">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="100" y="4669">📇</text></a>
-  <a href="#JRN" role="button" aria-label="Go to RED JOKER"><text x="150" y="4669">⏭️</text></a>
+  <a href="#BACK-REDN" aria-label="Go to RED CARD BACK"><text x="50" y="4669">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="100" y="4669">📇</text></a>
+  <a href="#JRN" aria-label="Go to RED JOKER"><text x="150" y="4669">⏭️</text></a>
 
   <!-- CARD JR: RED JOKER (Slot: X=500, Y=4355) -->
   <a href="#JRN">
@@ -942,9 +942,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#card-base" />
     <use href="#image-joker" style="fill:#c8102e; stroke:#c8102e;" />
   </g></a>
-  <a href="#JBN" role="button" aria-label="Go to BLACK JOKER"><text x="550" y="4669">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="600" y="4669">📇</text></a>
-  <a href="#BACK-BLUEN" role="button" aria-label="Go to BLUE CARD BACK"><text x="650" y="4669">⏭️</text></a>
+  <a href="#JBN" aria-label="Go to BLACK JOKER"><text x="550" y="4669">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="600" y="4669">📇</text></a>
+  <a href="#BACK-BLUEN" aria-label="Go to BLUE CARD BACK"><text x="650" y="4669">⏭️</text></a>
 
   <!-- CARD BACK BLUE (Slot: X=1000, Y=4355) -->
   <a href="#BACK-BLUEN">
@@ -952,9 +952,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#card-base" />
     <use href="#aperiodic-lattice" style="fill:#1d4ed8;stroke:#1d4ed8" />
   </g></a>
-  <a href="#JRN" role="button" aria-label="Go to RED JOKER"><text x="1050" y="4669">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1100" y="4669">📇</text></a>
-  <a href="#BACK-REDN" role="button" aria-label="Go to RED CARD BACK"><text x="1150" y="4669">⏭️</text></a>
+  <a href="#JRN" aria-label="Go to RED JOKER"><text x="1050" y="4669">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1100" y="4669">📇</text></a>
+  <a href="#BACK-REDN" aria-label="Go to RED CARD BACK"><text x="1150" y="4669">⏭️</text></a>
 
   <!-- CARD BACK RED (Slot: X=1500, Y=4355) -->
   <a href="#BACK-REDN">
@@ -962,9 +962,9 @@ view:target[id$="N"] ~ a > g > image + g[opacity="0.7"] {opacity:0.2}
     <use href="#card-base" />
     <use href="#aperiodic-lattice" style="fill:#c8102e;stroke:#c8102e" />
   </g></a>
-  <a href="#BACK-BLUEN" role="button" aria-label="Go to BLUE CARD BACK"><text x="1550" y="4669">⏮️</text></a>
-  <a href="#Nav" role="button" aria-label="Go to OVERVIEW"><text x="1600" y="4669">📇</text></a>
-  <a href="#JBN" role="button" aria-label="Go to BLACK JOKER"><text x="1650" y="4669">⏭️</text></a>
+  <a href="#BACK-BLUEN" aria-label="Go to BLUE CARD BACK"><text x="1550" y="4669">⏮️</text></a>
+  <a href="#Nav" aria-label="Go to OVERVIEW"><text x="1600" y="4669">📇</text></a>
+  <a href="#JBN" aria-label="Go to BLACK JOKER"><text x="1650" y="4669">⏭️</text></a>
 
   <!-- URL #Fragment IDs FOR VIEWING INDIVIDUAL CARDS -->
   <view id="CA" viewBox="0 0 241 335" />

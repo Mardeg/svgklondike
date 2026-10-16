@@ -6,12 +6,12 @@
 ><title>🂠SVG Klondike solitaire</title>
 <metadata xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
           xmlns:dcterms="http://purl.org/dc/terms/"
-          xmlns:dc11="http://purl.org/dc/elements/1.1/"
+          xmlns:dc="http://purl.org/dc/elements/1.1/"
           xmlns:cc="http://creativecommons.org/ns#" >
   <rdf:RDF>
     <cc:Work rdf:about="">
-      <dc11:format>image/svg+xml</dc11:format>
-      <dc11:type  rdf:resource="http://purl.org/dc/dcmitype/InteractiveResource" />
+      <dc:format>image/svg+xml</dc:format>
+      <dc:type  rdf:resource="http://purl.org/dc/dcmitype/InteractiveResource" />
       <cc:license rdf:resource="https://creativecommons.org/publicdomain/zero/1.0/" />
       <cc:license rdf:resource="https://opendatacommons.org/licenses/pddl/1-0/"  />
       <cc:attributionName>Mardeg</cc:attributionName>
@@ -592,7 +592,9 @@ function deckChoice(s) {
         case "Clas": return transPips(chosenLang) + "deckspritesheet.svg";
         case "Astr": return transPips(chosenLang) + "AstronomiaDeck.svg";
         case "Cloi": return transPips(chosenLang) + "CloistersDeck.svg";
+        case "Faun": return transPips(chosenLang) + "FaunaDeck.svg";
         case "Elem": return transPips(chosenLang) + "ElementalDeck.svg";
+        case "Flor": return transPips(chosenLang) + "FloraDeck.svg";
         default: return "";
     }
 }
@@ -602,6 +604,8 @@ function deckLabel(d) {
         case transPips(chosenLang) + "ElementalDeck.svg":   return translations[chosenLang]?.elem || translations.en.elem;
         case transPips(chosenLang) + "AstronomiaDeck.svg":  return "Astronomia";
         case transPips(chosenLang) + "CloistersDeck.svg":  return "Cloisters";
+        case transPips(chosenLang) + "FaunaDeck.svg":  return "Fauna";
+        case transPips(chosenLang) + "FloraDeck.svg":  return "Flora";
         default:                    return translations[chosenLang]?.basic || translations.en.basic;
     }
 }
@@ -2744,10 +2748,20 @@ function init() {
         <rect class="dropdown-option-bg" x="50" y="51" width="360" height="80"/>
         <text class="dropdown-text" x="65" y="109">Cloisters</text>
       </g>
+      <!-- Fauna -->
+      <g onclick="selectDeck('FaunaDeck.svg', 'Fauna', event)">
+        <rect class="dropdown-option-bg" x="50" y="131" width="360" height="80"/>
+        <text class="dropdown-text" x="65" y="189">Fauna</text>
+      </g>
       <!-- Elemental -->
       <g onclick="selectDeck('ElementalDeck.svg', 'Elemental', event)">
-        <rect class="dropdown-option-bg" x="50" y="131" width="360" height="80"/>
-        <text class="dropdown-text" x="65" y="189" data-trans="elem">Elemental</text>
+        <rect class="dropdown-option-bg" x="50" y="211" width="360" height="80"/>
+        <text class="dropdown-text" x="65" y="269" data-trans="elem">Elemental</text>
+      </g>
+      <!-- Flora -->
+      <g onclick="selectDeck('FloraDeck.svg', 'Flora', event)">
+        <rect class="dropdown-option-bg" x="50" y="291" width="360" height="80"/>
+        <text class="dropdown-text" x="65" y="349">Flora</text>
       </g>
     </g>
   </g>

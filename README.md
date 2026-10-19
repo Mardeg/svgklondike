@@ -72,6 +72,7 @@ Other places this game is at:
 * [idev](https://idev.games/game/svg-klondike)
 * [spreadmygame](https://www.spreadmygame.com/?p=games&g=383)
 * [slagdock](https://slagdock.com/?play=6a470f131d9372e055858af0)
+* [whimsi](https://whimsi.fun/p/svg-klondike/)
 * [funinbrowser](https://www.funinbrowser.com/?g=383)
 * [browsergamestop](https://browsergamestop.com/games/svg-klondike)
 * [votekicker](https://votekicker.com/projects/svg-klondike)

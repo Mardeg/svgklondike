@@ -522,12 +522,12 @@ function getScreenCTM(){
     return sCTM;
 }
 const translations = {
-    fr: { deck:"Pioche", table:"Tapis", waste:"Écart", found:"Fondation", basic:"Basique", classic:"Classique", elem:"Élémentaire", back:"Dos", blue:"Bleu", red:"Rouge", green:"Tapis Vert", wood:"Effet Bois", leath:"Cuir", ill:"Illusion", why:"Ces options ne peuvent être définies qu'avant le début de la partie", jigsaw:"Faites plutôt un puzzle", proj:"Github Projection", plzrot:"Veuillez pivoter votre appareil 🔄" },
-    es: { deck:"Mazo", table:"Tapete", waste:"Descarte", found:"Base", basic:"Básico", classic:"Clásico", elem:"Elemental", back:"Dorso", blue:"Azul", red:"Rojo", green:"Fieltro Verde", wood:"Madera", leath:"Cuero", ill:"Ilusión", why:"Esto solo se puede configurar antes de empezar a jugar", jigsaw:"Haz un rompecabezas en su lugar", proj:"Github Proyección", plzrot:"Por favor, gira tu dispositivo 🔄" },
-    it: { deck:"Tallone", table:"Tavolo", waste:"Pozzetto", found:"Fondazione", basic:"Base", classic:"Classico", elem:"Elementale", back:"Dorso", blue:"Blu", red:"Rosso", green:"Panno Verde", wood:"Legno", leath:"Pelle", ill:"Illusione", why:"Queste opzioni possono essere impostate solo prima dell'inizio del gioco", jigsaw:"Fai invece un puzzle", proj:"Github Proiezione", plzrot:"Ruota il tuo dispositivo, per favore 🔄" },
-    de: { deck:"Stoß", table:"Spielfeld", waste:"Abfall", found:"Fundament", basic:"Basis", classic:"Klassisch", elem:"Elementar", back:"Rückseite", blue:"Blau", red:"Rot", green:"Grüner Filz", wood:"Holz", leath:"Leder", ill:"Illusion", why:"Dies kann nur vor dem Spielstart eingestellt werden", jigsaw:"Mach stattdessen ein Puzzle", proj:"Github Projektion", plzrot:"Bitte drehen Sie Ihr Gerät 🔄" },
-    ch: { deck:"Schtapfe", table:"Tisch teppich", waste:"Ablag", found:"Zielstaple", basic:"Einfach", classic:"Klassisch", elem:"Elementar", back:"Ruggsyte", blue:"Blau", red:"Rot", green:"Grüene Filz", wood:"Holzstruktur", leath:"Leder", ill:"Illusion", why:"Das cha me erst vorem Schpielschtart iischtelle", jigsaw:"Mach doch schtattdesse es Puzzle", proj:"Github Projektion", plzrot:"Bitte drah diis Grät um 🔄" },
-    en: { deck:"Deck", table:"Tableau", waste:"Waste", found:"Foundation", basic:"Basic", classic:"Classic", elem:"Elemental", back:"Back", blue:"Blue", red:"Red", green:"Green Felt", wood:"Woodgrain", leath:"Leather", ill:"Illusion", why:"These can only be set before play starts", jigsaw:"Do a jigsaw puzzle instead", proj:"Github Project", plzrot:"Please rotate your device 🔄" }
+    fr: { deck:"Pioche", table:"Tapis", waste:"Écart", found:"Fondation", basic:"Basique", classic:"Classique", elem:"Élémentaire", back:"Dos", blue:"Bleu", red:"Rouge", green:"Tapis Vert", wood:"Effet Bois", nebul:"Nébuleuse", ill:"Illusion", why:"Ces options ne peuvent être définies qu'avant le début de la partie", jigsaw:"Faites plutôt un puzzle", proj:"Github Projection", plzrot:"Veuillez pivoter votre appareil 🔄" },
+    es: { deck:"Mazo", table:"Tapete", waste:"Descarte", found:"Base", basic:"Básico", classic:"Clásico", elem:"Elemental", back:"Dorso", blue:"Azul", red:"Rojo", green:"Fieltro Verde", wood:"Madera", nebul:"Nebulosa", ill:"Ilusión", why:"Esto solo se puede configurar antes de empezar a jugar", jigsaw:"Haz un rompecabezas en su lugar", proj:"Github Proyección", plzrot:"Por favor, gira tu dispositivo 🔄" },
+    it: { deck:"Tallone", table:"Tavolo", waste:"Pozzetto", found:"Fondazione", basic:"Base", classic:"Classico", elem:"Elementale", back:"Dorso", blue:"Blu", red:"Rosso", green:"Panno Verde", wood:"Legno", nebul:"Nebulosa", ill:"Illusione", why:"Queste opzioni possono essere impostate solo prima dell'inizio del gioco", jigsaw:"Fai invece un puzzle", proj:"Github Proiezione", plzrot:"Ruota il tuo dispositivo, per favore 🔄" },
+    de: { deck:"Stoß", table:"Spielfeld", waste:"Abfall", found:"Fundament", basic:"Basis", classic:"Klassisch", elem:"Elementar", back:"Rückseite", blue:"Blau", red:"Rot", green:"Grüner Filz", wood:"Holz", nebul:"Gasnebel", ill:"Illusion", why:"Dies kann nur vor dem Spielstart eingestellt werden", jigsaw:"Mach stattdessen ein Puzzle", proj:"Github Projektion", plzrot:"Bitte drehen Sie Ihr Gerät 🔄" },
+    ch: { deck:"Schtapfe", table:"Tisch teppich", waste:"Ablag", found:"Zielstaple", basic:"Einfach", classic:"Klassisch", elem:"Elementar", back:"Ruggsyte", blue:"Blau", red:"Rot", green:"Grüene Filz", wood:"Holzstruktur", nebul:"Gasnebel", ill:"Illusion", why:"Das cha me erst vorem Schpielschtart iischtelle", jigsaw:"Mach doch schtattdesse es Puzzle", proj:"Github Projektion", plzrot:"Bitte drah diis Grät um 🔄" },
+    en: { deck:"Deck", table:"Tableau", waste:"Waste", found:"Foundation", basic:"Basic", classic:"Classic", elem:"Elemental", back:"Back", blue:"Blue", red:"Red", green:"Green Felt", wood:"Woodgrain", nebul:"Nebula", ill:"Illusion", why:"These can only be set before play starts", jigsaw:"Do a jigsaw puzzle instead", proj:"Github Project", plzrot:"Please rotate your device 🔄" }
 };
 
 let chosenLang = location.search.slice(1).trim().toLowerCase().slice(0,2);
@@ -537,7 +537,7 @@ function transLang(ln) {
     if (!ln) return;
     const hasLang = Object.prototype.hasOwnProperty.call(translations, ln);
     const dict = hasLang ? translations[ln] : translations.en;
-    for (const i of ["deck","table","waste","found","basic","classic","elem","back","blue","red","green","wood","leath","ill","why","jigsaw","proj","plzrot"]) {
+    for (const i of ["deck","table","waste","found","basic","classic","elem","back","blue","red","green","wood","nebul","ill","why","jigsaw","proj","plzrot"]) {
         const u = document.querySelector(`[data-trans="${i}"]`);
         if (u) u.textContent = dict[i] || translations.en[i];
     }
@@ -574,7 +574,7 @@ function basicPips(tp) {
 function textureChoice(t) {
     switch(t) {
         case "wood":    return "url(#wood)";
-        case "leather": return "url(#leather)";
+        case "nebula": return "url(#nebula)";
         case "illusion":return "url(#illusion)";
         default:        return "green";
     }
@@ -582,7 +582,7 @@ function textureChoice(t) {
 function textureLabel(t) {
     switch(t) {
         case "wood":   return translations[chosenLang]?.wood   || translations.en.wood;
-        case "leath":  return translations[chosenLang]?.leath  || translations.en.leath;
+        case "nebul":  return translations[chosenLang]?.nebul  || translations.en.nebul;
         case "ill":    return translations[chosenLang]?.ill    || translations.en.ill;
         default:       return translations[chosenLang]?.green  || translations.en.green;
     }
@@ -1870,75 +1870,7 @@ function init() {
     </feMerge>
   </filter>
   <filter id="wood"><feTurbulence baseFrequency=".002 .02" numOctaves="9" result="n"/><feDiffuseLighting surfaceScale="9" lighting-color="#BA8C63"><feDistantLight elevation="60" azimuth="-90"/></feDiffuseLighting><feDisplacementMap in2="n" scale="50"/></filter>
-  <filter
-     style="color-interpolation-filters:sRGB;"
-     id="leather"
-      >
-    <feTurbulence
-       type="fractalNoise"
-       numOctaves="4"
-       baseFrequency="0.08 0.10" 
-       seed="42"
-       result="result0"
-       id="feTurbulence3274" />
-    <feTurbulence
-       type="fractalNoise"
-       numOctaves="4"
-       baseFrequency="0.04 0.05" 
-       seed="42"
-       result="result0" />
-    <feComponentTransfer in="result0" result="highContrastNoise">
-       <feFuncR type="linear" slope="1.8" intercept="-0.2"/>
-       <feFuncG type="linear" slope="1.8" intercept="-0.2"/>
-       <feFuncB type="linear" slope="1.8" intercept="-0.2"/>
-    </feComponentTransfer>
-    <feColorMatrix
-       result="result4"
-       in="highContrastNoise"
-       values="0"
-       type="saturate" />
-    <feComposite
-       in="SourceGraphic"
-       in2="result4"
-       operator="arithmetic"
-       k1="2.2" 
-       k2="0.3"
-       k3="0.3"
-       result="result2" />
-    <feColorMatrix
-       result="fbSourceGraphicAlpha"
-       in="fbSourceGraphic"
-       values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0" />
-    <feComposite
-       in2="result2"
-       in="fbSourceGraphic"
-       operator="arithmetic"
-       k2="3.5"
-       k3="2.0"
-       result="result91" />
-    <feBlend
-       in2="result91"
-       mode="multiply"
-       result="fbSourceGraphic" />
-    <feDiffuseLighting
-       id="feDiffuseLighting5676"
-       diffuseConstant="0.8" 
-       result="result1"
-       surfaceScale="6"> 
-      <feDistantLight
-         id="feDistantLight5678"
-         elevation="26" 
-         azimuth="225" />
-    </feDiffuseLighting>
-    <feComposite
-       in2="fbSourceGraphic"
-       result="result3"
-       k1="0.95"
-       k2="0.75"
-       k3="0.0"
-       in="result1"
-       operator="arithmetic" />
-  </filter>
+  <filter id="nebula"><feTurbulence baseFrequency=".01" numOctaves="8" type="fractalNoise"/><feDisplacementMap scale="80"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1.2 -.2"/><feColorMatrix result="n" values="2 0 0 0 -.6 .3 0 .5 .5 -.5 0 0 .1 0 .1 0 0 0 1 0"/><feTurbulence baseFrequency=".2" result="s"/><feTurbulence baseFrequency=".1"/><feBlend in="s"/><feColorMatrix values="0 0 0 9 -6 0 0 0 9 -6 0 0 0 9 -6 0 0 0 0 1"/><feBlend in="n"/></filter>
     <filter id="blurMe">
       <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
     </filter>
@@ -2845,10 +2777,10 @@ function init() {
         <rect class="dropdown-option-bg" x="490" y="-109" width="300" height="80"/>
         <text class="dropdown-text" x="505" y="-51" data-trans="wood">Woodgrain</text>
       </g>
-      <!-- Leather -->
-      <g onclick="selectTexture('leather', textureLabel('leath'), event)">
+      <!-- Nebula -->
+      <g onclick="selectTexture('nebula', textureLabel('nebul'), event)">
         <rect class="dropdown-option-bg" x="490" y="-29" width="300" height="80"/>
-        <text class="dropdown-text" x="505" y="29" data-trans="leath">Leather</text>
+        <text class="dropdown-text" x="505" y="29" data-trans="nebul">Nebula</text>
       </g>
       <!-- Illusion -->
       <g onclick="selectTexture('illusion', textureLabel('ill'), event)">

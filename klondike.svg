@@ -522,12 +522,12 @@ function getScreenCTM(){
     return sCTM;
 }
 const translations = {
-    fr: { deck:"Pioche", table:"Tapis", waste:"Écart", found:"Fondation", basic:"Basique", classic:"Classique", elem:"Élémentaire", back:"Dos", blue:"Bleu", red:"Rouge", green:"Tapis Vert", wood:"Effet Bois", nebul:"Nébuleuse", ill:"Illusion", why:"Ces options ne peuvent être définies qu'avant le début de la partie", jigsaw:"Faites plutôt un puzzle", proj:"Github Projection", plzrot:"Veuillez pivoter votre appareil 🔄" },
-    es: { deck:"Mazo", table:"Tapete", waste:"Descarte", found:"Base", basic:"Básico", classic:"Clásico", elem:"Elemental", back:"Dorso", blue:"Azul", red:"Rojo", green:"Fieltro Verde", wood:"Madera", nebul:"Nebulosa", ill:"Ilusión", why:"Esto solo se puede configurar antes de empezar a jugar", jigsaw:"Haz un rompecabezas en su lugar", proj:"Github Proyección", plzrot:"Por favor, gira tu dispositivo 🔄" },
-    it: { deck:"Tallone", table:"Tavolo", waste:"Pozzetto", found:"Fondazione", basic:"Base", classic:"Classico", elem:"Elementale", back:"Dorso", blue:"Blu", red:"Rosso", green:"Panno Verde", wood:"Legno", nebul:"Nebulosa", ill:"Illusione", why:"Queste opzioni possono essere impostate solo prima dell'inizio del gioco", jigsaw:"Fai invece un puzzle", proj:"Github Proiezione", plzrot:"Ruota il tuo dispositivo, per favore 🔄" },
-    de: { deck:"Stoß", table:"Spielfeld", waste:"Abfall", found:"Fundament", basic:"Basis", classic:"Klassisch", elem:"Elementar", back:"Rückseite", blue:"Blau", red:"Rot", green:"Grüner Filz", wood:"Holz", nebul:"Gasnebel", ill:"Illusion", why:"Dies kann nur vor dem Spielstart eingestellt werden", jigsaw:"Mach stattdessen ein Puzzle", proj:"Github Projektion", plzrot:"Bitte drehen Sie Ihr Gerät 🔄" },
-    ch: { deck:"Schtapfe", table:"Tisch teppich", waste:"Ablag", found:"Zielstaple", basic:"Einfach", classic:"Klassisch", elem:"Elementar", back:"Ruggsyte", blue:"Blau", red:"Rot", green:"Grüene Filz", wood:"Holzstruktur", nebul:"Gasnebel", ill:"Illusion", why:"Das cha me erst vorem Schpielschtart iischtelle", jigsaw:"Mach doch schtattdesse es Puzzle", proj:"Github Projektion", plzrot:"Bitte drah diis Grät um 🔄" },
-    en: { deck:"Deck", table:"Tableau", waste:"Waste", found:"Foundation", basic:"Basic", classic:"Classic", elem:"Elemental", back:"Back", blue:"Blue", red:"Red", green:"Green Felt", wood:"Woodgrain", nebul:"Nebula", ill:"Illusion", why:"These can only be set before play starts", jigsaw:"Do a jigsaw puzzle instead", proj:"Github Project", plzrot:"Please rotate your device 🔄" }
+    fr: { deck:"Pioche", table:"Tapis", waste:"Écart", found:"Fondation", basic:"Basique", classic:"Classique", elem:"Élémentaire", back:"Dos", blue:"Bleu", red:"Rouge", green:"Tapis Vert", wood:"Effet Bois", nebul:"Nébuleuse", ill:"Illusion", lands:"Paysage", why:"Ces options ne peuvent être définies qu'avant le début de la partie", jigsaw:"Faites plutôt un puzzle", proj:"Github Projection", plzrot:"Veuillez pivoter votre appareil 🔄" },
+    es: { deck:"Mazo", table:"Tapete", waste:"Descarte", found:"Base", basic:"Básico", classic:"Clásico", elem:"Elemental", back:"Dorso", blue:"Azul", red:"Rojo", green:"Fieltro Verde", wood:"Madera", nebul:"Nebulosa", ill:"Ilusión", lands:"Paisaje", why:"Esto solo se puede configurar antes de empezar a jugar", jigsaw:"Haz un rompecabezas en su lugar", proj:"Github Proyección", plzrot:"Por favor, gira tu dispositivo 🔄" },
+    it: { deck:"Tallone", table:"Tavolo", waste:"Pozzetto", found:"Fondazione", basic:"Base", classic:"Classico", elem:"Elementale", back:"Dorso", blue:"Blu", red:"Rosso", green:"Panno Verde", wood:"Legno", nebul:"Nebulosa", ill:"Illusione", lands:"Paesaggio", why:"Queste opzioni possono essere impostate solo prima dell'inizio del gioco", jigsaw:"Fai invece un puzzle", proj:"Github Proiezione", plzrot:"Ruota il tuo dispositivo, per favore 🔄" },
+    de: { deck:"Stoß", table:"Spielfeld", waste:"Abfall", found:"Fundament", basic:"Basis", classic:"Klassisch", elem:"Elementar", back:"Rückseite", blue:"Blau", red:"Rot", green:"Grüner Filz", wood:"Holz", nebul:"Gasnebel", ill:"Illusion", lands:"Landschaft", why:"Dies kann nur vor dem Spielstart eingestellt werden", jigsaw:"Mach stattdessen ein Puzzle", proj:"Github Projektion", plzrot:"Bitte drehen Sie Ihr Gerät 🔄" },
+    ch: { deck:"Schtapfe", table:"Tisch teppich", waste:"Ablag", found:"Zielstaple", basic:"Einfach", classic:"Klassisch", elem:"Elementar", back:"Ruggsyte", blue:"Blau", red:"Rot", green:"Grüene Filz", wood:"Holzstruktur", nebul:"Gasnebel", ill:"Illusion", lands:"Landschaft",why:"Das cha me erst vorem Schpielschtart iischtelle", jigsaw:"Mach doch schtattdesse es Puzzle", proj:"Github Projektion", plzrot:"Bitte drah diis Grät um 🔄" },
+    en: { deck:"Deck", table:"Tableau", waste:"Waste", found:"Foundation", basic:"Basic", classic:"Classic", elem:"Elemental", back:"Back", blue:"Blue", red:"Red", green:"Green Felt", wood:"Woodgrain", nebul:"Nebula", ill:"Illusion", lands:"Landscape", why:"These can only be set before play starts", jigsaw:"Do a jigsaw puzzle instead", proj:"Github Project", plzrot:"Please rotate your device 🔄" }
 };
 
 let chosenLang = location.search.slice(1).trim().toLowerCase().slice(0,2);
@@ -537,7 +537,7 @@ function transLang(ln) {
     if (!ln) return;
     const hasLang = Object.prototype.hasOwnProperty.call(translations, ln);
     const dict = hasLang ? translations[ln] : translations.en;
-    for (const i of ["deck","table","waste","found","basic","classic","elem","back","blue","red","green","wood","nebul","ill","why","jigsaw","proj","plzrot"]) {
+    for (const i of ["deck","table","waste","found","basic","classic","elem","back","blue","red","green","wood","nebul","ill","lands","why","jigsaw","proj","plzrot"]) {
         const u = document.querySelector(`[data-trans="${i}"]`);
         if (u) u.textContent = dict[i] || translations.en[i];
     }
@@ -576,6 +576,7 @@ function textureChoice(t) {
         case "wood":    return "url(#wood)";
         case "nebula": return "url(#nebula)";
         case "illusion":return "url(#illusion)";
+        case "landscape":return "url(#landscape)";
         default:        return "green";
     }
 }
@@ -584,6 +585,7 @@ function textureLabel(t) {
         case "wood":   return translations[chosenLang]?.wood   || translations.en.wood;
         case "nebul":  return translations[chosenLang]?.nebul  || translations.en.nebul;
         case "ill":    return translations[chosenLang]?.ill    || translations.en.ill;
+        case "lands":    return translations[chosenLang]?.lands    || translations.en.lands;
         default:       return translations[chosenLang]?.green  || translations.en.green;
     }
 }
@@ -1581,7 +1583,7 @@ function selectTexture(textureValue, labelText, event, readOnly) {
     document.getElementById('current-texture-label').textContent = "🏟️: " + labelText;
     document.getElementById('dropdown-texture').classList.remove('open');
     const tt=document.getElementById("tabletop");
-    if (["felt", "illusion"].includes(textureValue)){
+    if (["felt", "illusion", "landscape"].includes(textureValue)){
 	tt.setAttribute("fill", textureChoice(textureValue));
 	tt.removeAttribute("filter");
     }else {
@@ -1826,6 +1828,37 @@ function setGlobalVolume(volumeLevel,mutoggle) {
 	vs.nextElementSibling.setAttribute("opacity","1");
   }
 }
+const initLandscape = ((d, r) => {
+    return () => {
+        let Y = "SourceGraphic", Z = "ChannelSelector";
+        const container = d.getElementById("landscape");
+        if (container) {
+            container.querySelectorAll("feDisplacementMap").forEach(m => {
+                m.setAttribute("in", Y);
+                [["in", Y], ["in2", "n"], ["x" + Z, "R"], ["y" + Z, "G"]].forEach(([a, v]) => m.setAttribute(a, v));
+            });
+        }
+        const H = (h, s, v) => {
+            let i = h / 60 | 0, t = v * (1 - s), p = v * (1 - s * (h / 60 - i)), q = v * (1 - s * (1 - (h / 60 - i))), rgb = [[v, q, t], [p, v, t], [t, v, q], [t, p, v], [q, t, v], [v, t, p]][i] || [v, t, p];
+            return '#' + rgb.map(x => ("0" + Math.round(x * 255).toString(16)).slice(-2)).join('');
+        },
+        S = (c, p) => {
+            let f = parseInt(c.slice(1), 16), t = p < 0 ? 0 : 255, o = p < 0 ? p * -1 : p, R = f >> 16, G = f >> 8 & 255, B = f & 255;
+            return "#" + (16777216 + (Math.round((t - R) * o) + R) * 65536 + (Math.round((t - G) * o) + G) * 256 + (Math.round((t - B) * o) + B)).toString(16).slice(1);
+        },
+        B_mix = (c0, c1, p) => {
+            let f = parseInt(c0.slice(1), 16), t = parseInt(c1.slice(1), 16), R1 = f >> 16, G1 = f >> 8 & 255, B1 = f & 255, R2 = t >> 16, G2 = t >> 8 & 255, B2 = t & 255;
+            return "#" + (16777216 + (Math.round((R2 - R1) * p) + R1) * 65536 + (Math.round((G2 - G1) * p) + G1) * 256 + (Math.round((B2 - B1) * p) + B1)).toString(16).slice(1);
+        },
+        N = (id, a, v) => d.getElementById(id)?.setAttribute(a, v), k = "stop-color", h = r() * 60 + (r() > .83 ? 350 : 0), red = H(h, r() / 4 + .3, 1), C = B_mix("#EE82EE", red, .5), M = B_mix(red, "#999999", .5), h1 = .866, h2 = .833, h3 = .766;
+        let s = d.getElementById("MLh"); if (s) { s.setAttribute("fill", C); s.setAttribute("cx", r() * 999 | 0); s.setAttribute("r", r() * 100 + 100 | 0) }
+        N("ML0", k, red); N("ML1", k, C); N("ML2", k, C); N("ML3", k, S(M, (1 / h1 - .5) - 1)); N("ML4", k, M); N("ML5", k, S(M, (1 / h2 - .5) - 1)); N("ML6", k, M); N("ML7", k, S(M, (1 / h3 - .5) - 1)); N("ML8", k, M); N("MLB", k, B_mix(S(M, (1 / h2 - .3) - 1), S("#FFFFFF", (1 / h2 - .3) - 1), .2)); N("MLC", k, C); N("ML9", k, B_mix(S(M, (1 / h3 - .3) - 1), S("#002200", (1 / h3 - .3) - 1), .2)); N("MLA", k, "#0E1A0E");
+        ["MLw", "MLz", "MLq", "MLv"].forEach(i => N(i, "seed", r() * 1000 | 0));
+        const L = (b, v) => { const s = b + (r() * v - v / 2), c1 = 200 + (r() * 100 - 50), y1 = b + (r() * v - v / 2), m = 500 + (r() * 100 - 50), my = b + (r() * v - v / 2), e = b + (r() * v - v / 2); return `M-50 558L-50 ${s}Q${c1} ${y1} ${m} ${my}T1050 ${e}L1050 558Z`; };
+        [["MLa", 360, 60], ["MLb", 410, 50], ["MLf", 440, 40], ["MLd", 470, 40], ["MLe", 510, 30]].forEach(([i, y, v]) => N(i, "d", L(y, v)));
+    };
+})(document, Math.random);
+
 // END SOLITAIRE MODEL
 
 function init() {
@@ -1890,6 +1923,13 @@ function init() {
         </g>
         <use href="#e1-half" transform="rotate(180,150,150)" />
       </g>
+    </pattern>
+    <pattern id="landscape" x="20" y="-206" width="2129" height="1166" viewBox="0 0 999 558" patternUnits="userSpaceOnUse">
+        <clipPath id="MLK"><rect width="999" height="558"/></clipPath>
+        <linearGradient id="MLg" x1="0" y1="0" x2="0" y2="1"/><linearGradient id="MLs" href="#MLg"><stop id="ML0" offset="0%"/><stop id="ML1" offset="40%"/><stop id="ML2" offset="100%"/></linearGradient><linearGradient id="MLi" href="#MLg"><stop id="ML3" offset="0%"/><stop id="ML4" offset="100%"/></linearGradient><linearGradient id="MLj" href="#MLg"><stop id="ML5" offset="0%"/><stop id="ML6" offset="100%"/></linearGradient><linearGradient id="MLo" href="#MLg"><stop id="ML7" offset="0%"/><stop id="ML8" offset="100%"/></linearGradient><linearGradient id="MLt" href="#MLg"><stop id="ML9" offset="0%"/><stop id="MLA" offset="100%"/></linearGradient><linearGradient id="MLc" href="#MLg"><stop id="MLB" offset="0%" stop-opacity=".4"/><stop id="MLC" offset="100%" stop-opacity="0"/></linearGradient>
+        <filter id="MLx"><feTurbulence id="MLw" type="fractalNoise" baseFrequency=".003 .01" numOctaves="4" result="MLn"/><feDisplacementMap scale="80"/></filter><filter id="MLy"><feTurbulence id="MLz" type="fractalNoise" baseFrequency=".005 .02" numOctaves="4" result="MLn"/><feDisplacementMap scale="60"/></filter><filter id="MLp"><feTurbulence id="MLq" type="turbulence" baseFrequency=".08 .01" numOctaves="2" result="MLn"/><feDisplacementMap scale="35"/></filter><filter id="MLu"><feTurbulence id="MLv" type="fractalNoise" baseFrequency=".01 .005" numOctaves="3" result="MLn"/><feDisplacementMap scale="40"/><feGaussianBlur stdDeviation="5"/></filter>
+        <g clip-path="url(#MLK)"><rect width="999" height="558" fill="url(#MLs)"/><circle id="MLh" cx="450" cy="0" r="180"/>
+        <path id="MLa" fill="url(#MLi)" filter="url(#MLx)"/><path id="MLb" fill="url(#MLj)" filter="url(#MLy)"/><path id="MLf" fill="url(#MLc)" filter="url(#MLu)"/><path id="MLd" fill="url(#MLo)" filter="url(#MLx)"/><path id="MLe" fill="url(#MLt)" filter="url(#MLp)"/></g>
     </pattern>
     <g id="outline"><rect width="150" height="210" x="8.28" y="-222.5" rx="10" ry="10" style="filter: url(#slotGlow); pointer-events: none;" /></g>
     <g id="uniqueoutline"><path style="fill:none;stroke:none;stroke-width:10" d="M 0,0C0,3.78 3.09,6.87 6.87,6.87L159.715,6.87C163.485,6.87 166.575,3.78 166.575,0L166.575,-228.4C166.575,-232.18 163.485,-235.27 159.715,-235.27L6.87,-235.27C3.09,-235.27 0,-232.18 0,-228.4L0,0 z"/></g>
@@ -2786,6 +2826,11 @@ function init() {
       <g onclick="selectTexture('illusion', textureLabel('ill'), event)">
         <rect class="dropdown-option-bg" x="490" y="51" width="300" height="80"/>
         <text class="dropdown-text" x="505" y="109" data-trans="ill">Illusion</text>
+      </g>
+      <!-- Landscape -->
+      <g onclick="initLandscape();selectTexture('landscape', textureLabel('lands'), event)">
+        <rect class="dropdown-option-bg" x="490" y="131" width="300" height="80"/>
+        <text class="dropdown-text" x="505" y="189" data-trans="lands">Landscape</text>
       </g>
     </g>
   </g>

@@ -1836,7 +1836,7 @@ const initLandscape = ((d, r) => {
         if (container) {
             container.querySelectorAll("feDisplacementMap").forEach(m => {
                 m.setAttribute("in", Y);
-                [["in", Y], ["in2", "n"], ["x" + Z, "R"], ["y" + Z, "G"]].forEach(([a, v]) => m.setAttribute(a, v));
+                [["in", Y], ["in2", "MLn"], ["x" + Z, "R"], ["y" + Z, "G"]].forEach(([a, v]) => m.setAttribute(a, v));
             });
         }
         const H = (h, s, v) => {
@@ -1851,7 +1851,7 @@ const initLandscape = ((d, r) => {
             let f = parseInt(c0.slice(1), 16), t = parseInt(c1.slice(1), 16), R1 = f >> 16, G1 = f >> 8 & 255, B1 = f & 255, R2 = t >> 16, G2 = t >> 8 & 255, B2 = t & 255;
             return "#" + (16777216 + (Math.round((R2 - R1) * p) + R1) * 65536 + (Math.round((G2 - G1) * p) + G1) * 256 + (Math.round((B2 - B1) * p) + B1)).toString(16).slice(1);
         },
-        N = (id, a, v) => d.getElementById(id)?.setAttribute(a, v), k = "stop-color", h = r() * 60 + (r() > .83 ? 350 : 0), red = H(h, r() / 4 + .3, 1), C = B_mix("#EE82EE", red, .5), M = B_mix(red, "#999999", .5), h1 = .866, h2 = .833, h3 = .766;
+        N = (id, a, v) => d.getElementById(id)?.setAttribute(a, v), k = "stop-color", h = r() * 60 + (r() > .83 ? 350 : 0), red = H(h, r() / 4 + .3, 1), C = B_mix("#FFFFFF", red, .5), M = B_mix(red, "#999999", .5), h1 = .866, h2 = .833, h3 = .766;
         let s = d.getElementById("MLh"); if (s) { s.setAttribute("fill", C); s.setAttribute("cx", r() * 999 | 0); s.setAttribute("r", r() * 100 + 100 | 0) }
         N("ML0", k, red); N("ML1", k, C); N("ML2", k, C); N("ML3", k, S(M, (1 / h1 - .5) - 1)); N("ML4", k, M); N("ML5", k, S(M, (1 / h2 - .5) - 1)); N("ML6", k, M); N("ML7", k, S(M, (1 / h3 - .5) - 1)); N("ML8", k, M); N("MLB", k, B_mix(S(M, (1 / h2 - .3) - 1), S("#FFFFFF", (1 / h2 - .3) - 1), .2)); N("MLC", k, C); N("ML9", k, B_mix(S(M, (1 / h3 - .3) - 1), S("#002200", (1 / h3 - .3) - 1), .2)); N("MLA", k, "#0E1A0E");
         ["MLw", "MLz", "MLq", "MLv"].forEach(i => N(i, "seed", r() * 1000 | 0));

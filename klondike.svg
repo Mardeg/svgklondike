@@ -1582,13 +1582,24 @@ function selectTexture(textureValue, labelText, event, readOnly) {
     if (!readOnly) event.stopPropagation();
     document.getElementById('current-texture-label').textContent = "🏟️: " + labelText;
     document.getElementById('dropdown-texture').classList.remove('open');
-    const tt=document.getElementById("tabletop");
-    if (["felt", "illusion", "landscape"].includes(textureValue)){
-	tt.setAttribute("fill", textureChoice(textureValue));
-	tt.removeAttribute("filter");
-    }else {
-	tt.setAttribute("fill", "#361D0B");
-	tt.setAttribute("filter", textureChoice(textureValue));
+    const tt = document.getElementById("tabletop");
+    const landscapeLayer = document.getElementById("landscape-layer");
+    const tabletopBorder = document.getElementById("tabletop-border");
+    if (textureValue === "landscape") {
+        tt.removeAttribute("filter");
+        tt.setAttribute("fill", "transparent");
+		landscapeLayer?.setAttribute("display", "inline");
+		tabletopBorder?.setAttribute("display", "inline");
+	} else {
+		landscapeLayer?.setAttribute("display", "none");
+		tabletopBorder?.setAttribute("display", "none");
+        if (["felt", "illusion"].includes(textureValue)) {
+            tt.setAttribute("fill", textureChoice(textureValue));
+            tt.removeAttribute("filter");
+        } else {
+            tt.setAttribute("fill", "#361D0B");
+            tt.setAttribute("filter", textureChoice(textureValue));
+        }
     }
 }
 let gAutoFinishInProgress = false;
@@ -1857,7 +1868,7 @@ const initLandscape = ((d, r) => {
         ["MLw", "MLz", "MLq", "MLv"].forEach(i => N(i, "seed", r() * 1000 | 0));
         const L = (b, v) => { const s = b + (r() * v - v / 2), c1 = 200 + (r() * 100 - 50), y1 = b + (r() * v - v / 2), m = 500 + (r() * 100 - 50), my = b + (r() * v - v / 2), e = b + (r() * v - v / 2); return `M-50 558L-50 ${s}Q${c1} ${y1} ${m} ${my}T1050 ${e}L1050 558Z`; };
         [["MLa", 360, 60], ["MLb", 410, 50], ["MLf", 440, 40], ["MLd", 470, 40], ["MLe", 510, 30]].forEach(([i, y, v]) => N(i, "d", L(y, v)));
-        const rF=document.getElementById("flightpath");rF.addEventListener("repeatEvent",function(e){e.target.setAttribute("values",rX()+" -96;500 500")});rF.setAttribute("values", rX() + " -96;500 500");rF.beginElement();
+        const rF=document.getElementById("flightpath");rF.setAttribute("values", rX() + " -96;500 500");d.querySelector("svg").setCurrentTime(0);rF.beginElement();
     };
 })(document, Math.random);
 
@@ -1930,15 +1941,37 @@ function init() {
       <animate attributeName="d" dur="1s" repeatCount="indefinite" values="M 10,25 A 45,35 0 0,1 50,50 A 45,35 0 0,1 89,25;M 5,50 A 45,15 0 0,1 50,50 A 45,15 0 0,1 94,50;M 10,75 A 45,35 0 0,1 50,50 A 45,35 0 0,1 89,75;M 5,50 A 45,15 0 0,1 50,50 A 45,15 0 0,1 94,50;M 10,25 A 45,35 0 0,1 50,50 A 45,35 0 0,1 89,25"/>
       </path><animateTransform begin="flightpath.begin" attributeName="transform" type="scale" values="1; 0" dur="99s" calcMode="spline" keyTimes="0; 1" keySplines="0.1 0.8 0.3 1" repeatCount="indefinite"/>
     </g>
-    <pattern id="landscape" x="20" y="-206" width="2129" height="1166" viewBox="0 0 999 558" patternUnits="userSpaceOnUse">
-        <clipPath id="MLK"><rect width="999" height="558"/></clipPath>
-        <linearGradient id="MLg" x1="0" y1="0" x2="0" y2="1"/><linearGradient id="MLs" href="#MLg"><stop id="ML0" offset="0%"/><stop id="ML1" offset="40%"/><stop id="ML2" offset="100%"/></linearGradient><linearGradient id="MLi" href="#MLg"><stop id="ML3" offset="0%"/><stop id="ML4" offset="100%"/></linearGradient><linearGradient id="MLj" href="#MLg"><stop id="ML5" offset="0%"/><stop id="ML6" offset="100%"/></linearGradient><linearGradient id="MLo" href="#MLg"><stop id="ML7" offset="0%"/><stop id="ML8" offset="100%"/></linearGradient><linearGradient id="MLt" href="#MLg"><stop id="ML9" offset="0%"/><stop id="MLA" offset="100%"/></linearGradient><linearGradient id="MLc" href="#MLg"><stop id="MLB" offset="0%" stop-opacity=".4"/><stop id="MLC" offset="100%" stop-opacity="0"/></linearGradient>
-        <filter id="MLx"><feTurbulence id="MLw" type="fractalNoise" baseFrequency=".003 .01" numOctaves="4" result="MLn"/><feDisplacementMap scale="80"/></filter><filter id="MLy"><feTurbulence id="MLz" type="fractalNoise" baseFrequency=".005 .02" numOctaves="4" result="MLn"/><feDisplacementMap scale="60"/></filter><filter id="MLp"><feTurbulence id="MLq" type="turbulence" baseFrequency=".08 .01" numOctaves="2" result="MLn"/><feDisplacementMap scale="35"/></filter><filter id="MLu"><feTurbulence id="MLv" type="fractalNoise" baseFrequency=".01 .005" numOctaves="3" result="MLn"/><feDisplacementMap scale="40"/><feGaussianBlur stdDeviation="5"/></filter>
-        <g clip-path="url(#MLK)"><rect width="999" height="558" fill="url(#MLs)"/><circle id="MLh" cx="450" cy="0" r="180"/>
-        <path id="MLa" fill="url(#MLi)" filter="url(#MLx)"/><path id="MLb" fill="url(#MLj)" filter="url(#MLy)"/><path id="MLf" fill="url(#MLc)" filter="url(#MLu)"/>
-        <use href="#wings"><animateTransform id="flightpath" attributeName="transform" type="translate" dur="99s" calcMode="spline" keyTimes="0; 1" keySplines="0.1 0.8 0.3 1" repeatCount="indefinite"/></use>
-        <path id="MLd" fill="url(#MLo)" filter="url(#MLx)"/><path id="MLe" fill="url(#MLt)" filter="url(#MLp)"/></g>
-    </pattern>
+	<symbol id="landscape" viewBox="0 0 999 558">
+		<clipPath id="MLK"><rect width="999" height="558"/></clipPath>
+		<linearGradient id="MLg" x1="0" y1="0" x2="0" y2="1"/>
+		<linearGradient id="MLs" href="#MLg"><stop id="ML0" offset="0%"/><stop id="ML1" offset="40%"/><stop id="ML2" offset="100%"/></linearGradient>
+		<linearGradient id="MLi" href="#MLg"><stop id="ML3" offset="0%"/><stop id="ML4" offset="100%"/></linearGradient>
+		<linearGradient id="MLj" href="#MLg"><stop id="ML5" offset="0%"/><stop id="ML6" offset="100%"/></linearGradient>
+		<linearGradient id="MLo" href="#MLg"><stop id="ML7" offset="0%"/><stop id="ML8" offset="100%"/></linearGradient>
+		<linearGradient id="MLt" href="#MLg"><stop id="ML9" offset="0%"/><stop id="MLA" offset="100%"/></linearGradient>
+		<linearGradient id="MLc" href="#MLg"><stop id="MLB" offset="0%" stop-opacity=".4"/><stop id="MLC" offset="100%" stop-opacity="0"/></linearGradient>
+		
+		<filter id="MLx"><feTurbulence id="MLw" type="fractalNoise" baseFrequency=".003 .01" numOctaves="4" result="MLn"/><feDisplacementMap scale="80"/></filter>
+		<filter id="MLy"><feTurbulence id="MLz" type="fractalNoise" baseFrequency=".005 .02" numOctaves="4" result="MLn"/><feDisplacementMap scale="60"/></filter>
+		<filter id="MLp"><feTurbulence id="MLq" type="turbulence" baseFrequency=".08 .01" numOctaves="2" result="MLn"/><feDisplacementMap scale="35"/></filter>
+		<filter id="MLu"><feTurbulence id="MLv" type="fractalNoise" baseFrequency=".01 .005" numOctaves="3" result="MLn"/><feDisplacementMap scale="40"/><feGaussianBlur stdDeviation="5"/></filter>
+		
+		<g clip-path="url(#MLK)">
+			<rect width="999" height="558" fill="url(#MLs)"/>
+			<circle id="MLh" cx="450" cy="0" r="180"/>
+			<path id="MLa" fill="url(#MLi)" filter="url(#MLx)"/>
+			<path id="MLb" fill="url(#MLj)" filter="url(#MLy)"/>
+			<path id="MLf" fill="url(#MLc)" filter="url(#MLu)"/>
+			<use href="#wings">
+				<animateTransform id="flightpath" attributeName="transform" type="translate" dur="99s" calcMode="spline" keyTimes="0; 1" keySplines="0.1 0.8 0.3 1" repeatCount="indefinite" onrepeat="const p=[0,20,50,100,180,720,800,850,880,900];this.setAttribute('values',p[Math.floor(Math.random()*p.length)] + ' -96;500 500')"/>
+			</use>
+			<path id="MLd" fill="url(#MLo)" filter="url(#MLx)"/>
+			<path id="MLe" fill="url(#MLt)" filter="url(#MLp)"/>
+		</g>
+	</symbol>
+    <clipPath id="tabletop-clip">
+        <use href="#tabletop" />
+    </clipPath>
     <g id="outline"><rect width="150" height="210" x="8.28" y="-222.5" rx="10" ry="10" style="filter: url(#slotGlow); pointer-events: none;" /></g>
     <g id="uniqueoutline"><path style="fill:none;stroke:none;stroke-width:10" d="M 0,0C0,3.78 3.09,6.87 6.87,6.87L159.715,6.87C163.485,6.87 166.575,3.78 166.575,0L166.575,-228.4C166.575,-232.18 163.485,-235.27 159.715,-235.27L6.87,-235.27C3.09,-235.27 0,-232.18 0,-228.4L0,0 z"/></g>
 
@@ -2609,8 +2642,13 @@ function init() {
 <!-- Solitaire game goes here -->
 
 <!-- Background elements -->
+<!-- 1. Base tabletop -->
 <rect id="tabletop" x="30" y="-206" rx="10" ry="10" width="2119" height="1156"
     fill="green" stroke="brown" stroke-width="40"/>
+<g clip-path="url(#tabletop-clip)" pointer-events="none">
+    <use id="landscape-layer" href="#landscape" x="20" y="-206" width="2129" height="1166" display="none" />
+</g>
+<use id="tabletop-border" href="#tabletop" fill="none" pointer-events="none" display="none" />
 <g id="timer" transform="translate(1000,-250)" font-size="48px" font-family="serif" font-weight="900" mask="url(#tiMask)" filter="url(#glower)" >
 	<text id="minutesX10" x="36,38,36,36,36,36,36,36,36,36"
 		y="60,100,140,180,220,260,300,340,380,420">0123456789</text>
@@ -2836,7 +2874,7 @@ function init() {
         <text class="dropdown-text" x="505" y="109" data-trans="ill">Illusion</text>
       </g>
       <!-- Landscape -->
-      <g onclick="initLandscape();selectTexture('landscape', textureLabel('lands'), event)">
+      <g onclick="selectTexture('landscape', textureLabel('lands'), event);initLandscape()">
         <rect class="dropdown-option-bg" x="490" y="131" width="300" height="80"/>
         <text class="dropdown-text" x="505" y="189" data-trans="lands">Landscape</text>
       </g>
